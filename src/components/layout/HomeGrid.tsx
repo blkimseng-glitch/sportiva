@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { SportItem } from "@/lib/types";
 
-
 import SportCard from "./SportCard";
 
 const HIDDEN_STORY_TITLE = "CBF hosts 2nd monthly boxing night with international bouts";
@@ -67,7 +66,7 @@ export default function HomeGrid({ items }: { items: SportItem[] }) {
   }), [visibleItems, active, query]);
 
   const [lead, ...rest] = filtered.length ? filtered : visibleItems;
-  const sideStories = rest.slice(0, 2);
+  const sideStories = rest.slice(0, 4);
   const ranked = [...filtered, ...visibleItems].filter((item, index, all) => all.findIndex((candidate) => candidate.id === item.id) === index).slice(0, 5);
   const popularItems = (filtered.length ? filtered : visibleItems).slice(0, 8);
   const popularRows = popularItems.slice(0, 8);
@@ -83,32 +82,81 @@ export default function HomeGrid({ items }: { items: SportItem[] }) {
   return (
     <main className="mx-auto max-w-[1260px] px-3 py-7 sm:px-5 sm:py-10">
       {lead && (
-        <section aria-labelledby="trending-heading">
-          <SectionTitle action="Live updates">Trending News</SectionTitle>
-          <div className="grid gap-3 lg:grid-cols-[minmax(0,1.45fr)_minmax(220px,0.8fr)_220px]">
-            <Link href={`/sports/${lead.id}`} className="group relative min-h-[285px] overflow-hidden bg-ink sm:min-h-[335px]">
-              <StoryImage item={lead} className="absolute inset-0 opacity-90" />
-              <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/30 to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-5 text-white sm:p-6">
-                <span className="bg-flare px-2 py-1 text-[9px] font-bold uppercase tracking-wider">{lead.categoryName}</span>
-                <h3 className="mt-2 max-w-xl font-display text-2xl font-extrabold leading-tight sm:text-3xl">{lead.name}</h3>
-                <p className="mt-2 line-clamp-2 max-w-lg text-xs leading-relaxed text-white/70">{lead.description}</p>
-              </div>
-            </Link>
-            <div className="space-y-3 bg-white p-3">
-              {sideStories.map((item) => <MiniStory key={item.id} item={item} />)}
+        <section aria-labelledby="trending-heading" className="border-b border-slate-200 pb-6">
+          <div className="mb-5 flex items-center justify-between gap-3 border-b border-slate-200 pb-2">
+            <div className="flex items-center gap-3">
+              <span className="h-2.5 w-2.5 rounded-full bg-red-600" aria-hidden="true" />
+              <h2 id="trending-heading" className="text-sm font-black uppercase tracking-[0.08em] text-ink sm:text-base">
+                Trending News
+              </h2>
             </div>
-            <aside className="border border-slate-200 bg-white p-3" aria-label="Trending now">
-              <div className="mb-1 flex items-center justify-between border-b border-slate-200 pb-2">
-                <h3 className="text-[10px] font-bold uppercase tracking-wide text-ink">Trending now</h3>
-                <span className="text-[8px] font-bold uppercase text-flare">Live</span>
+            <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink/50">Live updates</span>
+          </div>
+
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,1.8fr)_minmax(320px,1fr)_minmax(210px,0.72fr)]">
+            <article className="bg-white">
+              <Link href={`/sports/${lead.id}`} className="group block overflow-hidden">
+                <div className="relative overflow-hidden bg-slate-200">
+                  <StoryImage item={lead} className="h-[290px] w-full object-cover sm:h-[360px]" />
+                </div>
+                <div className="pt-4">
+                  <h3 className="max-w-[760px] text-[clamp(2rem,2.4vw,3rem)] font-black leading-[0.96] tracking-[-0.04em] text-ink transition group-hover:text-flare-dark">
+                    {lead.name}
+                  </h3>
+
+                  <p className="mt-4 max-w-[680px] text-base leading-relaxed text-ink/70">
+                    {lead.description}
+                  </p>
+
+                  <div className="mt-4 flex items-center gap-3 text-sm text-ink/60">
+                    <span>Sports Desk</span>
+                    <span>•</span>
+                    <span>{lead.categoryName}</span>
+                    <span className="ml-auto text-ink/50">5 min read</span>
+                  </div>
+                </div>
+              </Link>
+            </article>
+
+            <div className="space-y-4 border-l border-slate-200 pl-4">
+              {sideStories.map((item) => (
+                <Link key={item.id} href={`/sports/${item.id}`} className="group block border-b border-slate-200 pb-3 last:border-0 last:pb-0">
+                  <div className="grid grid-cols-[minmax(0,1fr)_120px] items-start gap-3">
+                    <div>
+                      <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.16em] text-ink/45">{item.categoryName}</p>
+                      <h4 className="text-[1.05rem] font-extrabold leading-[1.18] tracking-[-0.02em] text-ink transition group-hover:text-flare-dark">
+                        {item.name}
+                      </h4>
+                    </div>
+                    <div className="overflow-hidden rounded-sm bg-slate-200">
+                      <StoryImage item={item} className="h-20 w-full object-cover" />
+                    </div>
+                  </div>
+                  <div className="mt-2 flex items-center gap-3 text-[11px] text-ink/50">
+                    <span>Staff</span>
+                    <span>•</span>
+                    <span>5 min read</span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+
+            <aside className="border-l border-slate-200 pl-4" aria-label="Trending now">
+              <div className="mb-3 flex items-center justify-between border-b border-slate-200 pb-2">
+                <h3 className="text-[11px] font-black uppercase tracking-[0.16em] text-ink">Headlines</h3>
+                <button type="button" className="text-[10px] font-semibold uppercase tracking-[0.12em] text-ink/60 transition hover:text-flare-dark">
+                  See all
+                </button>
               </div>
-              <ol>
+
+              <ol className="space-y-1">
                 {ranked.map((item, index) => (
-                  <li key={item.id} className="border-b border-slate-100 last:border-0">
-                    <Link href={`/sports/${item.id}`} className="group flex gap-2 py-2">
-                      <span className="font-display text-sm font-bold text-slate-300">{index + 1}</span>
-                      <span className="line-clamp-2 text-[10px] font-semibold leading-tight text-ink group-hover:text-flare-dark">{item.name}</span>
+                  <li key={item.id} className="border-b border-slate-100 py-2 last:border-0">
+                    <Link href={`/sports/${item.id}`} className="group flex gap-3">
+                      <span className="mt-0.5 text-[12px] font-black text-slate-300">{index + 1}</span>
+                      <span className="text-[1.05rem] font-medium leading-[1.35] text-ink transition group-hover:text-flare-dark">
+                        {item.name}
+                      </span>
                     </Link>
                   </li>
                 ))}
@@ -167,7 +215,7 @@ export default function HomeGrid({ items }: { items: SportItem[] }) {
             <p className="mb-1 text-[9px] font-bold uppercase tracking-[0.2em] text-flare">The newsroom</p>
             <h2 id="latest-heading" className="font-display text-xl font-extrabold tracking-tight text-ink sm:text-2xl">Latest stories</h2>
           </div>
-     
+          
         </div>
         <div className="grid gap-x-4 gap-y-9 sm:grid-cols-2 lg:grid-cols-3">
           {latest.map((item) => <SportCard key={item.id} item={item} />)}
