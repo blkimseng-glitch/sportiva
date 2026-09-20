@@ -35,3 +35,11 @@ export interface Event {
   imageUrls?: string[];
   createdAt?: string;
 }
+
+export interface SportItem {
+  id: string;
+  name: string;
+  description: string;
+  categoryName: string;
+  imageUrls: string[];
+}
