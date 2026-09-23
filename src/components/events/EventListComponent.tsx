@@ -13,7 +13,7 @@ export default function EventListComponent() {
   const itemsPerPage = 8;
 
   useEffect(() => {
-    // ហៅតាម service Function
+    // Call via service Function
     getAllEvents()
       .then((data) => {
         setEvents(Array.isArray(data) ? data : data.data || data.items || []);
@@ -42,32 +42,32 @@ export default function EventListComponent() {
   );
 
   return (
-    <div className="w-full bg-[#0b1322] min-h-screen py-8 text-slate-200">
+    <div className="w-full bg-slate-50 dark:bg-[#0b1322] min-h-screen py-8 text-slate-800 dark:text-slate-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
         {/* Header Bar */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800/80 pb-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-800/80 pb-4">
           <div>
-            <h1 className="text-xl font-bold text-white">ព្រឹត្តិការណ៍កីឡា (Events)</h1>
-            <p className="text-xs text-slate-400 mt-1">កម្មវិធី និងព្រឹត្តិការណ៍ប្រកួតកីឡាថ្មីៗ</p>
+            <h1 className="text-xl font-bold text-slate-900 dark:text-white">Sports Events</h1>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Programs and upcoming sports competitions</p>
           </div>
 
           <div className="relative w-full sm:w-64">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
             <Input
-              placeholder="ស្វែងរកព្រឹត្តិការណ៍..."
+              placeholder="Search events..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="bg-[#162235] border-slate-700/60 text-xs pl-8 h-9 text-slate-200 placeholder:text-slate-400 focus-visible:ring-1 focus-visible:ring-blue-500 rounded-lg"
+              className="bg-white border-slate-300 text-xs pl-8 h-9 text-slate-800 placeholder:text-slate-400 focus-visible:ring-1 focus-visible:ring-blue-600 rounded-lg dark:bg-[#162235] dark:border-slate-700/60 dark:text-slate-200 dark:focus-visible:ring-blue-500"
             />
           </div>
         </div>
 
         {/* Content Grid */}
         {loading ? (
-          <div className="text-center py-20 text-slate-400 text-xs">កំពុងទាញយកទិន្នន័យ...</div>
+          <div className="text-center py-20 text-slate-500 dark:text-slate-400 text-xs">Loading data...</div>
         ) : filteredEvents.length === 0 ? (
-          <div className="text-center py-16 text-slate-400 bg-[#121c2d] rounded-xl border border-slate-800 text-xs">
-            មិនមានព្រឹត្តិការណ៍បង្ហាញទេ
+          <div className="text-center py-16 text-slate-500 dark:text-slate-400 bg-white dark:bg-[#121c2d] rounded-xl border border-slate-200 dark:border-slate-800 text-xs">
+            No events to display
           </div>
         ) : (
           <>
@@ -79,11 +79,11 @@ export default function EventListComponent() {
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="flex items-center justify-center gap-2 pt-6 border-t border-slate-800/80">
+              <div className="flex items-center justify-center gap-2 pt-6 border-t border-slate-200 dark:border-slate-800/80">
                 <button
                   onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
                   disabled={currentPage === 1}
-                  className="p-2 rounded-lg bg-[#162235] border border-slate-700/60 text-slate-300 hover:bg-slate-800 disabled:opacity-40 transition-all"
+                  className="p-2 rounded-lg bg-white border border-slate-300 text-slate-600 hover:bg-slate-100 disabled:opacity-40 transition-all dark:bg-[#162235] dark:border-slate-700/60 dark:text-slate-300 dark:hover:bg-slate-800"
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </button>
@@ -94,7 +94,7 @@ export default function EventListComponent() {
                     className={`w-8 h-8 rounded-lg text-xs font-medium transition-all ${
                       currentPage === page
                         ? "bg-blue-600 text-white"
-                        : "bg-[#162235] border border-slate-700/60 text-slate-300 hover:bg-slate-800"
+                        : "bg-white border border-slate-300 text-slate-600 hover:bg-slate-100 dark:bg-[#162235] dark:border-slate-700/60 dark:text-slate-300 dark:hover:bg-slate-800"
                     }`}
                   >
                     {page}
@@ -103,7 +103,7 @@ export default function EventListComponent() {
                 <button
                   onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
                   disabled={currentPage === totalPages}
-                  className="p-2 rounded-lg bg-[#162235] border border-slate-700/60 text-slate-300 hover:bg-slate-800 disabled:opacity-40 transition-all"
+                  className="p-2 rounded-lg bg-white border border-slate-300 text-slate-600 hover:bg-slate-100 disabled:opacity-40 transition-all dark:bg-[#162235] dark:border-slate-700/60 dark:text-slate-300 dark:hover:bg-slate-800"
                 >
                   <ChevronRight className="w-4 h-4" />
                 </button>

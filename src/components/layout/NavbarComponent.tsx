@@ -1,8 +1,10 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Search, Moon, Bell, User, ChevronDown } from "lucide-react";
+import { useTheme } from "next-themes";
+import { Search, Moon, Sun, Bell, User, ChevronDown } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -14,29 +16,33 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-// បង្កើតរចនាសម្ព័ន្ធ Nav Links ឱ្យស្រួលផ្លាស់ប្តូរតាមក្រោយ
+// Create Nav Links structure for easy changes later
 const mainNavLinks = [
-  { label: "ទំព័រដើម", href: "/" },
-  { label: "បាល់បោះ", href: "/sports" },
-  { label: "ប្រដាល់", href: "/events" },
-  { label: "ពិន្ទុផ្ទាល់", href: "/live-score" },
-  { label: "ទោចក្រយានយន្ត", href: "/motorsport" },
+  { label: "Home", href: "/" },
+  { label: "Basketball", href: "/sports" },
+  { label: "Boxing", href: "/events" },
+  { label: "Live Score", href: "/live-score" },
+  { label: "Motorsport", href: "/motorsport" },
 ];
 
 export default function NavbarComponent() {
   const pathname = usePathname();
+  const { resolvedTheme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  const isDark = mounted ? resolvedTheme === "dark" : false;
 
   return (
-    <header className="w-full bg-[#1b2735] text-white sticky top-0 z-50">
+    <header className="w-full bg-white text-slate-900 border-b border-slate-200 dark:bg-[#1b2735] dark:text-white dark:border-slate-700/60 sticky top-0 z-50">
       {/* Top Section */}
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 border-b border-slate-700/60">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 border-b border-slate-200 dark:border-slate-700/60">
         
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 text-xl font-bold tracking-wide">
           <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-600 text-white shadow-sm">
             🏃
           </div>
-          <span>កីឡាប្រចាំថ្ងៃ</span>
+          <span>Daily Sports</span>
         </Link>
 
         {/* Search Input */}
@@ -44,25 +50,26 @@ export default function NavbarComponent() {
           <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
           <Input
             type="search"
-            placeholder="ស្វែងរកព័ត៌មាន, កីឡាករ, ឬក្រុម..."
-            className="w-full bg-[#2a384b] pl-10 text-slate-100 placeholder:text-slate-400 border-none rounded-full focus-visible:ring-1 focus-visible:ring-blue-500"
+            placeholder="Search news, athletes, or teams..."
+            className="w-full bg-slate-100 pl-10 text-slate-800 placeholder:text-slate-500 border-none rounded-full focus-visible:ring-1 focus-visible:ring-blue-500 dark:bg-[#2a384b] dark:text-slate-100 dark:placeholder:text-slate-400"
           />
         </div>
 
         {/* Action Controls */}
         <div className="flex items-center gap-3 sm:gap-4">
-          <button 
-            type="button" 
-            className="rounded-full p-2 hover:bg-slate-700/60 text-slate-300 transition-colors"
+          <button
+            type="button"
+            onClick={() => setTheme(isDark ? "light" : "dark")}
+            className="rounded-full p-2 hover:bg-slate-200 text-slate-600 dark:hover:bg-slate-700/60 dark:text-slate-300 transition-colors"
             aria-label="Toggle Theme"
           >
-            <Moon className="h-5 w-5" />
+            {mounted && isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
           </button>
 
           <div className="relative">
             <button 
               type="button" 
-              className="rounded-full p-2 hover:bg-slate-700/60 text-slate-300 transition-colors"
+              className="rounded-full p-2 hover:bg-slate-200 text-slate-600 dark:hover:bg-slate-700/60 dark:text-slate-300 transition-colors"
               aria-label="Notifications"
             >
               <Bell className="h-5 w-5" />
@@ -72,20 +79,20 @@ export default function NavbarComponent() {
             </Badge>
           </div>
 
-          <div className="h-4 w-[1px] bg-slate-700 mx-1 hidden sm:block" />
+          <div className="h-4 w-[1px] bg-slate-300 mx-1 hidden sm:block dark:bg-slate-700" />
 
           {/* User Profile */}
           <Link 
             href="/login" 
             className="flex items-center gap-2.5 hover:opacity-90 transition-opacity"
           >
-            <Avatar className="h-8 w-8 border border-slate-600">
+            <Avatar className="h-8 w-8 border border-slate-300 dark:border-slate-600">
               <AvatarImage src="" />
-              <AvatarFallback className="bg-slate-700 text-slate-200">
+              <AvatarFallback className="bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-200">
                 <User className="h-4 w-4" />
               </AvatarFallback>
             </Avatar>
-            <span className="text-sm font-medium hidden sm:inline">ចូលប្រើប្រាស់</span>
+            <span className="text-sm font-medium hidden sm:inline">Sign In</span>
           </Link>
         </div>
       </div>
@@ -98,23 +105,23 @@ export default function NavbarComponent() {
           href="/"
           className={`px-3 py-1.5 rounded-md transition-colors whitespace-nowrap ${
             pathname === "/" 
-              ? "text-blue-400 font-semibold border-b-2 border-blue-500 rounded-b-none" 
-              : "text-slate-300 hover:text-white hover:bg-slate-800/50"
+              ? "text-blue-600 font-semibold border-b-2 border-blue-600 rounded-b-none dark:text-blue-400 dark:border-blue-500" 
+              : "text-slate-600 hover:text-slate-900 hover:bg-slate-200 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800/50"
           }`}
         >
-          ទំព័រដើម
+          Home
         </Link>
 
-        {/* Dropdown 1: បាល់ទាត់ */}
+        {/* Dropdown 1: Football */}
         <DropdownMenu>
-          <DropdownMenuTrigger className="flex items-center gap-1 px-3 py-1.5 rounded-md text-slate-300 hover:text-white hover:bg-slate-800/50 outline-none transition-colors whitespace-nowrap cursor-pointer">
-            បាល់ទាត់ <ChevronDown className="h-3.5 w-3.5 opacity-70" />
+          <DropdownMenuTrigger className="flex items-center gap-1 px-3 py-1.5 rounded-md text-slate-600 hover:text-slate-900 hover:bg-slate-200 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800/50 outline-none transition-colors whitespace-nowrap cursor-pointer">
+            Football <ChevronDown className="h-3.5 w-3.5 opacity-70" />
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="bg-[#2a384b] text-slate-200 border-slate-700 shadow-xl">
-            <DropdownMenuItem asChild className="hover:bg-slate-700/80 focus:bg-slate-700/80 cursor-pointer">
-              <Link href="/football/cpl">លីគកំពូលកម្ពុជា</Link>
+          <DropdownMenuContent className="bg-white text-slate-800 border-slate-200 shadow-xl dark:bg-[#2a384b] dark:text-slate-200 dark:border-slate-700">
+            <DropdownMenuItem asChild className="hover:bg-slate-100 focus:bg-slate-100 cursor-pointer dark:hover:bg-slate-700/80 dark:focus:bg-slate-700/80">
+              <Link href="/football/cpl">Cambodian Premier League</Link>
             </DropdownMenuItem>
-            <DropdownMenuItem asChild className="hover:bg-slate-700/80 focus:bg-slate-700/80 cursor-pointer">
+            <DropdownMenuItem asChild className="hover:bg-slate-100 focus:bg-slate-100 cursor-pointer dark:hover:bg-slate-700/80 dark:focus:bg-slate-700/80">
               <Link href="/football/epl">Premier League</Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -129,8 +136,8 @@ export default function NavbarComponent() {
               href={link.href}
               className={`px-3 py-1.5 rounded-md transition-colors whitespace-nowrap ${
                 isActive 
-                  ? "text-blue-400 font-semibold border-b-2 border-blue-500 rounded-b-none" 
-                  : "text-slate-300 hover:text-white hover:bg-slate-800/50"
+                  ? "text-blue-600 font-semibold border-b-2 border-blue-600 rounded-b-none dark:text-blue-400 dark:border-blue-500" 
+                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-200 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800/50"
               }`}
             >
               {link.label}
@@ -138,17 +145,17 @@ export default function NavbarComponent() {
           );
         })}
 
-        {/* Dropdown 2: ប្រភេទកីឡាផ្សេងៗ */}
+        {/* Dropdown 2: Other Sports */}
         <DropdownMenu>
-          <DropdownMenuTrigger className="flex items-center gap-1 px-3 py-1.5 rounded-md text-slate-300 hover:text-white hover:bg-slate-800/50 outline-none transition-colors whitespace-nowrap cursor-pointer">
-            ប្រភេទកីឡាផ្សេងៗ <ChevronDown className="h-3.5 w-3.5 opacity-70" />
+          <DropdownMenuTrigger className="flex items-center gap-1 px-3 py-1.5 rounded-md text-slate-600 hover:text-slate-900 hover:bg-slate-200 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800/50 outline-none transition-colors whitespace-nowrap cursor-pointer">
+            Other Sports <ChevronDown className="h-3.5 w-3.5 opacity-70" />
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="bg-[#2a384b] text-slate-200 border-slate-700 shadow-xl">
-            <DropdownMenuItem asChild className="hover:bg-slate-700/80 focus:bg-slate-700/80 cursor-pointer">
-              <Link href="/sports/tennis">វាយកូនបាល់</Link>
+          <DropdownMenuContent className="bg-white text-slate-800 border-slate-200 shadow-xl dark:bg-[#2a384b] dark:text-slate-200 dark:border-slate-700">
+            <DropdownMenuItem asChild className="hover:bg-slate-100 focus:bg-slate-100 cursor-pointer dark:hover:bg-slate-700/80 dark:focus:bg-slate-700/80">
+              <Link href="/sports/tennis">Tennis</Link>
             </DropdownMenuItem>
-            <DropdownMenuItem asChild className="hover:bg-slate-700/80 focus:bg-slate-700/80 cursor-pointer">
-              <Link href="/sports/chess">អុក</Link>
+            <DropdownMenuItem asChild className="hover:bg-slate-100 focus:bg-slate-100 cursor-pointer dark:hover:bg-slate-700/80 dark:focus:bg-slate-700/80">
+              <Link href="/sports/chess">Chess</Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
