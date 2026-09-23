@@ -56,7 +56,7 @@ export default function AboutHeroSection() {
         </div>
 
         <div className="mt-16">
-          <SportsVisual title="Sportiva" />
+          <SportsVisual image="/Sportiva.png" />
         </div>
       </div>
     </section>

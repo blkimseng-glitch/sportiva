@@ -25,7 +25,7 @@ export default function WhoWeAreSection() {
             </ul>
           </div>
           <div>
-            <SportsVisual title="All Sports" />
+            <SportsVisual image="/all_sports.jpg" />
           </div>
         </div>
       </div>

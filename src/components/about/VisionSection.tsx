@@ -14,7 +14,7 @@ export default function VisionSection() {
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
           <div className="order-2 lg:order-1">
-            <SportsVisual title="Vision" />
+            <SportsVisual image="/vision.png" />
           </div>
           <div className="order-1 lg:order-2">
             <span className="inline-flex items-center gap-2 rounded-full border border-blue-500/30 bg-blue-600/10 px-3 py-1 text-xs font-semibold text-blue-600 dark:text-blue-400">
