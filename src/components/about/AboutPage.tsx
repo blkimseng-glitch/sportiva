@@ -2,7 +2,6 @@ import AboutFooter from "./AboutFooter";
 import AboutHeroSection from "./AboutHeroSection";
 import ContactSection from "./ContactSection";
 import MissionSection from "./MissionSection";
-import StatsSection from "./StatsSection";
 import TeamSection from "./TeamSection";
 import VisionSection from "./VisionSection";
 import WhoWeAreSection from "./WhoWeAreSection";
@@ -15,7 +14,6 @@ export default function AboutPage() {
       <WhoWeAreSection />
       <MissionSection />
       <VisionSection />
-      <StatsSection />
       <TeamSection />
       <WhySportivaSection />
       <ContactSection />
