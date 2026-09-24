@@ -6,6 +6,14 @@ export interface SportCategory {
   eventCount?: number;
 };
 
+export interface SportItem {
+  id: string;
+  name: string;
+  description: string;
+  categoryName: string;
+  imageUrls: string[];
+}
+
 // src/lib/types.ts
 
 export interface SportArticle {

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Clock, MessageSquare, Image as ImageIcon, ChevronRight } from "lucide-react";
+import { Clock, MessageSquare, Image as ImageIcon } from "lucide-react";
 import { Event } from "@/lib/types";
 
 interface EventCardProps {
@@ -10,7 +10,7 @@ interface EventCardProps {
 }
 
 export default function EventCardComponent({ item, index = 0 }: EventCardProps) {
-  // Helper សម្រាប់សម្អាត Text
+  // Helper for text safety
   const safeText = (value: any, fallback: string = ""): string => {
     if (!value) return fallback;
     if (typeof value === "string") return value;
@@ -19,24 +19,24 @@ export default function EventCardComponent({ item, index = 0 }: EventCardProps) 
     return fallback;
   };
 
-  // Helper សម្រាប់ Format ថ្ងៃខែឱ្យខ្លីស្អាត (Format ISO Date string)
+  // Helper for formatting ISO Date string to English
   const formatDate = (dateStr: any): string => {
-    if (!dateStr) return "ថ្មីៗនេះ";
+    if (!dateStr) return "Recently";
     try {
       const date = new Date(dateStr);
       if (isNaN(date.getTime())) return String(dateStr).slice(0, 10);
-      return date.toLocaleDateString("km-KH", {
+      return date.toLocaleDateString("en-US", {
         year: "numeric",
         month: "short",
         day: "numeric",
       });
     } catch {
-      return "ថ្មីៗនេះ";
+      return "Recently";
     }
   };
 
-  const titleText = safeText(item.name || item.title, "ព្រឹត្តិការណ៍កីឡា");
-  const descText = safeText(item.description, "ព័ត៌មានលម្អិតអំពីព្រឹត្តិការណ៍...");
+  const titleText = safeText(item.name || item.title, "Sports Event");
+  const descText = safeText(item.description, "No details available for this event...");
   const categoryText = safeText(item.categoryName || item.category, "Sports");
 
   const imageUrl =
@@ -50,9 +50,10 @@ export default function EventCardComponent({ item, index = 0 }: EventCardProps) 
 
   return (
     <Link href={`/events/${itemUuid}`} className="block h-full">
-      <article className="group relative bg-[#131d31] hover:bg-[#18253d] border border-slate-800/80 hover:border-indigo-500/50 rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-indigo-500/10 flex flex-col h-full">
+      <article className="group relative bg-white/90 hover:bg-white dark:bg-[#131d31] dark:hover:bg-[#18253d] border border-slate-200/80 hover:border-indigo-500/50 dark:border-slate-800/80 dark:hover:border-indigo-500/50 rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1 shadow-sm hover:shadow-xl dark:hover:shadow-2xl dark:hover:shadow-indigo-500/10 flex flex-col h-full backdrop-blur-md">
+        
         {/* Image Container */}
-        <div className="relative aspect-[16/10] w-full bg-[#0d1527] overflow-hidden">
+        <div className="relative aspect-[16/10] w-full bg-slate-100 dark:bg-[#0d1527] overflow-hidden">
           {imageUrl ? (
             <img
               src={imageUrl}
@@ -63,18 +64,18 @@ export default function EventCardComponent({ item, index = 0 }: EventCardProps) 
               }}
             />
           ) : (
-            <div className="w-full h-full flex flex-col items-center justify-center text-slate-600">
+            <div className="w-full h-full flex flex-col items-center justify-center text-slate-400 dark:text-slate-600">
               <ImageIcon className="w-8 h-8 opacity-40 mb-1" />
-              <span className="text-xs text-slate-500">គ្មានរូបភាព</span>
+              <span className="text-xs text-slate-400 dark:text-slate-500">No Image</span>
             </div>
           )}
 
           {/* Overlay Gradient */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#131d31] via-transparent to-transparent opacity-80" />
+          <div className="absolute inset-0 bg-gradient-to-t from-white/80 via-transparent to-transparent dark:from-[#131d31] dark:via-transparent dark:to-transparent opacity-80" />
 
           {/* Badge Category */}
           {categoryText && (
-            <span className="absolute top-3 right-3 bg-indigo-500/20 backdrop-blur-md border border-indigo-500/30 text-indigo-300 text-[11px] font-semibold px-2.5 py-1 rounded-full shadow-sm">
+            <span className="absolute top-3 right-3 bg-indigo-50 dark:bg-indigo-500/20 backdrop-blur-md border border-indigo-200/80 dark:border-indigo-500/30 text-indigo-600 dark:text-indigo-300 text-[11px] font-semibold px-2.5 py-1 rounded-full shadow-sm">
               {categoryText}
             </span>
           )}
@@ -83,24 +84,24 @@ export default function EventCardComponent({ item, index = 0 }: EventCardProps) 
         {/* Content Container */}
         <div className="p-5 flex flex-col justify-between flex-1 space-y-3">
           <div className="space-y-2">
-            <h3 className="text-base font-bold text-slate-100 group-hover:text-indigo-400 transition-colors line-clamp-2 leading-snug">
+            <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors line-clamp-2 leading-snug">
               {titleText}
             </h3>
-            <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">
+            <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-2 leading-relaxed">
               {descText}
             </p>
           </div>
 
           {/* Footer Info */}
-          <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400 font-medium">
-            <div className="flex items-center gap-1.5 text-slate-400">
-              <Clock className="w-3.5 h-3.5 text-indigo-400" />
+          <div className="pt-3 border-t border-slate-200/80 dark:border-slate-800/80 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 font-medium">
+            <div className="flex items-center gap-1.5">
+              <Clock className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
               <span>{formattedDate}</span>
             </div>
 
-            <div className="flex items-center gap-1 text-slate-400">
-              <MessageSquare className="w-3.5 h-3.5 text-slate-500" />
-              <span>{commentsCount} មតិ</span>
+            <div className="flex items-center gap-1">
+              <MessageSquare className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" />
+              <span>{commentsCount} {commentsCount === 1 ? "comment" : "comments"}</span>
             </div>
           </div>
         </div>

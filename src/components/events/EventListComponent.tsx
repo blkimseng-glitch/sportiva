@@ -21,7 +21,7 @@ export default function EventListComponent() {
         const list = Array.isArray(data) ? data : data.data || data.items || [];
         setEvents(list);
 
-        // ទាញយក Categories ស្វ័យប្រវត្តិពី API
+        // Dynamic categories extraction from API response
         const extractedCategories = Array.from(
           new Set(
             list
@@ -62,36 +62,44 @@ export default function EventListComponent() {
   );
 
   return (
-    <div className="w-full bg-[#0b1322] min-h-screen py-8 text-slate-200">
+    <div className="relative w-full min-h-screen py-8 bg-slate-50/80 text-slate-800 dark:bg-[#0b1322] dark:text-slate-200 transition-colors duration-300">
+      {/* Background Ambient Glow */}
+      <div className="pointer-events-none absolute left-1/4 top-10 -z-10 h-72 w-72 rounded-full bg-blue-500/10 blur-3xl dark:bg-blue-600/15" />
+      <div className="pointer-events-none absolute right-1/4 top-96 -z-10 h-96 w-96 rounded-full bg-indigo-500/10 blur-3xl dark:bg-indigo-600/15" />
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
         
         {/* Header Bar */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800/80 pb-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200/80 dark:border-slate-800/80 pb-4">
           <div>
-            <h1 className="text-xl font-bold text-white">ព្រឹត្តិការណ៍កីឡា (Events)</h1>
-            <p className="text-xs text-slate-400 mt-1">កម្មវិធី និងព្រឹត្តិការណ៍ប្រកួតកីឡាថ្មីៗ</p>
+            <h1 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+              Sports Events
+            </h1>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+              Explore upcoming sports tournaments and matches
+            </p>
           </div>
 
           <div className="relative w-full sm:w-64">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
             <Input
-              placeholder="ស្វែងរកព្រឹត្តិការណ៍..."
+              placeholder="Search events..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="bg-[#162235] border-slate-700/60 text-xs pl-8 h-9 text-slate-200 placeholder:text-slate-400 focus-visible:ring-1 focus-visible:ring-blue-500 rounded-lg"
+              className="bg-white/80 border-slate-300/80 text-slate-800 placeholder:text-slate-400 focus-visible:ring-1 focus-visible:ring-blue-500 dark:bg-[#162235] dark:border-slate-700/60 dark:text-slate-200 dark:placeholder:text-slate-400 text-xs pl-8 h-10 rounded-xl backdrop-blur-md shadow-sm"
             />
           </div>
         </div>
 
-        {/* Main Body Layout: Sidebar ខាងឆ្វេង + Content ខាងស្តាំ */}
-        <div className="flex flex-col lg:flex-row gap-6">
+        {/* Main Body Layout: Left Vertical Sidebar + Right Content */}
+        <div className="flex flex-col lg:flex-row gap-6 items-start">
           
-          {/* --- VERTICAL SIDEBAR ខាងឆ្វេង --- */}
-          <aside className="w-full lg:w-60 shrink-0">
-            <div className="bg-[#121c2d] border border-slate-800 rounded-xl p-4 sticky top-6 space-y-3">
-              <div className="flex items-center gap-2 pb-2 border-b border-slate-800 text-slate-300 font-semibold text-xs">
+          {/* --- VERTICAL SIDEBAR --- */}
+          <aside className="w-full lg:w-60 shrink-0 lg:sticky lg:top-24">
+            <div className="bg-white/80 border border-slate-200/80 dark:bg-[#121c2d] dark:border-slate-800 rounded-xl p-4 space-y-3 shadow-sm backdrop-blur-md transition-colors duration-300">
+              <div className="flex items-center gap-2 pb-2 border-b border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-300 font-semibold text-xs">
                 <Layers className="w-4 h-4 text-blue-500" />
-                <span>ប្រភេទកីឡា (Categories)</span>
+                <span>Categories</span>
               </div>
 
               <div className="flex flex-row lg:flex-col gap-1.5 overflow-x-auto lg:overflow-visible pb-1 lg:pb-0 scrollbar-none">
@@ -99,12 +107,18 @@ export default function EventListComponent() {
                   onClick={() => setSelectedCategory("ALL")}
                   className={`w-full text-left px-3 py-2 rounded-lg text-xs font-medium transition-all duration-200 flex items-center justify-between whitespace-nowrap ${
                     selectedCategory === "ALL"
-                      ? "bg-blue-600 text-white font-semibold shadow-md shadow-blue-600/30"
-                      : "text-slate-400 hover:bg-[#162235] hover:text-slate-200"
+                      ? "bg-blue-600 text-white font-semibold shadow-md shadow-blue-500/20"
+                      : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#162235] hover:text-slate-900 dark:hover:text-slate-200"
                   }`}
                 >
-                  <span>ទាំងអស់</span>
-                  <span className="text-[10px] opacity-70">({events.length})</span>
+                  <span>All Events</span>
+                  <span className={`text-[10px] px-2 py-0.5 rounded-full font-semibold ${
+                    selectedCategory === "ALL"
+                      ? "bg-white/20 text-white"
+                      : "bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400"
+                  }`}>
+                    {events.length}
+                  </span>
                 </button>
 
                 {categories.map((cat, idx) => {
@@ -119,14 +133,20 @@ export default function EventListComponent() {
                     <button
                       key={idx}
                       onClick={() => setSelectedCategory(cat)}
-                      className={`w-full text-left px-3 py-2 rounded-lg text-xs font-medium transition-all duration-200 flex items-center justify-between whitespace-nowrap ${
+                      className={`w-full text-left px-3 py-2 rounded-lg text-xs font-medium transition-all duration-200 flex items-center justify-between whitespace-nowrap capitalize ${
                         isActive
-                          ? "bg-blue-600 text-white font-semibold shadow-md shadow-blue-600/30"
-                          : "text-slate-400 hover:bg-[#162235] hover:text-slate-200"
+                          ? "bg-blue-600 text-white font-semibold shadow-md shadow-blue-500/20"
+                          : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#162235] hover:text-slate-900 dark:hover:text-slate-200"
                       }`}
                     >
                       <span>{cat}</span>
-                      <span className="text-[10px] opacity-70">({count})</span>
+                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-semibold ${
+                        isActive
+                          ? "bg-white/20 text-white"
+                          : "bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400"
+                      }`}>
+                        {count}
+                      </span>
                     </button>
                   );
                 })}
@@ -134,13 +154,15 @@ export default function EventListComponent() {
             </div>
           </aside>
 
-          {/* --- CONTENT SECTION ខាងស្តាំ --- */}
-          <main className="flex-1 space-y-6">
+          {/* --- CONTENT SECTION --- */}
+          <main className="flex-1 w-full space-y-6">
             {loading ? (
-              <div className="text-center py-20 text-slate-400 text-xs">កំពុងទាញយកទិន្នន័យ...</div>
+              <div className="text-center py-20 text-slate-500 dark:text-slate-400 text-xs">
+                Loading events...
+              </div>
             ) : filteredEvents.length === 0 ? (
-              <div className="text-center py-16 text-slate-400 bg-[#121c2d] rounded-xl border border-slate-800 text-xs">
-                មិនមានព្រឹត្តិការណ៍បង្ហាញទេ
+              <div className="text-center py-16 text-slate-500 dark:text-slate-400 bg-white/80 dark:bg-[#121c2d] rounded-xl border border-slate-200/80 dark:border-slate-800 text-xs shadow-sm">
+                No events found.
               </div>
             ) : (
               <>
@@ -152,11 +174,11 @@ export default function EventListComponent() {
 
                 {/* Pagination */}
                 {totalPages > 1 && (
-                  <div className="flex items-center justify-center gap-2 pt-6 border-t border-slate-800/80">
+                  <div className="flex items-center justify-center gap-2 pt-6 border-t border-slate-200/80 dark:border-slate-800/80">
                     <button
                       onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
                       disabled={currentPage === 1}
-                      className="p-2 rounded-lg bg-[#162235] border border-slate-700/60 text-slate-300 hover:bg-slate-800 disabled:opacity-40 transition-all"
+                      className="p-2 rounded-lg bg-white border border-slate-300/80 text-slate-700 hover:bg-slate-100 dark:bg-[#162235] dark:border-slate-700/60 dark:text-slate-300 dark:hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-sm"
                     >
                       <ChevronLeft className="w-4 h-4" />
                     </button>
@@ -166,8 +188,8 @@ export default function EventListComponent() {
                         onClick={() => setCurrentPage(page)}
                         className={`w-8 h-8 rounded-lg text-xs font-medium transition-all ${
                           currentPage === page
-                            ? "bg-blue-600 text-white"
-                            : "bg-[#162235] border border-slate-700/60 text-slate-300 hover:bg-slate-800"
+                            ? "bg-blue-600 text-white shadow-sm"
+                            : "bg-white border border-slate-300/80 text-slate-700 hover:bg-slate-100 dark:bg-[#162235] dark:border-slate-700/60 dark:text-slate-300 dark:hover:bg-slate-800 shadow-sm"
                         }`}
                       >
                         {page}
@@ -176,7 +198,7 @@ export default function EventListComponent() {
                     <button
                       onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
                       disabled={currentPage === totalPages}
-                      className="p-2 rounded-lg bg-[#162235] border border-slate-700/60 text-slate-300 hover:bg-slate-800 disabled:opacity-40 transition-all"
+                      className="p-2 rounded-lg bg-white border border-slate-300/80 text-slate-700 hover:bg-slate-100 dark:bg-[#162235] dark:border-slate-700/60 dark:text-slate-300 dark:hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-sm"
                     >
                       <ChevronRight className="w-4 h-4" />
                     </button>

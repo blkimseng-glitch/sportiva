@@ -1,69 +1,48 @@
-import Image from "next/image";
+import { Suspense } from "react";
+import HeroBanner from "@/components/layout/HeroBanner";
+import HomeGrid from "@/components/layout/HomeGrid";
+import { getSports } from "@/services/api";
 
-export default function Home() {
+export default async function HomePage() {
+  const posts = await getSports();
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
+    <main className="min-h-screen bg-white">
+      {/* 1. Hero Banner */}
+      <HeroBanner />
+
+      {/* 2. Main Content Grid */}
+      <div className="mx-auto max-w-[1400px] px-4 py-8 sm:px-6 lg:px-8">
+        <Suspense fallback={<div className="py-20 text-center font-semibold">កំពុងទាញយកទិន្នន័យ...</div>}>
+          {posts && posts.length > 0 ? (
+            <HomeGrid items={posts} />
+          ) : (
+            <div className="py-12 text-center text-gray-500">
+              មិនទាន់មានទិន្នន័យបង្ហាញនៅឡើយទេ...
+            </div>
+          )}
+        </Suspense>
+      </div>
+
+      {/* 3. Bottom CTA Section */}
+      <section id="gear" className="w-full border-t border-gray-200 bg-gray-50 py-16">
+        <div className="mx-auto max-w-[1400px] px-6 lg:px-10">
+          <div className="max-w-xl">
+            <h2 className="text-2xl font-bold text-gray-900 sm:text-3xl">
+              Have something worth covering?
+            </h2>
+            <p className="mt-2 text-sm leading-relaxed text-gray-600 sm:text-base">
+              Submit a news item or a piece of gear for editorial review — it takes less than a minute.
+            </p>
             <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+              href="/admin/create"
+              className="mt-6 inline-flex items-center justify-center rounded bg-black px-6 py-3 text-xs font-bold uppercase tracking-wider text-white transition hover:bg-gray-800"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+              Submit an entry
+            </a>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+      </section>
+    </main>
   );
 }
