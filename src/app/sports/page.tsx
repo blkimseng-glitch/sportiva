@@ -1,9 +1,5 @@
-
-import SportsCardListComponentPage from '@/components/sports/SportsCardListComponent'
-import React from 'react'
+import SportListComponent from "@/components/sports/SportsListComponent";
 
 export default function SportsPage() {
-  return (
-    <SportsCardListComponentPage/>
-  )
+  return <SportListComponent />;
 }
