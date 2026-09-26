@@ -51,7 +51,7 @@ export default function SportCardComponent({
             </div>
           )}
 
-          {/* Badge លើរូបភាព */}
+          {/* Badge img*/}
           {categoryText && (
             <span className="absolute top-2.5 left-2.5 bg-white/90 dark:bg-slate-950/80 backdrop-blur-md border border-slate-200/80 dark:border-slate-700/50 text-blue-600 dark:text-blue-400 text-[10px] font-semibold px-2 py-0.5 rounded shadow-sm">
               {categoryText}

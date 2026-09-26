@@ -33,7 +33,7 @@ export default function SportListComponent() {
         const list = Array.isArray(data) ? data : data.data || data.items || [];
         setSports(list);
 
-        // ទាញយក Categories ពី API ស្វ័យប្រវត្តិ
+        // ទាញយក Categories ពី API 
         const extractedCategories = new Set<string>();
         list.forEach((sport: any) => {
           const catName = safeText(
@@ -85,13 +85,12 @@ export default function SportListComponent() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Main Layout: Sidebar (Left) + Content Area (Right) */}
         <div className="flex flex-col md:flex-row gap-8 items-start">
           
-          {/* ================= 1. SIDEBAR (ជួរឈរ) ================= */}
+          {/*  1. SIDEBAR (ជួរឈរ) */}
           <aside className="w-full md:w-64 shrink-0 space-y-6 md:sticky md:top-24">
             
-            {/* Search Input លើ Sidebar */}
+            {/* Search  */}
             <div className="relative w-full">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
               <Input
@@ -132,7 +131,7 @@ export default function SportListComponent() {
             </div>
           </aside>
 
-          {/* ================= 2. CONTENT AREA (ខាងស្តាំ) ================= */}
+          {/* 2. CONTENT AREA */}
           <main className="flex-1 w-full space-y-6">
             
             {/* Header / Active Category Title */}

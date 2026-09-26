@@ -38,28 +38,37 @@ export default function AdminImageUpload({ value, onChange, multiple = true }: P
     <div>
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {value.map((url) => (
-          <div key={url} className="group relative aspect-square overflow-hidden rounded-xl border border-slate-700/70 bg-[#0b1322]">
+          <div key={url} className="group relative aspect-square overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
             <Image src={url} alt="Uploaded" fill sizes="160px" className="object-cover" />
             <button
               type="button"
               aria-label="លុបរូបភាព"
               onClick={() => onChange(value.filter((item) => item !== url))}
-              className="absolute right-2 top-2 rounded-lg bg-slate-950/80 p-1.5 text-white opacity-0 transition-opacity group-hover:opacity-100"
+              className="absolute right-2 top-2 rounded-lg bg-red-600/90 p-1.5 text-white opacity-0 transition-opacity hover:bg-red-600 group-hover:opacity-100 shadow-sm"
             >
               <Trash2 size={14} />
             </button>
           </div>
         ))}
         {(multiple || value.length === 0) && (
-          <label className="flex aspect-square cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-slate-700 bg-[#0b1322] text-center transition-colors hover:border-blue-500/60 hover:bg-blue-500/5">
-            <ImagePlus size={21} className="mb-2 text-blue-400" />
-            <span className="text-xs font-medium text-slate-300">បញ្ចូលរូបភាព</span>
-            <span className="mt-1 px-2 text-[10px] text-slate-500">JPG, PNG, WEBP · 8MB</span>
-            <input type="file" accept="image/*" multiple={multiple} className="sr-only" onChange={(event) => { void handleFiles(event.target.files); event.currentTarget.value = ""; }} />
+          <label className="flex aspect-square cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-50/50 text-center transition-colors hover:border-blue-500 hover:bg-blue-50/50">
+            <ImagePlus size={21} className="mb-2 text-blue-600" />
+            <span className="text-xs font-semibold text-slate-700">បញ្ចូលរូបភាព</span>
+            <span className="mt-1 px-2 text-[10px] text-slate-400">JPG, PNG, WEBP · 8MB</span>
+            <input
+              type="file"
+              accept="image/*"
+              multiple={multiple}
+              className="sr-only"
+              onChange={(event) => {
+                void handleFiles(event.target.files);
+                event.currentTarget.value = "";
+              }}
+            />
           </label>
         )}
       </div>
-      <p className="mt-2 text-[11px] text-slate-500">ការបញ្ចូលអាចចំណាយពេលបន្តិច ប្រសិនបើរូបភាពមានទំហំធំ។</p>
+      <p className="mt-2 text-[11px] text-slate-400">ការបញ្ចូលអាចចំណាយពេលបន្តិច ប្រសិនបើរូបភាពមានទំហំធំ។</p>
     </div>
   );
 }

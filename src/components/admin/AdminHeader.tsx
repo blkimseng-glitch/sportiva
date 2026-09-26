@@ -1,19 +1,25 @@
-import type { ReactNode } from "react";
+import React from "react";
 
-interface Props {
+interface AdminPageHeaderProps {
   title: string;
-  description: string;
-  action?: ReactNode;
+  description?: string;
+  action?: React.ReactNode;
 }
 
-export default function AdminPageHeader({ title, description, action }: Props) {
+export default function AdminPageHeader({ title, description, action }: AdminPageHeaderProps) {
   return (
-    <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
-        <h2 className="text-xl font-semibold tracking-tight text-white">{title}</h2>
-        <p className="mt-1 text-sm text-slate-500">{description}</p>
+        <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+          {title}
+        </h1>
+        {description && (
+          <p className="mt-1 text-sm text-slate-500">
+            {description}
+          </p>
+        )}
       </div>
-      {action}
+      {action && <div>{action}</div>}
     </div>
   );
 }

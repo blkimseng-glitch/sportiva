@@ -9,14 +9,14 @@ interface Props {
 
 export default function AdminStatCard({ label, value, helper, icon: Icon }: Props) {
   return (
-    <div className="rounded-2xl border border-slate-700/70 bg-[#111b2c] p-5 shadow-[0_16px_40px_-28px_rgba(0,0,0,0.9)]">
+    <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs transition-all hover:shadow-md">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="text-sm text-slate-500">{label}</p>
-          <p className="mt-2 text-3xl font-semibold tracking-tight text-white">{value}</p>
-          <p className="mt-2 text-xs text-slate-500">{helper}</p>
+          <p className="text-sm font-semibold text-slate-500">{label}</p>
+          <p className="mt-2 text-3xl font-extrabold tracking-tight text-slate-900">{value}</p>
+          <p className="mt-2 text-xs font-medium text-slate-400">{helper}</p>
         </div>
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-500/10 text-blue-400">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
           <Icon size={19} />
         </div>
       </div>

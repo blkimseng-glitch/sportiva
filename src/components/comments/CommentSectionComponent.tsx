@@ -8,7 +8,7 @@ import {
   getCommentsByEvent,
   createComment,
   deleteComment,
-} from "@/services/commentService"; // ផ្លូវ Import ទៅ Service របស់អ្នក
+} from "@/services/commentService"; 
 
 interface Props {
   eventUuid: string;

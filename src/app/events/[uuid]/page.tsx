@@ -9,11 +9,29 @@ interface PageProps {
 }
 
 // SEO & Social Share Metadata
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
   const { uuid } = await params;
   return {
-    title: `ព័ត៌មានព្រឹត្តិការណ៍ - ${uuid}`,
-    description: "មើលព័ត៌មានលម្អិត និងមតិយោបល់អំពីព្រឹត្តិការណ៍នេះ",
+    title: `Event Details - ${uuid} | Sportiva`,
+    description: `Explore detailed information, updates, and community comments for event ID: ${uuid} at Sportiva.`,
+    openGraph: {
+      title: `Event Details - ${uuid} | Sportiva`,
+      description: `Explore detailed information, updates, and community comments for event ID: ${uuid} at Sportiva.`,
+      url: `https://yourdomain.com/events/${uuid}`,
+      siteName: "Sportiva",
+      images: [
+        {
+          url: "https://yourdomain.com/images/events-cover.jpg",
+          width: 1200,
+          height: 630,
+          alt: "Event Detail Cover",
+        },
+      ],
+      locale: "en_US",
+      type: "website",
+    },
   };
 }
 

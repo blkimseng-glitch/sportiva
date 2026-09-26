@@ -79,7 +79,7 @@ export default function HeroBanner() {
                 </span>
                 <span className="text-red-500">•</span>
                 <span className="mx-4">
-                  Global sporting events continue across the world
+                 Sea Game Cambodia
                 </span>
                 <span className="text-red-500">•</span>
                 <span className="mx-4">

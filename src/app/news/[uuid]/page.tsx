@@ -8,14 +8,14 @@ import { ArrowLeft, Calendar, Tag, Image as ImageIcon } from "lucide-react";
 export default function NewsDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const uuid = params?.uuid; // ទាញយក uuid ពី URL Parameter
+  const uuid = params?.uuid; 
 
   const [news, setNews] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (uuid) {
-      // ផ្លាស់ប្តូរ Endpoint API ទៅតាម API News របស់អ្នក
+      
       fetch(`/api/news/${uuid}`)
         .then((res) => res.json())
         .then((data) => setNews(data?.data || data))

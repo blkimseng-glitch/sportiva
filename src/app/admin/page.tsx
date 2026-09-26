@@ -3,14 +3,13 @@
 import Link from "next/link";
 import { Activity, CalendarDays, MessageSquare, Tags, Trophy, ArrowUpRight, Plus } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { toast } from "sonner";
 import { getAdminSports } from "@/services/adminSportService";
 import { getAdminEvents } from "@/services/adminEventService";
 import { getAdminCategories } from "@/services/adminCategoryService";
 import { getAdminComments } from "@/services/adminCommentService";
 import type { AdminCategory, AdminComment, AdminEvent, AdminSport } from "@/lib/adminTypes";
 import AdminStatCard from "@/components/admin/AdminStatCard";
-import { AdminErrorState, AdminTableLoading } from "@/components/admin/AdminTableStat";
+import { AdminTableLoading } from "@/components/admin/AdminTableStat";
 import AdminPageHeader from "@/components/admin/AdminHeader";
 
 export default function AdminDashboardPage() {
@@ -32,107 +31,187 @@ export default function AdminDashboardPage() {
     ]);
 
     const failed = results.some((result) => result.status === "rejected");
-    if (failed) setError("មិនអាចទាញទិន្នន័យគ្រប់ផ្នែកបានទេ។ សូមពិនិត្យ API ហើយសាកម្ដងទៀត។");
+    if (failed) setError("Failed to load dashboard data. Please check the API and try again.");
 
     if (results[0].status === "fulfilled") setSports(results[0].value);
-    if (results[1].status === "fulfilled") setEvents(results[1].value);
+
+    // Safely extract array from either paginated object or direct array
+    if (results[1].status === "fulfilled") {
+      const res = results[1].value;
+      setEvents(Array.isArray(res) ? res : res?.data || []);
+    }
+
     if (results[2].status === "fulfilled") setCategories(results[2].value);
     if (results[3].status === "fulfilled") setComments(results[3].value);
     setLoading(false);
   }, []);
 
-  useEffect(() => { void load(); }, [load]);
+  useEffect(() => {
+    void load();
+  }, [load]);
 
   const categorySummary = useMemo(() => {
     const counts = new Map<string, number>();
-    sports.forEach((sport) => counts.set(sport.categoryName || "មិនបានកំណត់", (counts.get(sport.categoryName || "មិនបានកំណត់") ?? 0) + 1));
+    sports.forEach((sport) =>
+      counts.set(sport.categoryName || "Unassigned", (counts.get(sport.categoryName || "Unassigned") ?? 0) + 1)
+    );
     return [...counts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 6);
   }, [sports]);
 
   return (
-    <div>
+    <div className="space-y-6">
       <AdminPageHeader
-        title="សួស្តី 👋"
-        description="មើលស្ថានភាពមាតិកា Sportiva និងចូលទៅកាន់ការគ្រប់គ្រងដែលត្រូវការ។"
+        title="Welcome back 👋"
+        description="Overview of Sportiva content status and quick management actions."
         action={
           <div className="flex flex-wrap gap-2">
-            <Link href="/admin/sports" className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-medium text-white shadow-lg shadow-blue-950/25 transition-colors hover:bg-blue-500"><Plus size={15} /> បន្ថែមកីឡា</Link>
-            <Link href="/admin/events" className="inline-flex items-center gap-2 rounded-xl border border-slate-700 bg-[#101a2b] px-4 py-2.5 text-sm font-medium text-slate-200 transition-colors hover:bg-slate-800"><CalendarDays size={15} /> ព្រឹត្តិការណ៍</Link>
+            <Link
+              href="/admin/sports"
+              className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-blue-700"
+            >
+              <Plus size={16} /> Add Sport
+            </Link>
+            <Link
+              href="/admin/events"
+              className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:bg-slate-50"
+            >
+              <CalendarDays size={16} /> Events
+            </Link>
           </div>
         }
       />
 
-      {error ? <div className="mb-4 rounded-2xl border border-amber-500/20 bg-amber-500/5 p-3 text-sm text-amber-300">{error}</div> : null}
+      {error ? (
+        <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm font-medium text-amber-800">
+          {error}
+        </div>
+      ) : null}
 
-      {loading ? <AdminTableLoading label="កំពុងរៀបចំ Dashboard..." /> : (
+      {loading ? (
+        <AdminTableLoading label="Loading Dashboard..." />
+      ) : (
         <>
+          {/* Stat Cards Grid */}
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            <AdminStatCard label="កីឡា" value={sports.length} helper="ធាតុកីឡាសរុប" icon={Trophy} />
-            <AdminStatCard label="ព្រឹត្តិការណ៍" value={events.length} helper="ព្រឹត្តិការណ៍សរុប" icon={CalendarDays} />
-            <AdminStatCard label="ប្រភេទ" value={categories.length} helper="ប្រភេទកីឡាសរុប" icon={Tags} />
-            <AdminStatCard label="មតិយោបល់" value={comments.length} helper="មតិយោបល់ដែលមានក្នុង API" icon={MessageSquare} />
+            <AdminStatCard label="Sports" value={sports.length} helper="Total Sports Items" icon={Trophy} />
+            <AdminStatCard label="Events" value={events.length} helper="Total Events" icon={CalendarDays} />
+            <AdminStatCard label="Categories" value={categories.length} helper="Total Sport Categories" icon={Tags} />
+            <AdminStatCard label="Comments" value={comments.length} helper="Total API Comments" icon={MessageSquare} />
           </div>
 
-          <div className="mt-4 grid gap-4 xl:grid-cols-[1.15fr_0.85fr]">
-            <section className="rounded-2xl border border-slate-700/70 bg-[#111b2c] p-5">
+          {/* Main Sections Grid */}
+          <div className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
+            {/* Left Box: Chart / Progress */}
+            <section className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm">
               <div className="mb-5 flex items-center justify-between gap-4">
                 <div>
-                  <h3 className="text-sm font-semibold text-white">ការចែកចាយកីឡាតាមប្រភេទ</h3>
-                  <p className="mt-1 text-xs text-slate-500">គណនាពីទិន្នន័យកីឡាដែលបានទាញមកពី API</p>
+                  <h3 className="text-base font-bold text-slate-900">Sports Distribution by Category</h3>
+                  <p className="mt-0.5 text-xs text-slate-500">Calculated from fetched sports data</p>
                 </div>
-                <Activity size={17} className="text-blue-400" />
+                <div className="rounded-xl bg-blue-50 p-2.5 text-blue-600">
+                  <Activity size={18} />
+                </div>
               </div>
+
               <div className="space-y-4">
-                {categorySummary.length ? categorySummary.map(([name, count]) => {
-                  const max = categorySummary[0]?.[1] || 1;
-                  return (
-                    <div key={name}>
-                      <div className="mb-1.5 flex items-center justify-between text-xs">
-                        <span className="text-slate-300">{name}</span>
-                        <span className="text-slate-500">{count}</span>
+                {categorySummary.length ? (
+                  categorySummary.map(([name, count]) => {
+                    const max = categorySummary[0]?.[1] || 1;
+                    return (
+                      <div key={name}>
+                        <div className="mb-1.5 flex items-center justify-between text-xs font-semibold">
+                          <span className="text-slate-700">{name}</span>
+                          <span className="text-slate-400">{count}</span>
+                        </div>
+                        <div className="h-2.5 overflow-hidden rounded-full bg-slate-100">
+                          <div
+                            className="h-full rounded-full bg-blue-600 transition-all duration-500"
+                            style={{ width: `${Math.max(8, Math.round((count / max) * 100))}%` }}
+                          />
+                        </div>
                       </div>
-                      <div className="h-2 overflow-hidden rounded-full bg-slate-800">
-                        <div className="h-full rounded-full bg-blue-500" style={{ width: `${Math.max(8, Math.round((count / max) * 100))}%` }} />
-                      </div>
-                    </div>
-                  );
-                }) : <p className="py-12 text-center text-sm text-slate-600">មិនមានទិន្នន័យប្រភេទកីឡា</p>}
+                    );
+                  })
+                ) : (
+                  <p className="py-12 text-center text-sm text-slate-400">No sports category data available</p>
+                )}
               </div>
             </section>
 
-            <section className="rounded-2xl border border-slate-700/70 bg-[#111b2c] p-5">
+            {/* Right Box: Recent Events */}
+            <section className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm">
               <div className="mb-5 flex items-center justify-between">
                 <div>
-                  <h3 className="text-sm font-semibold text-white">ព្រឹត្តិការណ៍ថ្មីៗ</h3>
-                  <p className="mt-1 text-xs text-slate-500">ធាតុចុងក្រោយដែលមាន timestamp</p>
+                  <h3 className="text-base font-bold text-slate-900">Recent Events</h3>
+                  <p className="mt-0.5 text-xs text-slate-500">Latest entries with timestamp</p>
                 </div>
-                <Link href="/admin/events" className="text-xs text-blue-400 hover:text-blue-300">មើលទាំងអស់</Link>
+                <Link
+                  href="/admin/events"
+                  className="text-xs font-bold text-blue-600 hover:text-blue-700 hover:underline"
+                >
+                  View All
+                </Link>
               </div>
+
               <div className="space-y-3">
-                {[...events].filter((event) => event.createdAt).sort((a, b) => Date.parse(b.createdAt ?? "") - Date.parse(a.createdAt ?? "")).slice(0, 5).map((event) => (
-                  <div key={event.uuid} className="flex items-start gap-3 rounded-xl border border-slate-800 bg-[#0d1727] p-3">
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-500/10 text-blue-400"><CalendarDays size={16} /></div>
-                    <div className="min-w-0">
-                      <p className="truncate text-sm font-medium text-slate-200">{event.name || "គ្មានឈ្មោះ"}</p>
-                      <p className="mt-1 truncate text-xs text-slate-600">{event.categoryName || "មិនបានកំណត់"} · {event.locationName || "មិនមានទីតាំង"}</p>
+                {[...events]
+                  .filter((event) => event.createdAt)
+                  .sort((a, b) => Date.parse(b.createdAt ?? "") - Date.parse(a.createdAt ?? ""))
+                  .slice(0, 5)
+                  .map((event) => (
+                    <div
+                      key={event.uuid}
+                      className="flex items-center gap-3.5 rounded-xl border border-slate-100 bg-slate-50/80 p-3.5 transition-colors hover:bg-slate-100/80"
+                    >
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-100/70 text-blue-600">
+                        <CalendarDays size={18} />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-sm font-semibold text-slate-800">{event.name || "Untitled"}</p>
+                        <p className="mt-0.5 truncate text-xs text-slate-500">
+                          {event.categoryName || "Unassigned"} · {event.locationName || "No location"}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                ))}
-                {!events.some((event) => event.createdAt) ? <p className="py-12 text-center text-sm text-slate-600">API មិនបានផ្តល់ createdAt សម្រាប់បង្ហាញ recent list ទេ</p> : null}
+                  ))}
+
+                {!events.some((event) => event.createdAt) ? (
+                  <p className="py-12 text-center text-sm text-slate-400">
+                    No timestamp provided for recent events preview
+                  </p>
+                ) : null}
               </div>
             </section>
           </div>
 
-          <div className="mt-4 grid gap-4 sm:grid-cols-2">
-            <Link href="/admin/sports" className="group rounded-2xl border border-slate-700/70 bg-[#111b2c] p-5 transition-colors hover:border-blue-500/30 hover:bg-[#121f33]">
-              <div className="flex items-start justify-between"><Trophy className="text-blue-400" size={20} /><ArrowUpRight size={17} className="text-slate-600 transition-colors group-hover:text-blue-400" /></div>
-              <h3 className="mt-5 text-sm font-semibold text-white">គ្រប់គ្រងកីឡា</h3>
-              <p className="mt-1 text-xs text-slate-500">បន្ថែម កែប្រែ ស្វែងរក និងលុបកីឡា</p>
+          {/* Bottom Quick Links */}
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Link
+              href="/admin/sports"
+              className="group rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm transition-all hover:border-blue-300 hover:shadow-md"
+            >
+              <div className="flex items-start justify-between">
+                <div className="rounded-xl bg-blue-50 p-2.5 text-blue-600">
+                  <Trophy size={20} />
+                </div>
+                <ArrowUpRight size={18} className="text-slate-400 transition-colors group-hover:text-blue-600" />
+              </div>
+              <h3 className="mt-4 text-base font-bold text-slate-900">Manage Sports</h3>
+              <p className="mt-0.5 text-xs text-slate-500">Add, edit, search, and manage sports entries</p>
             </Link>
-            <Link href="/admin/comments" className="group rounded-2xl border border-slate-700/70 bg-[#111b2c] p-5 transition-colors hover:border-blue-500/30 hover:bg-[#121f33]">
-              <div className="flex items-start justify-between"><MessageSquare className="text-blue-400" size={20} /><ArrowUpRight size={17} className="text-slate-600 transition-colors group-hover:text-blue-400" /></div>
-              <h3 className="mt-5 text-sm font-semibold text-white">ពិនិត្យមតិយោបល់</h3>
-              <p className="mt-1 text-xs text-slate-500">មើល និងលុបមតិយោបល់ដែលមិនសមរម្យ</p>
+
+            <Link
+              href="/admin/comments"
+              className="group rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm transition-all hover:border-blue-300 hover:shadow-md"
+            >
+              <div className="flex items-start justify-between">
+                <div className="rounded-xl bg-blue-50 p-2.5 text-blue-600">
+                  <MessageSquare size={20} />
+                </div>
+                <ArrowUpRight size={18} className="text-slate-400 transition-colors group-hover:text-blue-600" />
+              </div>
+              <h3 className="mt-4 text-base font-bold text-slate-900">Moderate Comments</h3>
+              <p className="mt-0.5 text-xs text-slate-500">Review and delete inappropriate user comments</p>
             </Link>
           </div>
         </>

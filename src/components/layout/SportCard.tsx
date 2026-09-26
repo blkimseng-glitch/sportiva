@@ -18,7 +18,7 @@ export default function SportCard({
   item: SportItem | any;
   featured?: boolean;
 }) {
-  //  ទាញយក UUID ឬ ID (ការពារករណី Backend ផ្ញើឈ្មោះ key ផ្សេងគ្នា)
+  // ទាញយក UUID ឬ ID (ការពារករណី Backend ផ្ញើឈ្មោះ key ផ្សេងគ្នា)
   const itemUuid = item?.uuid || item?.id || item?._id;
 
   const categoryName = item?.categoryName || item?.category?.name || "Sports";
@@ -30,15 +30,14 @@ export default function SportCard({
 
   return (
     <Link
-      /*  ដូរមក /sports/ វិញឱ្យត្រូវតាម Folder Structure: app/sports/[uuid]/page.tsx */
       href={itemUuid ? `/sports/${itemUuid}` : "#"}
-      className={`group flex flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-white/90 backdrop-blur-md shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-slate-300 hover:shadow-xl ${
+      className={`group flex flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-white/90 backdrop-blur-md shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-slate-300 hover:shadow-xl dark:bg-[#1b2735]/90 dark:border-slate-800 dark:hover:border-slate-700 ${
         featured ? "lg:col-span-2" : ""
       }`}
     >
       {/* ផ្នែករូបភាព */}
       <div
-        className={`relative overflow-hidden bg-slate-200 ${
+        className={`relative overflow-hidden bg-slate-200 dark:bg-slate-800 ${
           featured ? "aspect-[2/1]" : "aspect-[16/10]"
         }`}
       >
@@ -71,8 +70,8 @@ export default function SportCard({
       <div className="flex flex-1 flex-col justify-between p-5">
         <div>
           {/* Top metadata */}
-          <div className="mb-2.5 flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-slate-500">
-            <span className="text-red-600">SportHub</span>
+          <div className="mb-2.5 flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+            <span className="text-red-600 dark:text-red-500">SportHub</span>
             <span>•</span>
             <span>
               {new Date().toLocaleDateString("en-US", {
@@ -84,7 +83,7 @@ export default function SportCard({
 
           {/* Title */}
           <h3
-            className={`font-display font-extrabold leading-snug text-slate-900 transition-colors duration-200 group-hover:text-red-600 ${
+            className={`font-display font-extrabold leading-snug text-slate-900 dark:text-white transition-colors duration-200 group-hover:text-red-600 dark:group-hover:text-red-400 ${
               featured ? "text-2xl sm:text-3xl" : "text-lg"
             }`}
           >
@@ -92,14 +91,14 @@ export default function SportCard({
           </h3>
 
           {/* Description */}
-          <p className="mt-2.5 text-xs leading-relaxed text-slate-600 line-clamp-2 sm:text-sm">
+          <p className="mt-2.5 text-xs leading-relaxed text-slate-600 dark:text-slate-300 line-clamp-2 sm:text-sm">
             {item?.description || "No description available."}
           </p>
         </div>
 
         {/* Card Footer Link */}
-        <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-3.5">
-          <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-red-600 transition-all duration-200 group-hover:gap-2">
+        <div className="mt-5 flex items-center justify-between border-t border-slate-100 dark:border-slate-800 pt-3.5">
+          <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-red-600 dark:text-red-400 transition-all duration-200 group-hover:gap-2">
             Open Story
             <span className="text-sm transition-transform duration-200 group-hover:translate-x-1">
               &rarr;

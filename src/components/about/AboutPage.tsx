@@ -16,8 +16,7 @@ export default function AboutPage() {
       <VisionSection />
       <TeamSection />
       <WhySportivaSection />
-      <ContactSection />
-      <AboutFooter />
+
     </main>
   );
 }

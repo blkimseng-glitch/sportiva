@@ -42,7 +42,7 @@ export async function adminRequest<T>(
   const payload = await parseResponse(response);
 
   if (!response.ok) {
-    let message = `សំណើមិនបានជោគជ័យ (${response.status})`;
+    let message = `failed (${response.status})`;
 
     if (payload && typeof payload === "object") {
       const data = payload as Record<string, unknown>;

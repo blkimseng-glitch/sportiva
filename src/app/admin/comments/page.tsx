@@ -25,26 +25,146 @@ export default function AdminCommentsPage() {
     try {
       setComments(await getAdminComments());
     } catch (err) {
-      setError(err instanceof Error ? err.message : "មិនអាចទាញមតិយោបល់បានទេ");
+      setError(err instanceof Error ? err.message : "Failed to fetch comments");
     } finally {
       setLoading(false);
     }
   }, []);
-  useEffect(() => { void load(); }, [load]);
-  const filtered = useMemo(() => comments.filter((item) => `${item.comment} ${item.userName} ${item.eventUuid}`.toLowerCase().includes(search.trim().toLowerCase())), [comments, search]);
 
-  const remove = async () => { if (!deleteTarget) return; setDeleting(true); try { await deleteAdminComment(deleteTarget.uuid); toast.success("បានលុបមតិយោបល់"); setDeleteTarget(null); await load(); } catch (err) { toast.error(err instanceof Error ? err.message : "លុបមិនបានទេ"); } finally { setDeleting(false); } };
+  useEffect(() => {
+    void load();
+  }, [load]);
+
+  const filtered = useMemo(
+    () =>
+      comments.filter((item) =>
+        `${item.comment} ${item.userName} ${item.eventUuid}`
+          .toLowerCase()
+          .includes(search.trim().toLowerCase())
+      ),
+    [comments, search]
+  );
+
+  const remove = async () => {
+    if (!deleteTarget) return;
+    setDeleting(true);
+    try {
+      await deleteAdminComment(deleteTarget.uuid);
+      toast.success("Comment deleted successfully");
+      setDeleteTarget(null);
+      await load();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to delete comment");
+    } finally {
+      setDeleting(false);
+    }
+  };
 
   return (
-    <div>
-      <AdminPageHeader title="មតិយោបល់" description="មើល និងលុបមតិយោបល់ដែលបានផ្ញើតាម API" />
-      <AdminToolbar search={search} onSearch={setSearch} placeholder="ស្វែងរកអ្នកប្រើប្រាស់ ឬមតិយោបល់..." />
-      <div className="overflow-hidden rounded-2xl border border-slate-700/70 bg-[#111b2c]">
-        {loading ? <AdminTableLoading /> : error ? <AdminErrorState message={error} action={<button type="button" onClick={() => void load()} className="rounded-lg bg-slate-800 px-4 py-2 text-sm text-slate-200">សាកម្ដងទៀត</button>} /> : filtered.length === 0 ? <AdminTableEmpty label="មិនមានមតិយោបល់" /> : (
-          <div className="overflow-x-auto"><table className="w-full min-w-[850px] text-left"><thead className="border-b border-slate-800 text-xs uppercase tracking-wider text-slate-600"><tr><th className="px-5 py-3">អ្នកប្រើប្រាស់</th><th className="px-5 py-3">មតិយោបល់</th><th className="px-5 py-3">Event UUID</th><th className="px-5 py-3">កាលបរិច្ឆេទ</th><th className="px-5 py-3 text-right">សកម្មភាព</th></tr></thead><tbody className="divide-y divide-slate-800">{filtered.map((item) => <tr key={item.uuid} className="hover:bg-[#0d1727]"><td className="px-5 py-4"><div className="flex items-center gap-3"><div className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-500/10 text-blue-400"><MessageSquare size={15} /></div><span className="text-sm font-medium text-slate-200">{item.userName}</span></div></td><td className="px-5 py-4"><p className="max-w-lg line-clamp-2 text-sm leading-6 text-slate-500">{item.comment || "គ្មានអត្ថបទ"}</p></td><td className="px-5 py-4"><code className="text-[11px] text-slate-600">{item.eventUuid || "-"}</code></td><td className="px-5 py-4 text-xs text-slate-600">{item.createdAt ? new Date(item.createdAt).toLocaleString("km-KH") : "-"}</td><td className="px-5 py-4"><div className="flex justify-end"><AdminIconButton label="លុប" tone="danger" onClick={() => setDeleteTarget(item)}><Trash2 size={15} /></AdminIconButton></div></td></tr>)}</tbody></table></div>
+    <div className="space-y-6">
+      <AdminPageHeader
+        title="User Comments"
+        description="View and manage user comments submitted via API"
+      />
+      <AdminToolbar
+        search={search}
+        onSearch={setSearch}
+        placeholder="Search user, comment, or event UUID..."
+      />
+
+      {/* Light Theme Table Container */}
+      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+        {loading ? (
+          <AdminTableLoading label="Loading comments..." />
+        ) : error ? (
+          <AdminErrorState
+            message={error}
+            action={
+              <button
+                type="button"
+                onClick={() => void load()}
+                className="rounded-lg bg-slate-100 px-4 py-2 text-sm text-slate-700 hover:bg-slate-200"
+              >
+                Try Again
+              </button>
+            }
+          />
+        ) : filtered.length === 0 ? (
+          <AdminTableEmpty label="No comments found" />
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[850px] text-left">
+              <thead className="border-b border-slate-100 bg-slate-50/50 text-xs font-semibold uppercase text-slate-500">
+                <tr>
+                  <th className="px-5 py-3.5">User</th>
+                  <th className="px-5 py-3.5">Comment</th>
+                  <th className="px-5 py-3.5">Event UUID</th>
+                  <th className="px-5 py-3.5">Created At</th>
+                  <th className="px-5 py-3.5 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {filtered.map((item) => (
+                  <tr key={item.uuid} className="hover:bg-slate-50/50 transition-colors">
+                    <td className="px-5 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-50 text-blue-600 shrink-0">
+                          <MessageSquare size={15} />
+                        </div>
+                        <span className="text-sm font-semibold text-slate-800">
+                          {item.userName || "Anonymous"}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-5 py-4">
+                      <p className="max-w-lg line-clamp-2 text-sm leading-6 text-slate-600">
+                        {item.comment || "No text"}
+                      </p>
+                    </td>
+                    <td className="px-5 py-4">
+                      <code className="rounded bg-slate-100 px-2 py-1 text-[11px] text-slate-500">
+                        {item.eventUuid || "-"}
+                      </code>
+                    </td>
+                    <td className="px-5 py-4 text-xs text-slate-500">
+                      {item.createdAt
+                        ? new Date(item.createdAt).toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })
+                        : "-"}
+                    </td>
+                    <td className="px-5 py-4">
+                      <div className="flex justify-end">
+                        <AdminIconButton
+                          label="Delete"
+                          tone="danger"
+                          onClick={() => setDeleteTarget(item)}
+                        >
+                          <Trash2 size={15} />
+                        </AdminIconButton>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
-      <AdminConfirmDialog open={!!deleteTarget} onCancel={() => setDeleteTarget(null)} onConfirm={() => void remove()} busy={deleting} title="លុបមតិយោបល់" message="តើអ្នកប្រាកដថាចង់លុបមតិយោបល់នេះមែនទេ?" />
+
+      {/* Delete Confirmation Dialog */}
+      <AdminConfirmDialog
+        open={!!deleteTarget}
+        onCancel={() => setDeleteTarget(null)}
+        onConfirm={() => void remove()}
+        busy={deleting}
+        title="Delete Comment"
+        message="Are you sure you want to delete this comment? This action cannot be undone."
+      />
     </div>
   );
 }
