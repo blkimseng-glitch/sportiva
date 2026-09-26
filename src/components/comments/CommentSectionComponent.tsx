@@ -64,10 +64,10 @@ export default function CommentSectionComponent({ eventUuid }: Props) {
   };
 
   return (
-    <div className="w-full bg-[#121c2d] border border-slate-800 rounded-xl p-6 space-y-6 mt-8">
-      <div className="flex items-center gap-2 border-b border-slate-800 pb-4">
+    <div className="w-full bg-white/80 border border-slate-200/80 dark:bg-[#121c2d] dark:border-slate-800 rounded-2xl p-6 space-y-6 mt-8 shadow-sm backdrop-blur-md transition-colors duration-300">
+      <div className="flex items-center gap-2 border-b border-slate-200/80 dark:border-slate-800 pb-4">
         <MessageSquare className="w-5 h-5 text-blue-500" />
-        <h3 className="text-base font-bold text-slate-100">
+        <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">
           មតិយោបល់ ({comments.length})
         </h3>
       </div>
@@ -77,13 +77,13 @@ export default function CommentSectionComponent({ eventUuid }: Props) {
           placeholder="សរសេរមតិយោបល់..."
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
-          className="bg-[#162235] border-slate-700/60 text-slate-200 text-xs focus-visible:ring-blue-500 min-h-[90px]"
+          className="bg-white/80 border-slate-300/80 text-slate-800 placeholder:text-slate-400 focus-visible:ring-1 focus-visible:ring-blue-500 dark:bg-[#162235] dark:border-slate-700/60 dark:text-slate-200 dark:placeholder:text-slate-400 text-xs min-h-[90px] rounded-xl shadow-sm"
         />
         <div className="flex justify-end">
           <Button
             type="submit"
             disabled={submitting || !newComment.trim()}
-            className="bg-blue-600 hover:bg-blue-500 text-white text-xs px-4 h-9 gap-2"
+            className="bg-blue-600 hover:bg-blue-500 text-white text-xs px-4 h-9 gap-2 rounded-xl shadow-sm transition-all"
           >
             <Send className="w-3.5 h-3.5" />
             {submitting ? "កំពុងផ្ញើ..." : "បញ្ជូនមតិ"}
@@ -92,9 +92,9 @@ export default function CommentSectionComponent({ eventUuid }: Props) {
       </form>
 
       {loading ? (
-        <div className="text-center py-6 text-slate-500 text-xs">កំពុងទាញយកមតិ...</div>
+        <div className="text-center py-6 text-slate-500 dark:text-slate-400 text-xs">កំពុងទាញយកមតិ...</div>
       ) : comments.length === 0 ? (
-        <div className="text-center py-8 text-slate-500 text-xs border border-dashed border-slate-800 rounded-lg">
+        <div className="text-center py-8 text-slate-500 dark:text-slate-400 text-xs border border-dashed border-slate-300 dark:border-slate-800 rounded-xl">
           មិនទាន់មានមតិយោបល់ទេ
         </div>
       ) : (
@@ -104,17 +104,17 @@ export default function CommentSectionComponent({ eventUuid }: Props) {
             return (
               <div
                 key={commentUuid}
-                className="flex items-start justify-between gap-4 p-4 bg-[#162235] rounded-lg border border-slate-800/80 group"
+                className="flex items-start justify-between gap-4 p-4 bg-white/60 dark:bg-[#162235] rounded-xl border border-slate-200/80 dark:border-slate-800/80 group shadow-sm transition-all"
               >
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-400 shrink-0">
+                  <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-500 dark:text-slate-400 shrink-0">
                     <User className="w-4 h-4" />
                   </div>
                   <div className="space-y-1">
-                    <span className="text-xs font-semibold text-slate-200 block">
+                    <span className="text-xs font-semibold text-slate-800 dark:text-slate-200 block">
                       {item?.user?.name || item?.author || "អ្នកប្រើប្រាស់"}
                     </span>
-                    <p className="text-xs text-slate-300 leading-relaxed">
+                    <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
                       {item?.content || item?.comment || ""}
                     </p>
                   </div>
@@ -122,7 +122,7 @@ export default function CommentSectionComponent({ eventUuid }: Props) {
 
                 <button
                   onClick={() => handleDelete(commentUuid)}
-                  className="text-slate-600 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity p-1"
+                  className="text-slate-400 hover:text-red-500 dark:text-slate-600 dark:hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity p-1"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
                 </button>

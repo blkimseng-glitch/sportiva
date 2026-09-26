@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Search, ChevronRight, ChevronLeft, Layers } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { Search, ChevronRight, ChevronLeft, Layers, ChevronDown } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import EventCardComponent from "./EventCardComponent"; 
 import { getAllEvents } from "@/services/eventService"; 
@@ -15,13 +15,25 @@ export default function EventListComponent() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
 
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   useEffect(() => {
     getAllEvents()
       .then((data) => {
         const list = Array.isArray(data) ? data : data.data || data.items || [];
         setEvents(list);
 
-        // Dynamic categories extraction from API response
         const extractedCategories = Array.from(
           new Set(
             list
@@ -61,6 +73,15 @@ export default function EventListComponent() {
     currentPage * itemsPerPage
   );
 
+  const getSelectedCategoryCount = (cat: string) => {
+    if (cat === "ALL") return events.length;
+    return events.filter(
+      (e) =>
+        String(e?.categoryName || e?.category?.name || e?.category || "").toLowerCase() ===
+        cat.toLowerCase()
+    ).length;
+  };
+
   return (
     <div className="relative w-full min-h-screen py-8 bg-slate-50/80 text-slate-800 dark:bg-[#0b1322] dark:text-slate-200 transition-colors duration-300">
       {/* Background Ambient Glow */}
@@ -91,71 +112,120 @@ export default function EventListComponent() {
           </div>
         </div>
 
-        {/* Main Body Layout: Left Vertical Sidebar + Right Content */}
-        <div className="flex flex-col lg:flex-row gap-6 items-start">
+        {/* Main Body Layout */}
+        <div className="space-y-6">
           
-          {/* --- VERTICAL SIDEBAR --- */}
-          <aside className="w-full lg:w-60 shrink-0 lg:sticky lg:top-24">
-            <div className="bg-white/80 border border-slate-200/80 dark:bg-[#121c2d] dark:border-slate-800 rounded-xl p-4 space-y-3 shadow-sm backdrop-blur-md transition-colors duration-300">
-              <div className="flex items-center gap-2 pb-2 border-b border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-300 font-semibold text-xs">
-                <Layers className="w-4 h-4 text-blue-500" />
-                <span>Categories</span>
-              </div>
-
-              <div className="flex flex-row lg:flex-col gap-1.5 overflow-x-auto lg:overflow-visible pb-1 lg:pb-0 scrollbar-none">
-                <button
-                  onClick={() => setSelectedCategory("ALL")}
-                  className={`w-full text-left px-3 py-2 rounded-lg text-xs font-medium transition-all duration-200 flex items-center justify-between whitespace-nowrap ${
-                    selectedCategory === "ALL"
-                      ? "bg-blue-600 text-white font-semibold shadow-md shadow-blue-500/20"
-                      : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#162235] hover:text-slate-900 dark:hover:text-slate-200"
-                  }`}
-                >
-                  <span>All Events</span>
-                  <span className={`text-[10px] px-2 py-0.5 rounded-full font-semibold ${
-                    selectedCategory === "ALL"
-                      ? "bg-white/20 text-white"
-                      : "bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400"
-                  }`}>
-                    {events.length}
-                  </span>
-                </button>
-
-                {categories.map((cat, idx) => {
-                  const isActive = selectedCategory.toLowerCase() === cat.toLowerCase();
-                  const count = events.filter(
-                    (e) =>
-                      String(e?.categoryName || e?.category?.name || e?.category || "").toLowerCase() ===
-                      cat.toLowerCase()
-                  ).length;
-
-                  return (
-                    <button
-                      key={idx}
-                      onClick={() => setSelectedCategory(cat)}
-                      className={`w-full text-left px-3 py-2 rounded-lg text-xs font-medium transition-all duration-200 flex items-center justify-between whitespace-nowrap capitalize ${
-                        isActive
-                          ? "bg-blue-600 text-white font-semibold shadow-md shadow-blue-500/20"
-                          : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#162235] hover:text-slate-900 dark:hover:text-slate-200"
-                      }`}
-                    >
-                      <span>{cat}</span>
-                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-semibold ${
-                        isActive
-                          ? "bg-white/20 text-white"
-                          : "bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400"
-                      }`}>
-                        {count}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
+          {/* --- CATEGORIES SECTION --- */}
+          <div className="bg-white/80 border border-slate-200/80 dark:bg-[#121c2d] dark:border-slate-800 rounded-xl p-4 shadow-sm backdrop-blur-md transition-colors duration-300 relative overflow-visible z-40">
+            <div className="flex items-center gap-2 pb-3 mb-3 border-b border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-300 font-semibold text-xs">
+              <Layers className="w-4 h-4 text-blue-500" />
+              <span>Categories</span>
             </div>
-          </aside>
+
+            {/* 1. CUSTOM DROPDOWN FOR MOBILE & TABLET WITH SCROLL */}
+            <div className="block lg:hidden w-full relative" ref={dropdownRef}>
+              <button
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className="w-full flex items-center justify-between bg-white border border-slate-300/85 dark:bg-[#162235] dark:border-slate-700/70 text-slate-800 dark:text-slate-200 text-xs rounded-xl px-3.5 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm capitalize font-medium"
+              >
+                <span>
+                  {selectedCategory === "ALL" ? `All Events` : selectedCategory} ({getSelectedCategoryCount(selectedCategory)})
+                </span>
+                <ChevronDown className={`w-4 h-4 text-slate-500 transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`} />
+              </button>
+
+              {/* Dropdown Menu List with Scroll */}
+              {isDropdownOpen && (
+                <div className="absolute left-0 right-0 top-full mt-2 max-h-60 overflow-y-auto bg-white dark:bg-[#162235] border border-slate-200 dark:border-slate-700 rounded-xl shadow-2xl z-50 p-1.5 space-y-1">
+                  <button
+                    onClick={() => {
+                      setSelectedCategory("ALL");
+                      setIsDropdownOpen(false);
+                    }}
+                    className={`w-full text-left px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
+                      selectedCategory === "ALL"
+                        ? "bg-blue-600 text-white font-semibold"
+                        : "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+                    }`}
+                  >
+                    All Events ({events.length})
+                  </button>
+
+                  {categories.map((cat, idx) => {
+                    const isActive = selectedCategory.toLowerCase() === cat.toLowerCase();
+                    const count = getSelectedCategoryCount(cat);
+
+                    return (
+                      <button
+                        key={idx}
+                        onClick={() => {
+                          setSelectedCategory(cat);
+                          setIsDropdownOpen(false);
+                        }}
+                        className={`w-full text-left px-3 py-2 rounded-lg text-xs font-medium capitalize transition-colors ${
+                          isActive
+                            ? "bg-blue-600 text-white font-semibold"
+                            : "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+                        }`}
+                      >
+                        {cat} ({count})
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* 2. BUTTONS FOR DESKTOP */}
+            <div className="hidden lg:flex items-center gap-2 flex-wrap w-full">
+              <button
+                onClick={() => setSelectedCategory("ALL")}
+                className={`px-4 py-2 rounded-lg text-xs font-medium transition-all duration-200 flex items-center gap-2 ${
+                  selectedCategory === "ALL"
+                    ? "bg-blue-600 text-white font-semibold shadow-md shadow-blue-500/20"
+                    : "bg-white/80 border border-slate-200/80 dark:bg-[#162235] dark:border-slate-700/60 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
+                }`}
+              >
+                <span>All Events</span>
+                <span className={`text-[10px] px-2 py-0.5 rounded-full font-semibold ${
+                  selectedCategory === "ALL"
+                    ? "bg-white/20 text-white"
+                    : "bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400"
+                }`}>
+                  {events.length}
+                </span>
+              </button>
+
+              {categories.map((cat, idx) => {
+                const isActive = selectedCategory.toLowerCase() === cat.toLowerCase();
+                const count = getSelectedCategoryCount(cat);
+
+                return (
+                  <button
+                    key={idx}
+                    onClick={() => setSelectedCategory(cat)}
+                    className={`px-4 py-2 rounded-lg text-xs font-medium transition-all duration-200 flex items-center gap-2 capitalize ${
+                      isActive
+                        ? "bg-blue-600 text-white font-semibold shadow-md shadow-blue-500/20"
+                        : "bg-white/80 border border-slate-200/80 dark:bg-[#162235] dark:border-slate-700/60 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
+                    }`}
+                  >
+                    <span>{cat}</span>
+                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-semibold ${
+                      isActive
+                        ? "bg-white/20 text-white"
+                        : "bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400"
+                    }`}>
+                      {count}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
 
           {/* --- CONTENT SECTION --- */}
-          <main className="flex-1 w-full space-y-6">
+          <main className="w-full space-y-6">
             {loading ? (
               <div className="text-center py-20 text-slate-500 dark:text-slate-400 text-xs">
                 Loading events...

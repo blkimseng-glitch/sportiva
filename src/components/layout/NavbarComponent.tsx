@@ -4,10 +4,9 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Search, Moon, Sun, Bell, User, LogOut, Settings, Shield } from "lucide-react";
+import { Search, Moon, Sun, User, LogOut, Shield, Menu, X } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const mainNavLinks = [
@@ -22,7 +21,10 @@ export default function NavbarComponent() {
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
 
   // ទាញយក Theme និង User ពី localStorage ពេល Load ទំព័រ
   useEffect(() => {
@@ -35,7 +37,6 @@ export default function NavbarComponent() {
       document.documentElement.classList.add("dark");
     }
 
-    //check User or Login done 
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       try {
@@ -54,6 +55,11 @@ export default function NavbarComponent() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // បិទ Mobile Menu ស្វ័យប្រវត្តពេលប្ដូរ Page (Pathname ផ្លាស់ប្ដូរ)
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [pathname]);
+
   const toggleTheme = () => {
     setIsDarkMode((prev) => {
       const nextMode = !prev;
@@ -68,7 +74,6 @@ export default function NavbarComponent() {
     });
   };
 
-  // 3. មុខងារ Logout
   const handleLogout = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("user_role");
@@ -81,23 +86,34 @@ export default function NavbarComponent() {
     <header className={`w-full sticky top-0 z-50 transition-colors duration-300 ${isDarkMode ? "bg-[#1b2735] text-white" : "bg-white text-slate-800 shadow-md"}`}>
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 border-b border-slate-700/20">
         
-        {/* Logo */}
-        <Link href="/" className="flex items-center">
-          <Image
-            src="/logo-sportiva.png" 
-            alt="Sportiva Logo"
-            width={130}
-            height={40}
-            className={`object-contain transition-all ${
-              isDarkMode 
-                ? "brightness-200 contrast-200 drop-shadow-[0_0_2px_rgba(255,255,255,0.9)]" 
-                : ""
-            }`}
-            priority
-          />
-        </Link>
+        {/* Left: Mobile Menu Button & Logo */}
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => setIsMobileMenuOpen((prev) => !prev)}
+            className={`md:hidden rounded-lg p-2 transition-colors ${isDarkMode ? "hover:bg-slate-700/60 text-slate-300" : "hover:bg-slate-100 text-slate-600"}`}
+            aria-label="Toggle Mobile Menu"
+          >
+            {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
 
-        {/* Search Input */}
+          <Link href="/" className="flex items-center">
+            <Image
+              src="/logo-sportiva.png" 
+              alt="Sportiva Logo"
+              width={120}
+              height={35}
+              className={`object-contain transition-all ${
+                isDarkMode 
+                  ? "brightness-200 contrast-200 drop-shadow-[0_0_2px_rgba(255,255,255,0.9)]" 
+                  : ""
+              }`}
+              priority
+            />
+          </Link>
+        </div>
+
+        {/* Search Input (Desktop) */}
         <div className="relative hidden md:block w-full max-w-md mx-6">
           <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
           <Input
@@ -111,8 +127,8 @@ export default function NavbarComponent() {
           />
         </div>
 
-        {/* Action Controls */}
-        <div className="flex items-center gap-3 sm:gap-4">
+        {/* Right Action Controls */}
+        <div className="flex items-center gap-2 sm:gap-4">
           <button 
             type="button" 
             onClick={toggleTheme}
@@ -122,11 +138,9 @@ export default function NavbarComponent() {
             {isDarkMode ? <Sun className="h-5 w-5 text-amber-400" /> : <Moon className="h-5 w-5" />}
           </button>
 
-          
-
           <div className={`h-4 w-[1px] mx-1 hidden sm:block ${isDarkMode ? "bg-slate-700" : "bg-slate-200"}`} />
 
-          {/* User Profile / Register Section with Dropdown */}
+          {/* User Profile / Register Section */}
           {currentUser ? (
             <div className="relative" ref={dropdownRef}>
               <button
@@ -195,10 +209,9 @@ export default function NavbarComponent() {
           ) : (
             <Link 
               href="/auth/login" 
-              className="flex items-center gap-2.5 hover:opacity-90 transition-opacity"
+              className="flex items-center gap-2 hover:opacity-90 transition-opacity"
             >
               <Avatar className={`h-8 w-8 border ${isDarkMode ? "border-slate-600" : "border-slate-300"}`}>
-                <AvatarImage src="" />
                 <AvatarFallback className={isDarkMode ? "bg-slate-700 text-slate-200" : "bg-slate-200 text-slate-700"}>
                   <User className="h-4 w-4" />
                 </AvatarFallback>
@@ -209,7 +222,24 @@ export default function NavbarComponent() {
         </div>
       </div>
 
-      <nav className="mx-auto flex max-w-7xl items-center justify-center gap-1 sm:gap-3 px-4 py-2 text-sm font-medium overflow-x-auto scrollbar-none">
+      {/* Search Input for Mobile View (Below Header) */}
+      <div className="block md:hidden px-4 py-2 border-b border-slate-700/10">
+        <div className="relative w-full">
+          <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+          <Input
+            type="search"
+            placeholder="Search..."
+            className={`w-full pl-10 border-none rounded-full focus-visible:ring-1 focus-visible:ring-blue-500 text-xs h-9 ${
+              isDarkMode 
+                ? "bg-[#2a384b] text-slate-100 placeholder:text-slate-400" 
+                : "bg-slate-100 text-slate-900 placeholder:text-slate-500"
+            }`}
+          />
+        </div>
+      </div>
+
+      {/* Desktop Navigation Links */}
+      <nav className="hidden md:flex mx-auto max-w-7xl items-center justify-center gap-3 px-4 py-2 text-sm font-medium">
         {mainNavLinks.map((link) => {
           const isActive = pathname === link.href;
           return (
@@ -227,6 +257,30 @@ export default function NavbarComponent() {
           );
         })}
       </nav>
+
+      {/* Mobile Navigation Dropdown Menu */}
+      {isMobileMenuOpen && (
+        <div className={`md:hidden border-b px-4 py-3 space-y-2 transition-all ${
+          isDarkMode ? "bg-[#162235] border-slate-700/50 text-slate-200" : "bg-white border-slate-200 text-slate-800"
+        }`}>
+          {mainNavLinks.map((link) => {
+            const isActive = pathname === link.href;
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`block px-4 py-2.5 rounded-xl text-xs font-medium transition-colors ${
+                  isActive
+                    ? "bg-blue-600 text-white font-semibold"
+                    : isDarkMode ? "hover:bg-slate-800 text-slate-300" : "hover:bg-slate-100 text-slate-700"
+                }`}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
+        </div>
+      )}
     </header>
   );
 }

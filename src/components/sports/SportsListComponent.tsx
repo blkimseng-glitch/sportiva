@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Search, ChevronLeft, ChevronRight, Trophy } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { Search, ChevronLeft, ChevronRight, Trophy, ChevronDown } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { getAllSport } from "@/services/sportService";
 import SportCardComponent from "./SportCardComponent";
@@ -15,6 +15,21 @@ export default function SportListComponent() {
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
+
+  // State សម្រាប់គ្រប់គ្រងការបើក/បិទ Custom Dropdown នៅលើ Mobile/Tablet
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // បិទ Dropdown វិញពេលចុចក្រៅ
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   // Safe Text Helper
   const safeText = (value: any, fallback: string = ""): string => {
@@ -33,7 +48,6 @@ export default function SportListComponent() {
         const list = Array.isArray(data) ? data : data.data || data.items || [];
         setSports(list);
 
-        // ទាញយក Categories ពី API 
         const extractedCategories = new Set<string>();
         list.forEach((sport: any) => {
           const catName = safeText(
@@ -77,20 +91,83 @@ export default function SportListComponent() {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentSports = filteredSports.slice(indexOfFirstItem, indexOfLastItem);
 
+  // រកចំនួនកីឡាទៅតាម Category នីមួយៗ
+  const getCategoryCount = (cat: string) => {
+    if (cat === "All") return sports.length;
+    return sports.filter((sport) => {
+      const catName = safeText(sport?.categoryName || sport?.category || sport?.sportCategory);
+      return catName.toLowerCase() === cat.toLowerCase();
+    }).length;
+  };
+
   return (
     <div className="relative w-full min-h-screen py-8 bg-slate-50/80 text-slate-800 dark:bg-[#0b1322] dark:text-slate-200 transition-colors duration-300">
       {/* Background Ambient Glow */}
       <div className="pointer-events-none absolute left-1/4 top-10 -z-10 h-72 w-72 rounded-full bg-blue-500/10 blur-3xl dark:bg-blue-600/15" />
       <div className="pointer-events-none absolute right-1/4 top-96 -z-10 h-96 w-96 rounded-full bg-indigo-500/10 blur-3xl dark:bg-indigo-600/15" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
         
+        {/* Search Bar for Mobile (Top Header Search) */}
+        <div className="flex md:hidden relative w-full">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
+          <Input
+            placeholder="ស្វែងរកព័ត៌មាន..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="bg-white/80 border-slate-300/80 text-slate-800 placeholder:text-slate-400 focus-visible:ring-1 focus-visible:ring-blue-500 dark:bg-[#162235] dark:border-slate-700/60 dark:text-slate-200 dark:placeholder:text-slate-400 text-xs pl-8 h-10 rounded-xl backdrop-blur-md shadow-sm"
+          />
+        </div>
+
+        {/* --- MOBILE DROPDOWN CATEGORY SECTION --- */}
+        <div className="block md:hidden w-full relative z-40" ref={dropdownRef}>
+          <button
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            className="w-full flex items-center justify-between bg-white border border-slate-300/85 dark:bg-[#162235] dark:border-slate-700/70 text-slate-800 dark:text-slate-200 text-xs rounded-xl px-3.5 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm font-medium"
+          >
+            <span className="flex items-center gap-2">
+              <Trophy className="w-3.5 h-3.5 text-blue-500" />
+              {category === "All" ? "ព័ត៌មានកីឡាទាំងអស់" : category} ({getCategoryCount(category)})
+            </span>
+            <ChevronDown className={`w-4 h-4 text-slate-500 transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`} />
+          </button>
+
+          {/* Dropdown Menu List with Scroll */}
+          {isDropdownOpen && (
+            <div className="absolute left-0 right-0 top-full mt-2 max-h-60 overflow-y-auto bg-white dark:bg-[#162235] border border-slate-200 dark:border-slate-700 rounded-xl shadow-2xl z-50 p-1.5 space-y-1">
+              {categories.map((item) => {
+                const active = category === item;
+                const count = getCategoryCount(item);
+                return (
+                  <button
+                    key={item}
+                    onClick={() => {
+                      setCategory(item);
+                      setIsDropdownOpen(false);
+                    }}
+                    className={`w-full text-left px-3 py-2 rounded-lg text-xs font-medium transition-colors flex items-center justify-between ${
+                      active
+                        ? "bg-blue-600 text-white font-semibold"
+                        : "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+                    }`}
+                  >
+                    <span>{item === "All" ? "ព័ត៌មានកីឡាទាំងអស់" : item}</span>
+                    <span className={`text-[10px] px-2 py-0.5 rounded-full ${active ? "bg-white/20 text-white" : "bg-slate-100 dark:bg-slate-800 text-slate-500"}`}>
+                      {count}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
         <div className="flex flex-col md:flex-row gap-8 items-start">
           
-          {/*  1. SIDEBAR (ជួរឈរ) */}
-          <aside className="w-full md:w-64 shrink-0 space-y-6 md:sticky md:top-24">
+          {/* --- DESKTOP SIDEBAR --- */}
+          <aside className="hidden md:block w-full md:w-64 shrink-0 space-y-6 md:sticky md:top-24">
             
-            {/* Search  */}
+            {/* Search */}
             <div className="relative w-full">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
               <Input
@@ -110,20 +187,21 @@ export default function SportListComponent() {
               <nav className="flex flex-col gap-1 mt-1">
                 {categories.map((item) => {
                   const active = category === item;
+                  const count = getCategoryCount(item);
                   return (
                     <button
                       key={item}
                       onClick={() => setCategory(item)}
                       className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all text-left ${
                         active
-                          ? "bg-blue-600 text-white shadow-md shadow-blue-500/20"
+                          ? "bg-blue-600 text-white shadow-md shadow-blue-500/20 font-semibold"
                           : "text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800/80"
                       }`}
                     >
                       <span>{item === "All" ? "ទាំងអស់" : item}</span>
-                      {active && (
-                        <span className="w-1.5 h-1.5 rounded-full bg-white" />
-                      )}
+                      <span className={`text-[10px] px-2 py-0.5 rounded-full ${active ? "bg-white/20 text-white" : "bg-slate-100 dark:bg-slate-800 text-slate-500"}`}>
+                        {count}
+                      </span>
                     </button>
                   );
                 })}
@@ -131,7 +209,7 @@ export default function SportListComponent() {
             </div>
           </aside>
 
-          {/* 2. CONTENT AREA */}
+          {/* --- CONTENT AREA --- */}
           <main className="flex-1 w-full space-y-6">
             
             {/* Header / Active Category Title */}
@@ -140,7 +218,7 @@ export default function SportListComponent() {
                 {category === "All" ? "ព័ត៌មានកីឡាទាំងអស់" : category}
               </h2>
               <span className="text-xs text-slate-500 dark:text-slate-400">
-                {/* បង្ហាញ {filteredSports.length} លទ្ធផល */}
+                បង្ហាញ {filteredSports.length} លទ្ធផល
               </span>
             </div>
 
