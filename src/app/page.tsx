@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     siteName: 'Sportiva',
     images: [
       {
-        url: '/image/sportiva-thurbmail.jpg',
+        url: 'sportiva-thurbmail.jpg',
         width: 1200,
         height: 630,
         alt: 'Sportiva Home Cover',
@@ -30,24 +30,30 @@ export default async function HomePage() {
   const posts = await getSports();
 
   return (
-    <main className="min-h-screen bg-white dark:bg-[#121824] text-slate-900 dark:text-slate-100 transition-colors duration-300">
-      {/* 1. Hero Banner */}
-      <HeroBanner />
-
-      {/* 2. Main Content Grid */}
-      <div className="mx-auto max-w-[1400px] px-4 py-8 sm:px-6 lg:px-8">
-        <Suspense fallback={<div className="py-20 text-center font-semibold">Loading data...</div>}>
-          {posts && posts.length > 0 ? (
-            <HomeGrid items={posts} />
-          ) : (
-            <div className="py-12 text-center text-gray-500 dark:text-gray-400">
-              No data available to display yet...
-            </div>
-          )}
-        </Suspense>
+    
+    <main className="w-full min-h-screen bg-white dark:bg-[#121824] text-slate-900 dark:text-slate-100 transition-colors duration-300">
+      
+  
+      <div className="w-full">
+        <HeroBanner />
       </div>
 
-      {/* 3. Bottom CTA Section */}
+      {/* 2. Main Content Grid  */}
+      <div className="w-full px-4 py-8 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-[1400px]">
+          <Suspense fallback={<div className="py-20 text-center font-semibold">Loading data...</div>}>
+            {posts && posts.length > 0 ? (
+              <HomeGrid items={posts} />
+            ) : (
+              <div className="py-12 text-center text-gray-500 dark:text-gray-400">
+                No data available to display yet...
+              </div>
+            )}
+          </Suspense>
+        </div>
+      </div>
+
+      {/* 3. Bottom CTA Section  */}
       <section id="gear" className="w-full border-t border-gray-200 dark:border-slate-800 bg-gray-50 dark:bg-[#1b2735] py-16 transition-colors duration-300">
         <div className="mx-auto max-w-[1400px] px-6 lg:px-10">
           <div className="max-w-xl">

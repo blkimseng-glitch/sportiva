@@ -18,24 +18,18 @@ const mainNavLinks = [
 
 export default function NavbarComponent() {
   const pathname = usePathname();
+  
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const mobileMenuRef = useRef<HTMLDivElement>(null);
 
-  // ទាញយក Theme និង User ពី localStorage ពេល Load ទំព័រ
   useEffect(() => {
-    const savedTheme = localStorage.getItem("theme");
-    if (savedTheme) {
-      const isDark = savedTheme === "dark";
-      setIsDarkMode(isDark);
-      document.documentElement.classList.toggle("dark", isDark);
-    } else {
-      document.documentElement.classList.add("dark");
-    }
+    // ឆែកមើល Class dark នៅលើ html tag ពេល Component Load រួច
+    const isDark = document.documentElement.classList.contains("dark");
+    setIsDarkMode(isDark);
 
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -55,7 +49,6 @@ export default function NavbarComponent() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  
   useEffect(() => {
     setIsMobileMenuOpen(false);
   }, [pathname]);
@@ -83,15 +76,16 @@ export default function NavbarComponent() {
   };
 
   return (
-    <header className={`w-full sticky top-0 z-50 transition-colors duration-300 ${isDarkMode ? "bg-[#1b2735] text-white" : "bg-white text-slate-800 shadow-md"}`}>
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 border-b border-slate-700/20">
+    <header className="w-full sticky top-0 z-50 bg-white dark:bg-[#1b2735] text-slate-800 dark:text-white transition-colors duration-300 shadow-sm">
+      {/* Container ខាងក្នុងកំណត់ max-w-7xl แต่ header ខាងក្រៅគឺពេញអេក្រង់ w-full */}
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 border-b border-slate-200 dark:border-slate-700/20">
         
         {/* Left: Mobile Menu Button & Logo */}
         <div className="flex items-center gap-3">
           <button
             type="button"
             onClick={() => setIsMobileMenuOpen((prev) => !prev)}
-            className={`md:hidden rounded-lg p-2 transition-colors ${isDarkMode ? "hover:bg-slate-700/60 text-slate-300" : "hover:bg-slate-100 text-slate-600"}`}
+            className="md:hidden rounded-lg p-2 transition-colors hover:bg-slate-100 dark:hover:bg-slate-700/60 text-slate-600 dark:text-slate-300"
             aria-label="Toggle Mobile Menu"
           >
             {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -103,11 +97,7 @@ export default function NavbarComponent() {
               alt="Sportiva Logo"
               width={120}
               height={35}
-              className={`object-contain transition-all ${
-                isDarkMode 
-                  ? "brightness-200 contrast-200 drop-shadow-[0_0_2px_rgba(255,255,255,0.9)]" 
-                  : ""
-              }`}
+              className="object-contain transition-all dark:brightness-200 dark:contrast-200 dark:drop-shadow-[0_0_2px_rgba(255,255,255,0.9)]"
               priority
             />
           </Link>
@@ -119,11 +109,7 @@ export default function NavbarComponent() {
           <Input
             type="search"
             placeholder="Search..."
-            className={`w-full pl-10 border-none rounded-full focus-visible:ring-1 focus-visible:ring-blue-500 ${
-              isDarkMode 
-                ? "bg-[#2a384b] text-slate-100 placeholder:text-slate-400" 
-                : "bg-slate-100 text-slate-900 placeholder:text-slate-500"
-            }`}
+            className="w-full pl-10 border-none rounded-full focus-visible:ring-1 focus-visible:ring-blue-500 bg-slate-100 text-slate-900 placeholder:text-slate-500 dark:bg-[#2a384b] dark:text-slate-100 dark:placeholder:text-slate-400"
           />
         </div>
 
@@ -132,13 +118,13 @@ export default function NavbarComponent() {
           <button 
             type="button" 
             onClick={toggleTheme}
-            className={`rounded-full p-2 transition-colors ${isDarkMode ? "hover:bg-slate-700/60 text-slate-300" : "hover:bg-slate-100 text-slate-600"}`}
+            className="rounded-full p-2 transition-colors hover:bg-slate-100 dark:hover:bg-slate-700/60 text-slate-600 dark:text-slate-300"
             aria-label="Toggle Theme"
           >
             {isDarkMode ? <Sun className="h-5 w-5 text-amber-400" /> : <Moon className="h-5 w-5" />}
           </button>
 
-          <div className={`h-4 w-[1px] mx-1 hidden sm:block ${isDarkMode ? "bg-slate-700" : "bg-slate-200"}`} />
+          <div className="h-4 w-[1px] mx-1 hidden sm:block bg-slate-200 dark:bg-slate-700" />
 
           {/* User Profile / Register Section */}
           {currentUser ? (
@@ -148,9 +134,9 @@ export default function NavbarComponent() {
                 onClick={() => setIsDropdownOpen((prev) => !prev)}
                 className="flex items-center gap-2.5 focus:outline-none hover:opacity-85 transition-opacity"
               >
-                <Avatar className={`h-8 w-8 border ${isDarkMode ? "border-slate-600" : "border-slate-300"}`}>
+                <Avatar className="h-8 w-8 border border-slate-300 dark:border-slate-600">
                   <AvatarImage src={currentUser.avatar || ""} />
-                  <AvatarFallback className={isDarkMode ? "bg-slate-700 text-slate-200" : "bg-slate-200 text-slate-700"}>
+                  <AvatarFallback className="bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-200">
                     {currentUser.name ? currentUser.name.charAt(0).toUpperCase() : <User className="h-4 w-4" />}
                   </AvatarFallback>
                 </Avatar>
@@ -159,12 +145,8 @@ export default function NavbarComponent() {
 
               {/* Dropdown Box */}
               {isDropdownOpen && (
-                <div className={`absolute right-0 mt-2 w-56 rounded-xl shadow-xl border py-2 z-50 transition-all ${
-                  isDarkMode 
-                    ? "bg-[#223042] border-slate-700 text-slate-200" 
-                    : "bg-white border-slate-200 text-slate-800"
-                }`}>
-                  <div className="px-4 py-2 border-b border-slate-700/20">
+                <div className="absolute right-0 mt-2 w-56 rounded-xl shadow-xl border py-2 z-50 transition-all bg-white border-slate-200 text-slate-800 dark:bg-[#223042] dark:border-slate-700 dark:text-slate-200">
+                  <div className="px-4 py-2 border-b border-slate-200 dark:border-slate-700/20">
                     <p className="text-sm font-bold truncate">{currentUser.name}</p>
                     <p className="text-xs text-slate-400 truncate">{currentUser.email || "No email"}</p>
                   </div>
@@ -173,9 +155,7 @@ export default function NavbarComponent() {
                     <Link
                       href="/profile"
                       onClick={() => setIsDropdownOpen(false)}
-                      className={`flex items-center gap-2 px-4 py-2 text-sm transition-colors ${
-                        isDarkMode ? "hover:bg-slate-700/50" : "hover:bg-slate-100"
-                      }`}
+                      className="flex items-center gap-2 px-4 py-2 text-sm transition-colors hover:bg-slate-100 dark:hover:bg-slate-700/50"
                     >
                       <User className="h-4 w-4" /> Profile
                     </Link>
@@ -183,22 +163,18 @@ export default function NavbarComponent() {
                       <Link
                         href="/admin"
                         onClick={() => setIsDropdownOpen(false)}
-                        className={`flex items-center gap-2 px-4 py-2 text-sm transition-colors ${
-                          isDarkMode ? "hover:bg-slate-700/50" : "hover:bg-slate-100"
-                        }`}
+                        className="flex items-center gap-2 px-4 py-2 text-sm transition-colors hover:bg-slate-100 dark:hover:bg-slate-700/50"
                       >
                         <Shield className="h-4 w-4 text-cyan-400" /> Admin Dashboard
                       </Link>
                     )}
                   </div>
 
-                  <div className="border-t border-slate-700/20 pt-1">
+                  <div className="border-t border-slate-200 dark:border-slate-700/20 pt-1">
                     <button
                       type="button"
                       onClick={handleLogout}
-                      className={`w-full flex items-center gap-2 px-4 py-2 text-sm text-rose-500 transition-colors ${
-                        isDarkMode ? "hover:bg-slate-700/50" : "hover:bg-slate-100"
-                      }`}
+                      className="w-full flex items-center gap-2 px-4 py-2 text-sm text-rose-500 transition-colors hover:bg-slate-100 dark:hover:bg-slate-700/50"
                     >
                       <LogOut className="h-4 w-4" /> Log out
                     </button>
@@ -211,8 +187,8 @@ export default function NavbarComponent() {
               href="/auth/login" 
               className="flex items-center gap-2 hover:opacity-90 transition-opacity"
             >
-              <Avatar className={`h-8 w-8 border ${isDarkMode ? "border-slate-600" : "border-slate-300"}`}>
-                <AvatarFallback className={isDarkMode ? "bg-slate-700 text-slate-200" : "bg-slate-200 text-slate-700"}>
+              <Avatar className="h-8 w-8 border border-slate-300 dark:border-slate-600">
+                <AvatarFallback className="bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-200">
                   <User className="h-4 w-4" />
                 </AvatarFallback>
               </Avatar>
@@ -222,18 +198,14 @@ export default function NavbarComponent() {
         </div>
       </div>
 
-      {/* Search Input for Mobile View (Below Header) */}
-      <div className="block md:hidden px-4 py-2 border-b border-slate-700/10">
+      {/* Search Input for Mobile View */}
+      <div className="block md:hidden px-4 py-2 border-b border-slate-200 dark:border-slate-700/10">
         <div className="relative w-full">
           <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
           <Input
             type="search"
             placeholder="Search..."
-            className={`w-full pl-10 border-none rounded-full focus-visible:ring-1 focus-visible:ring-blue-500 text-xs h-9 ${
-              isDarkMode 
-                ? "bg-[#2a384b] text-slate-100 placeholder:text-slate-400" 
-                : "bg-slate-100 text-slate-900 placeholder:text-slate-500"
-            }`}
+            className="w-full pl-10 border-none rounded-full focus-visible:ring-1 focus-visible:ring-blue-500 text-xs h-9 bg-slate-100 text-slate-900 placeholder:text-slate-500 dark:bg-[#2a384b] dark:text-slate-100 dark:placeholder:text-slate-400"
           />
         </div>
       </div>
@@ -249,7 +221,7 @@ export default function NavbarComponent() {
               className={`px-3.5 py-1.5 rounded-md transition-colors whitespace-nowrap ${
                 isActive 
                   ? "text-blue-500 font-semibold border-b-2 border-blue-500 rounded-b-none" 
-                  : isDarkMode ? "text-slate-300 hover:text-white hover:bg-slate-800/50" : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800/50"
               }`}
             >
               {link.label}
@@ -260,9 +232,7 @@ export default function NavbarComponent() {
 
       {/* Mobile Navigation Dropdown Menu */}
       {isMobileMenuOpen && (
-        <div className={`md:hidden border-b px-4 py-3 space-y-2 transition-all ${
-          isDarkMode ? "bg-[#162235] border-slate-700/50 text-slate-200" : "bg-white border-slate-200 text-slate-800"
-        }`}>
+        <div className="md:hidden border-b px-4 py-3 space-y-2 transition-all bg-white border-slate-200 text-slate-800 dark:bg-[#162235] dark:border-slate-700/50 dark:text-slate-200">
           {mainNavLinks.map((link) => {
             const isActive = pathname === link.href;
             return (
@@ -272,7 +242,7 @@ export default function NavbarComponent() {
                 className={`block px-4 py-2.5 rounded-xl text-xs font-medium transition-colors ${
                   isActive
                     ? "bg-blue-600 text-white font-semibold"
-                    : isDarkMode ? "hover:bg-slate-800 text-slate-300" : "hover:bg-slate-100 text-slate-700"
+                    : "hover:bg-slate-100 text-slate-700 dark:hover:bg-slate-800 dark:text-slate-300"
                 }`}
               >
                 {link.label}

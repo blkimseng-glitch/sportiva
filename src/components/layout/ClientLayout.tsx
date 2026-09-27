@@ -41,12 +41,13 @@ export default function ClientLayout({
     return () => clearTimeout(timer);
   }, [pathname]);
 
+  // ពិនិត្យ Route ទាំងនៅលើ Server និង Client ស្របគ្នា (មិនបាច់រង់ចាំ mounted)
   const isAdminRoute = pathname?.startsWith("/admin");
-  const isAuthRoute =
-    pathname?.startsWith("/auth") || pathname?.startsWith("/login");
+  const isAuthRoute = pathname?.startsWith("/auth") || pathname?.startsWith("/login");
 
-  // រង់ចាំឱ្យ mounted រួចសិន ទើបសម្រេចចិត្តលាក់ Layout តាមកាលៈទេសៈ
-  const hideLayout = mounted && (isAdminRoute || isAuthRoute || isNotFoundPage || !isOnline);
+  // សម្រាប់ isOnline និង isNotFoundPage ដែលត្រូវដឹងច្បាស់ក្រោយ mount 
+  // យើងការពារដោយកំណត់ Default ទុកមុនដើម្បីកុំឱ្យ Navbar រុញចេញ/ចូលពេល Refresh
+  const hideLayout = isAdminRoute || isAuthRoute || isNotFoundPage || (mounted && !isOnline);
 
   return (
     <div className="flex flex-col min-h-screen">
