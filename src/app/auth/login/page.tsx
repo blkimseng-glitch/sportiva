@@ -9,11 +9,11 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Login | Sportiva',
     description: 'Log in to your Sportiva account to manage your profile, submit entries, and access exclusive sports features.',
-    url: 'https://yourdomain.com/login',
+    url: 'https://sportiva-rho.vercel.app/login',
     siteName: 'Sportiva',
     images: [
       {
-        url: 'https://yourdomain.com/images/login-cover.jpg',
+        url: 'sportiva-thurbmail.jpg',
         width: 1200,
         height: 630,
         alt: 'Sportiva Login',

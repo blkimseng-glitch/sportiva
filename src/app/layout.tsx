@@ -18,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
       <head>
-        {/* Script នេះដំណើរការលឿនបំផុតមុនពេល Render វ៉េបសាយ ដើម្បីកំណត់ Dark Mode ទុកជាស្រេច មិនឱ្យលោតពណ៌ស */}
+      
         <script
           dangerouslySetInnerHTML={{
             __html: `

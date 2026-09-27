@@ -8,11 +8,11 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Sport Events & Activities | Sportiva',
     description: 'Discover upcoming sports events, competitions, and community activities hosted by Sportiva.',
-    url: 'https://yourdomain.com/events',
+    url: 'https://sportiva-rho.vercel.app/events',
     siteName: 'Sportiva',
     images: [
       {
-        url: 'https://yourdomain.com/images/events-cover.jpg',
+        url: 'sportiva-thurbmail.jpg',
         width: 1200,
         height: 630,
         alt: 'Sportiva Events',
