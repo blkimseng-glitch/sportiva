@@ -185,7 +185,7 @@ export default function EventDetailComponent({ uuid }: EventDetailComponentProps
             <CommentSectionComponent eventUuid={uuid} />
           </main>
 
-          {/* ================= RIGHT SECTION (FIXED SIDEBAR) ================= */}
+          {/*RIGHT SECTION (FIXED SIDEBAR) */}
           <aside className="lg:col-span-1 space-y-6 lg:sticky lg:top-24">
             
             {/* 1. Quick Info Box */}

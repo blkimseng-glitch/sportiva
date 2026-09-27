@@ -19,11 +19,11 @@ export async function generateMetadata({
     openGraph: {
       title: `Event Details - ${uuid} | Sportiva`,
       description: `Explore detailed information, updates, and community comments for event ID: ${uuid} at Sportiva.`,
-      url: `https://yourdomain.com/events/${uuid}`,
+      url: `https://sportiva-rho.vercel.app/events/${uuid}`,
       siteName: "Sportiva",
       images: [
         {
-          url: "https://yourdomain.com/images/events-cover.jpg",
+          url: "https://sportiva-rho.vercel.app/image/sportiva-thurbmail.jpg",
           width: 1200,
           height: 630,
           alt: "Event Detail Cover",

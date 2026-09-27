@@ -199,7 +199,7 @@ export default function HomeGrid({ items = [], searchQuery = "" }: HomeGridProps
             href="/sports"
             className="inline-flex items-center gap-2 rounded-full border border-slate-300 dark:border-slate-700 bg-white/90 dark:bg-[#1b2735] px-8 py-3 text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200 shadow-sm backdrop-blur-md transition hover:border-red-600 hover:bg-red-600 hover:text-white dark:hover:border-red-500 dark:hover:bg-red-600"
           >
-            មើលព័ត៌មានទាំងអស់ <span>&rarr;</span>
+          View all the information  <span>&rarr;</span>
           </Link>
         </div>
       </section>

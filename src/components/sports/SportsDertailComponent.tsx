@@ -56,7 +56,7 @@ export default function SportsDetailComponent({
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-50/80 text-slate-500 dark:bg-[#0b1322] dark:text-slate-400 flex items-center justify-center text-xs transition-colors duration-300">
-        កំពុងទាញយកព័ត៌មានលម្អិត...
+        Wait a moment, brother. We are downloading the details...
       </div>
     );
   }
@@ -64,12 +64,12 @@ export default function SportsDetailComponent({
   if (!sports) {
     return (
       <div className="min-h-screen bg-slate-50/80 text-slate-600 dark:bg-[#0b1322] dark:text-slate-400 flex flex-col items-center justify-center text-xs gap-4 transition-colors duration-300">
-        <p>រកមិនឃើញព័ត៌មានប្រភេទកីឡានេះទេ</p>
+        <p>No information found for this sport, brother. Don't try anymore.</p>
         <button
           onClick={() => router.back()}
           className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition-all text-xs shadow-md"
         >
-          ត្រឡប់ក្រោយ
+         Back
         </button>
       </div>
     );
@@ -77,11 +77,11 @@ export default function SportsDetailComponent({
 
   const title = safeText(
     sports?.name || sports?.title || sports?.sportName,
-    "ព័ត៌មានកីឡា"
+    "Sports News"
   );
   const description = safeText(
     sports?.description || sports?.detail || sports?.synopsis,
-    "គ្មានព័ត៌មានលម្អិតសម្រាប់ប្រភេទកីឡានេះទេ។"
+    "There are no details for this sport."
   );
   const category = safeText(
     sports?.categoryName || sports?.category?.name || sports?.category,
@@ -107,7 +107,7 @@ export default function SportsDetailComponent({
           onClick={() => router.back()}
           className="inline-flex items-center gap-2 text-xs text-slate-600 hover:text-slate-900 bg-white/80 border border-slate-200/80 shadow-sm dark:bg-[#162235] dark:text-slate-400 dark:hover:text-white dark:border-slate-700/60 px-3.5 py-2 rounded-lg transition-all backdrop-blur-md"
         >
-          <ArrowLeft className="w-4 h-4" /> ត្រឡប់ក្រោយ
+          <ArrowLeft className="w-4 h-4" /> Come back, my dear.
         </button>
 
         {/* Detail Card Container */}
@@ -124,7 +124,7 @@ export default function SportsDetailComponent({
             ) : (
               <div className="flex flex-col items-center text-slate-400 dark:text-slate-600">
                 <ImageIcon className="w-12 h-12 opacity-40 mb-2" />
-                <span className="text-xs">គ្មានរូបភាព</span>
+                <span className="text-xs">No image as if without your presence</span>
               </div>
             )}
             
@@ -151,7 +151,7 @@ export default function SportsDetailComponent({
 
             <div className="border-t border-slate-200/80 dark:border-slate-800/80 pt-6 space-y-3">
               <h3 className="text-sm font-semibold text-slate-800 dark:text-slate-200">
-                អំពីប្រភេទកីឡានេះ
+                About this type of sport
               </h3>
               <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed whitespace-pre-line">
                 {description}

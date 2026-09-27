@@ -18,11 +18,11 @@ export async function generateMetadata({
     openGraph: {
       title: `Sport Details | Sportiva`,
       description: `Explore detailed information, training guides, and equipment for sport ID: ${uuid} at Sportiva.`,
-      url: `https://yourdomain.com/sports/${uuid}`,
+      url: `https://sportiva-rho.vercel.app/sports/${uuid}`,
       siteName: "Sportiva",
       images: [
         {
-          url: "https://yourdomain.com/images/sports-cover.jpg", 
+          url: "https://sportiva-rho.vercel.app/image/sportiva-thurbmail.jpg", 
           width: 1200,
           height: 630,
           alt: "Sport Detail Cover",

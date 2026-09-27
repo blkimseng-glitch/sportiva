@@ -18,7 +18,7 @@ export default function SportCard({
   item: SportItem | any;
   featured?: boolean;
 }) {
-  // ទាញយក UUID ឬ ID (ការពារករណី Backend ផ្ញើឈ្មោះ key ផ្សេងគ្នា)
+
   const itemUuid = item?.uuid || item?.id || item?._id;
 
   const categoryName = item?.categoryName || item?.category?.name || "Sports";

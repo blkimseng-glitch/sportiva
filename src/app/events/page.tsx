@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     siteName: 'Sportiva',
     images: [
       {
-        url: 'sportiva-thurbmail.jpg',
+        url: 'https://sportiva-rho.vercel.app/image/sportiva-thurbmail.jpg',
         width: 1200,
         height: 630,
         alt: 'Sportiva Events',

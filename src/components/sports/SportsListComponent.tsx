@@ -16,11 +16,11 @@ export default function SportListComponent() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
 
-  // State សម្រាប់គ្រប់គ្រងការបើក/បិទ Custom Dropdown នៅលើ Mobile/Tablet
+  
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // បិទ Dropdown វិញពេលចុចក្រៅ
+
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -91,7 +91,7 @@ export default function SportListComponent() {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentSports = filteredSports.slice(indexOfFirstItem, indexOfLastItem);
 
-  // រកចំនួនកីឡាទៅតាម Category នីមួយៗ
+
   const getCategoryCount = (cat: string) => {
     if (cat === "All") return sports.length;
     return sports.filter((sport) => {

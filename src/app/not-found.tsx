@@ -23,16 +23,18 @@ export default function NotFound() {
             className="mx-auto w-72 md:w-80 animate-[float_3s_infinite] drop-shadow-lg rounded-lg"
           />
           <h1 className="text-4xl md:text-6xl font-extrabold text-blue-600 dark:text-blue-500 mt-6">
-            Looks Like You're Lost!
+            Oops! You’re Offside!
           </h1>
           <p className="text-base md:text-xl text-slate-600 dark:text-slate-300 mt-2">
-            We can't seem to find the page you're looking for.
+            Looks like you’ve wandered into the wrong area. This page isn’t
+            available right now. No worries — even the best players miss
+            sometimes.
           </p>
           <Link
             href="/"
             className="mt-6 inline-block bg-blue-600 text-white px-8 py-3 rounded-full text-lg font-semibold shadow-lg shadow-blue-500/25 transform transition hover:scale-105 hover:bg-blue-700"
           >
-            Return Home
+            Let’s get you back to the action!
           </Link>
         </div>
       </div>

@@ -54,7 +54,7 @@ export default function CommentSectionComponent({ eventUuid }: Props) {
   };
 
   const handleDelete = async (uuid: string) => {
-    if (!confirm("ចង់លុប Comment នេះមែនទេ?")) return;
+    if (!confirm("Do you want to delete this comment, boss?")) return;
     try {
       await deleteComment(uuid);
       setComments((prev) => prev.filter((item) => (item.uuid || item.id) !== uuid));
@@ -68,13 +68,13 @@ export default function CommentSectionComponent({ eventUuid }: Props) {
       <div className="flex items-center gap-2 border-b border-slate-200/80 dark:border-slate-800 pb-4">
         <MessageSquare className="w-5 h-5 text-blue-500" />
         <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">
-          មតិយោបល់ ({comments.length})
+          Feedback ({comments.length})
         </h3>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-3">
         <Textarea
-          placeholder="សរសេរមតិយោបល់..."
+          placeholder="Write a comment..."
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
           className="bg-white/80 border-slate-300/80 text-slate-800 placeholder:text-slate-400 focus-visible:ring-1 focus-visible:ring-blue-500 dark:bg-[#162235] dark:border-slate-700/60 dark:text-slate-200 dark:placeholder:text-slate-400 text-xs min-h-[90px] rounded-xl shadow-sm"
@@ -86,16 +86,16 @@ export default function CommentSectionComponent({ eventUuid }: Props) {
             className="bg-blue-600 hover:bg-blue-500 text-white text-xs px-4 h-9 gap-2 rounded-xl shadow-sm transition-all"
           >
             <Send className="w-3.5 h-3.5" />
-            {submitting ? "កំពុងផ្ញើ..." : "បញ្ជូនមតិ"}
+            {submitting ? "Is sending..." : "Send an opinion"}
           </Button>
         </div>
       </form>
 
       {loading ? (
-        <div className="text-center py-6 text-slate-500 dark:text-slate-400 text-xs">កំពុងទាញយកមតិ...</div>
+        <div className="text-center py-6 text-slate-500 dark:text-slate-400 text-xs">Downloading comments...</div>
       ) : comments.length === 0 ? (
         <div className="text-center py-8 text-slate-500 dark:text-slate-400 text-xs border border-dashed border-slate-300 dark:border-slate-800 rounded-xl">
-          មិនទាន់មានមតិយោបល់ទេ
+          There are no comments yet.
         </div>
       ) : (
         <div className="space-y-3">
@@ -112,7 +112,7 @@ export default function CommentSectionComponent({ eventUuid }: Props) {
                   </div>
                   <div className="space-y-1">
                     <span className="text-xs font-semibold text-slate-800 dark:text-slate-200 block">
-                      {item?.user?.name || item?.author || "អ្នកប្រើប្រាស់"}
+                      {item?.user?.name || item?.author || "Consumer "}
                     </span>
                     <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
                       {item?.content || item?.comment || ""}

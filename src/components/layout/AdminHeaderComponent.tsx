@@ -9,7 +9,7 @@ interface AdminHeaderProps {
   title?: string;
   subtitle?: string;
   adminName?: string;
-  adminAvatarUrl?: string; // អាចបញ្ចូល URL រូបភាព Admin បាន
+  adminAvatarUrl?: string; 
   onMenuClick: () => void;
 }
 
@@ -26,7 +26,7 @@ export default function AdminHeaderComponent({
     <header className="sticky top-0 z-40 w-full border-b border-slate-200/80 bg-white/95 px-4 py-3 shadow-xs backdrop-blur-md lg:px-6">
       <div className="flex min-h-[44px] items-center justify-between gap-4">
         
-        {/* ផ្នែកខាងឆ្វេង៖ Mobile Menu Button & Welcome Text */}
+        {/* Mobile Menu Button & Welcome Text */}
         <div className="flex items-center gap-3">
           <button
             type="button"
@@ -50,7 +50,7 @@ export default function AdminHeaderComponent({
           </div>
         </div>
 
-        {/* ផ្នែកខាងស្តាំ៖ Admin Profile Dropdown */}
+        {/* Admin Profile Dropdown */}
         <div className="relative">
           <button
             type="button"
