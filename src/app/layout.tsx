@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     siteName: "Sportiva",
     images: [
       {
-        url: "/image/sportiva-thurbmail.jpg",
+        url: "public/image/sportiva-thurbmail.jpg",
         width: 800,
         height: 600,
         alt: "Sportiva Logo",
