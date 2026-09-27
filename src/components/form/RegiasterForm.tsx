@@ -69,7 +69,6 @@ export default function SportivaRegisterPage() {
         const base64String = reader.result as string;
         setPreviewUrl(base64String);
 
-        // រក្សាទុកត្រឹម draft ទូទៅ (ជៀសវាងផ្ទាំងធំពេក បើមានបញ្ហាអាចលុបចោលបាន)
         try {
           localStorage.setItem('register_form_draft', JSON.stringify({
             fullName: formValues.fullName,
@@ -145,15 +144,13 @@ export default function SportivaRegisterPage() {
       setStatus('success');
       spawnConfetti();
 
-      // សម្អាត LocalStorage ចាស់ៗមុន ដើម្បីការពារហួសទំហំកំណត់
       localStorage.removeItem('register_form_draft');
       
-      // រក្សាទុកត្រឹមព័ត៌មានចាំបាច់ (មិនយក Base64 រូបភាពធំៗមកដាក់ក្នុង user state ទេ។ បើមាន server URL អាចដាក់ជំនួសបាន)
       localStorage.setItem("user", JSON.stringify({
         name: data.fullName,
         email: data.email,
         role: data.role || "user",
-        avatar: result?.user?.avatar || "", // រក្សាទុក URL បើមាន
+        avatar: result?.user?.avatar || "",
       }));
       localStorage.setItem("user_role", data.role || "user");
 
@@ -199,38 +196,40 @@ export default function SportivaRegisterPage() {
   };
 
   return (
-    <div className="min-h-screen select-none relative flex items-center justify-center px-4 py-8 overflow-hidden bg-slate-100">
+    <div className="w-screen h-screen select-none relative flex items-center justify-center overflow-hidden bg-slate-950 m-0 p-0">
+      
       <video
         autoPlay
         loop
         muted
         playsInline
-        className="absolute inset-0 w-full h-full object-cover opacity-85 filter brightness-105 pointer-events-none"
+        className="absolute inset-0 w-full h-full object-cover filter brightness-90 pointer-events-none z-0"
       >
-        <source src="/intro-seaGame.mp4" type="video/mp4" />
-        Your browser does not support the video tag.
+        <source src="/video/intro-seaGame.mp4" type="video/mp4" />
+    
       </video>
 
-      <div className="absolute inset-0 bg-white/30 backdrop-blur-[1px]" />
+      <div className="absolute inset-0 bg-slate-950/40 backdrop-blur-[1px] z-0" />
 
-      <div className="w-full max-w-5xl bg-white/90 backdrop-blur-md rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col lg:flex-row relative border border-white/40 z-10">
+
+      <div className="w-full max-w-5xl bg-white/95 backdrop-blur-md rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col lg:flex-row relative z-10 mx-4 max-h-[88vh]">
         
         <LeftHeroImagePanel />
 
-        <div className="w-full lg:w-1/2 p-6 sm:p-8 lg:p-10 flex flex-col justify-center relative bg-white/95">
+        <div className="w-full lg:w-1/2 flex flex-col relative bg-white/95 overflow-y-auto">
           
-          <div className="max-w-md w-full mx-auto">
-            <div className="mb-6">
+          <div className="max-w-md w-full mx-auto p-6 sm:p-8 lg:py-8 lg:px-6">
+            <div className="mb-4">
               <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
                 Create your account
               </h2>
-              <p className="text-slate-500 mt-1.5 text-sm">
+              <p className="text-slate-500 mt-1 text-sm">
                 Join Sportiva and start your performance journey.
               </p>
             </div>
 
             <div className="mb-4 flex flex-col items-center">
-              <div className="relative w-20 h-20 rounded-full overflow-hidden border-2 border-cyan-500 bg-slate-100 flex items-center justify-center shadow-md">
+              <div className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-cyan-500 bg-slate-100 flex items-center justify-center shadow-md">
                 {previewUrl ? (
                   <img src={previewUrl} alt="Profile Preview" className="w-full h-full object-cover" />
                 ) : (
@@ -238,7 +237,7 @@ export default function SportivaRegisterPage() {
                 )}
               </div>
               
-              <label className="mt-2.5 inline-block py-1.5 px-4 bg-cyan-50 text-cyan-700 hover:bg-cyan-100 text-xs font-semibold rounded-full cursor-pointer transition-all shadow-sm">
+              <label className="mt-2 inline-block py-1.5 px-3 bg-cyan-50 text-cyan-700 hover:bg-cyan-100 text-xs font-semibold rounded-full cursor-pointer transition-all shadow-sm">
                 Choose Profile Image
                 <input
                   type="file"
@@ -251,12 +250,11 @@ export default function SportivaRegisterPage() {
 
             <form
               onSubmit={handleSubmit(onSubmit, onError)}
-              className={`space-y-3.5 ${shake ? 'animate-shake' : ''}`}
+              className={`space-y-3 ${shake ? 'animate-shake' : ''}`}
               noValidate
             >
-              {/* Full Name */}
               <div>
-                <label className="text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5 block">
+                <label className="text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1 block">
                   Full Name
                 </label>
                 <div className="relative rounded-xl">
@@ -271,7 +269,7 @@ export default function SportivaRegisterPage() {
                     {...register('fullName', {
                       required: 'Full name is required',
                     })}
-                    className={`w-full pl-12 pr-4 py-3 bg-slate-50 rounded-2xl border text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 transition-all shadow-sm ${
+                    className={`w-full pl-12 pr-4 py-2.5 bg-slate-50 rounded-2xl border text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 transition-all shadow-sm ${
                       errors.fullName ? 'border-rose-500 focus:ring-rose-500/20' : 'border-slate-200 focus:border-cyan-500 focus:ring-cyan-500/20'
                     }`}
                   />
@@ -281,9 +279,8 @@ export default function SportivaRegisterPage() {
                 )}
               </div>
 
-              {/* Email */}
               <div>
-                <label className="text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5 block">
+                <label className="text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1 block">
                   Email address
                 </label>
                 <div className="relative rounded-xl">
@@ -302,7 +299,7 @@ export default function SportivaRegisterPage() {
                         message: 'Please enter a valid email address',
                       },
                     })}
-                    className={`w-full pl-12 pr-4 py-3 bg-slate-50 rounded-2xl border text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 transition-all shadow-sm ${
+                    className={`w-full pl-12 pr-4 py-2.5 bg-slate-50 rounded-2xl border text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 transition-all shadow-sm ${
                       errors.email ? 'border-rose-500 focus:ring-rose-500/20' : 'border-slate-200 focus:border-cyan-500 focus:ring-cyan-500/20'
                     }`}
                   />
@@ -312,23 +309,21 @@ export default function SportivaRegisterPage() {
                 )}
               </div>
 
-              {/* Role Selection */}
               <div>
-                <label className="text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5 block">
+                <label className="text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1 block">
                   Account Role
                 </label>
                 <select
                   {...register('role')}
-                  className="w-full px-4 py-3 bg-slate-50 rounded-2xl border border-slate-200 text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20 transition-all shadow-sm"
+                  className="w-full px-4 py-2.5 bg-slate-50 rounded-2xl border border-slate-200 text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20 transition-all shadow-sm"
                 >
                   <option value="user">User</option>
                   <option value="admin">Admin</option>
                 </select>
               </div>
 
-              {/* Password */}
               <div>
-                <label className="text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5 block">
+                <label className="text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1 block">
                   Password
                 </label>
                 <div className="relative rounded-xl">
@@ -347,7 +342,7 @@ export default function SportivaRegisterPage() {
                         message: 'Password must be at least 6 characters',
                       },
                     })}
-                    className={`w-full pl-12 pr-12 py-3 bg-slate-50 rounded-2xl border text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 transition-all shadow-sm ${
+                    className={`w-full pl-12 pr-12 py-2.5 bg-slate-50 rounded-2xl border text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 transition-all shadow-sm ${
                       errors.password ? 'border-rose-500 focus:ring-rose-500/20' : 'border-slate-200 focus:border-cyan-500 focus:ring-cyan-500/20'
                     }`}
                   />
@@ -363,7 +358,7 @@ export default function SportivaRegisterPage() {
                   <p className="text-xs text-rose-500 mt-1 ml-1">{errors.password.message}</p>
                 )}
 
-                <div className="flex gap-1.5 mt-2">
+                <div className="flex gap-1.5 mt-1.5">
                   {[0, 1, 2, 3].map((i) => (
                     <div key={i} className="h-1 rounded-full flex-1 bg-slate-200 overflow-hidden">
                       <div
@@ -375,12 +370,11 @@ export default function SportivaRegisterPage() {
                     </div>
                   ))}
                 </div>
-                <p className={`text-xs mt-1 ml-0.5 ${passwordValue ? STRENGTH_LABEL_COLORS[passwordScore] || 'text-slate-500' : 'text-slate-500'}`}>
+                <p className={`text-xs mt-0.5 ml-0.5 ${passwordValue ? STRENGTH_LABEL_COLORS[passwordScore] || 'text-slate-500' : 'text-slate-500'}`}>
                   {passwordValue ? STRENGTH_LABELS[passwordScore] || '\u00A0' : '\u00A0'}
                 </p>
               </div>
 
-              {/* Terms */}
               <div>
                 <label className="flex items-start gap-2.5 cursor-pointer">
                   <input
@@ -388,7 +382,7 @@ export default function SportivaRegisterPage() {
                     {...register('terms', {
                       required: 'You must accept the terms',
                     })}
-                    className="mt-1 w-4 h-4 rounded bg-slate-50 border-slate-300 text-cyan-600 focus:ring-cyan-500"
+                    className="mt-0.5 w-4 h-4 rounded bg-slate-50 border-slate-300 text-cyan-600 focus:ring-cyan-500"
                   />
                   <span className="text-xs text-slate-600">
                     I agree to the <Link href="/terms" className="text-cyan-600 hover:underline">Terms of Service</Link> and <Link href="/privacy" className="text-cyan-600 hover:underline">Privacy Policy</Link>
@@ -412,7 +406,7 @@ export default function SportivaRegisterPage() {
               </div>
             </form>
 
-            <div className="relative flex py-4 items-center">
+            <div className="relative flex py-3 items-center">
               <div className="flex-grow border-t border-slate-200"></div>
               <span className="flex-shrink mx-4 text-xs text-slate-400 uppercase tracking-widest font-light">or</span>
               <div className="flex-grow border-t border-slate-200"></div>
@@ -420,7 +414,7 @@ export default function SportivaRegisterPage() {
 
             <SocialLogins />
 
-            <p className="text-center text-sm text-slate-600 mt-5">
+            <p className="text-center text-sm text-slate-600 mt-4">
               Already have an account?{' '}
               <Link href="/auth/login" className="font-medium text-cyan-600 hover:underline">
                 Log in
@@ -437,9 +431,9 @@ export default function SportivaRegisterPage() {
 
 function LeftHeroImagePanel() {
   return (
-    <div className="w-full lg:w-1/2 relative min-h-[300px] lg:min-h-full flex flex-col justify-between p-6 sm:p-8 lg:p-10 overflow-hidden bg-slate-900 text-white">
+    <div className="w-full lg:w-1/2 relative min-h-[200px] lg:min-h-full flex flex-col justify-between p-6 sm:p-8 lg:p-10 overflow-hidden bg-slate-900 text-white">
       <img
-        src="/all_sports.jpg"
+        src="/image/all_sports.jpg"
         alt="Sportiva Champion"
         className="absolute inset-0 w-full h-full object-cover opacity-60"
       />
@@ -447,7 +441,7 @@ function LeftHeroImagePanel() {
       
       <div className="relative z-10 flex items-center">
         <img
-          src="/logo-sportiva.png"
+          src="/image/logo-sportiva.png"
           alt="Sportiva Logo"
           className="h-10 w-auto object-contain"
         />

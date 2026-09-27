@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const STRENGTH_LABELS = ['', 'Weak', 'Fair', 'Good', 'Strong 💪'];
 const STRENGTH_LABEL_COLORS = ['', 'text-rose-500', 'text-orange-500', 'text-amber-600', 'text-emerald-600'];
 const STRENGTH_BAR_COLORS = ['bg-rose-400', 'bg-orange-400', 'bg-amber-400', 'bg-emerald-500'];
@@ -56,7 +55,7 @@ export default function SportivaLoginPage() {
     setTimeout(() => setShake(false), 500);
   };
 
-const onSubmit = (data: FormValues) => {
+  const onSubmit = (data: FormValues) => {
     setStatus('loading');
     setTimeout(() => {
       setStatus('success');
@@ -66,7 +65,6 @@ const onSubmit = (data: FormValues) => {
       localStorage.setItem('user_role', isAdmin ? 'admin' : 'user');
 
       setTimeout(() => {
-        
         if (isAdmin) {
           router.push('/admin'); 
         } else {
@@ -103,26 +101,30 @@ const onSubmit = (data: FormValues) => {
   };
 
   return (
-    <div className="min-h-screen select-none relative flex items-center justify-center px-4 py-8 overflow-hidden bg-slate-100">
+    // Root container ពេញអេក្រង់ ១០០%
+    <div className="w-screen h-screen select-none relative flex items-center justify-center overflow-hidden bg-slate-950 m-0 p-0">
       
+      {/* BACKGROUND VIDEO រត់ពេញអេក្រង់ទាំងមូលនៅពីក្រោយ */}
       <video
         autoPlay
         loop
         muted
         playsInline
-        className="absolute inset-0 w-full h-full object-cover opacity-85 filter brightness-105 pointer-events-none"
+        className="absolute inset-0 w-full h-full object-cover filter brightness-90 pointer-events-none z-0"
       >
-        <source src="/intro-new.mp4" type="video/mp4" />
+        <source src="/video/intro-new.mp4" type="video/mp4" />
         Your browser does not support the video tag.
       </video>
 
-      <div className="absolute inset-0 bg-white/30 backdrop-blur-[1px]" />
+      {/* Dark Overlay ដើម្បីឱ្យវីដេអូស្រអាប់បន្តិច ងាយស្រួលមើលកាត Login */}
+      <div className="absolute inset-0 bg-slate-950/40 backdrop-blur-[1px] z-0" />
 
-      <div className="w-full max-w-5xl bg-white/90 backdrop-blur-md rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col lg:flex-row relative border border-white/40 z-10">
+      {/* កាត Form Login ដើមរបស់អ្នក ស្ថិតនៅចំកណ្តាលពីលើ Video Background */}
+      <div className="w-full max-w-5xl bg-white/95 backdrop-blur-md rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col lg:flex-row relative z-10 mx-4">
         
         <LeftHeroImagePanel />
 
-        <div className="w-full lg:w-1/2 p-6 sm:p-8 lg:p-10 flex flex-col justify-center relative bg-white/95">
+        <div className="w-full lg:w-1/2 p-6 sm:p-8 lg:p-12 flex flex-col justify-center relative bg-white/95">
           
           <div className="max-w-md w-full mx-auto">
             <div className="mb-6">
@@ -169,7 +171,7 @@ const onSubmit = (data: FormValues) => {
                 )}
               </div>
 
-              {/* Password / Passcode Field */}
+              {/* Password Field */}
               <div>
                 <div className="flex justify-between items-center mb-1.5">
                   <label className="text-xs font-semibold text-slate-600 uppercase tracking-wider">
@@ -290,7 +292,7 @@ function LeftHeroImagePanel() {
   return (
     <div className="w-full lg:w-1/2 relative min-h-[300px] lg:min-h-full flex flex-col justify-between p-6 sm:p-8 lg:p-10 overflow-hidden bg-slate-900 text-white">
       <img
-        src="/all_sports.jpg"
+        src="/image/all_sports.jpg"
         alt="Sportiva Champion"
         className="absolute inset-0 w-full h-full object-cover opacity-60"
       />
@@ -298,7 +300,7 @@ function LeftHeroImagePanel() {
       
       <div className="relative z-10 flex items-center">
         <img
-          src="/logo-sportiva.png"
+          src="/image/logo-sportiva.png"
           alt="Sportiva Logo"
           className="h-10 w-auto object-contain"
         />

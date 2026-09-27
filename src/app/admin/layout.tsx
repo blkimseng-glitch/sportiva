@@ -7,7 +7,7 @@ export default function AdminRootLayout({
   children: ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-[#0b1322] text-slate-100 antialiased">
+    <div className="min-h-screen w-full flex flex-col bg-[#0b1322] text-slate-100 antialiased overflow-x-hidden">
       <AdminShell>{children}</AdminShell>
     </div>
   );

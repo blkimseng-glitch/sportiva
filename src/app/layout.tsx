@@ -18,7 +18,6 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
       <head>
-      
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -34,7 +33,8 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="bg-white dark:bg-[#1b2735] text-slate-800 dark:text-slate-100 transition-colors duration-300 antialiased min-h-screen flex flex-col">
+    
+      <body className="w-full min-h-screen bg-white dark:bg-[#1b2735] text-slate-800 dark:text-slate-100 transition-colors duration-300 antialiased flex flex-col m-0 p-0">
         <ClientLayout>
           {children}
         </ClientLayout>

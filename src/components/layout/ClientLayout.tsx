@@ -29,20 +29,28 @@ export default function ClientLayout({
   const isEventPage = pathname?.startsWith("/event");
   const isContactPage = pathname === "/contact";
 
- 
   const isAllowedMainRoute = isHomePage || isAboutPage || isNewsPage || isEventPage || isContactPage;
-
   const hideLayout = isAdminRoute || isAuthRoute || !isAllowedMainRoute || (mounted && !isOnline);
 
-  return (
-    <div className="flex flex-col min-h-screen">
-      {!hideLayout && <NavbarComponent />}
+  // ប្រសិនបើស្ថិតក្នុងទំព័រ Login, Admin ឬ 404 គឺបង្ហាញពេញអេក្រង់ដោយគ្មាន Navbar និង Footer
+  if (hideLayout) {
+    return (
+      <div className="relative w-screen h-screen overflow-hidden m-0 p-0">
+        <NetworkStatusProvider>{children}</NetworkStatusProvider>
+      </div>
+    );
+  }
 
-      <main className="flex-grow">
+  // សម្រាប់ទំព័រធម្មតាដែលមាន Navbar និង Footer
+  return (
+    <div className="flex flex-col w-full min-h-screen">
+      <NavbarComponent />
+
+      <main className="flex-grow w-full">
         <NetworkStatusProvider>{children}</NetworkStatusProvider>
       </main>
 
-      {!hideLayout && <FooterComponent />}
+      <FooterComponent />
     </div>
   );
 }
