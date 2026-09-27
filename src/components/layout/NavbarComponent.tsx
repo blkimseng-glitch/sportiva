@@ -55,7 +55,7 @@ export default function NavbarComponent() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // បិទ Mobile Menu ស្វ័យប្រវត្តពេលប្ដូរ Page (Pathname ផ្លាស់ប្ដូរ)
+  
   useEffect(() => {
     setIsMobileMenuOpen(false);
   }, [pathname]);
@@ -99,7 +99,7 @@ export default function NavbarComponent() {
 
           <Link href="/" className="flex items-center">
             <Image
-              src="/logo-sportiva.png" 
+              src="/image/logo-sportiva.png" 
               alt="Sportiva Logo"
               width={120}
               height={35}

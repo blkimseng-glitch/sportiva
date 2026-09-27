@@ -4,9 +4,9 @@ import { useState } from "react";
 
 // put and change vdo using loop
 const VIDEO_PLAYLIST = [
-     "/welcome-sea-game.mp4",
-    "/sea-game.mp4", 
-     "/bg-vd.mp4"
+     "/video/welcome-sea-game.mp4",
+    "/video/sea-game.mp4", 
+     "/video/bg-vd.mp4"
     ];
 
 export default function HeroBanner() {

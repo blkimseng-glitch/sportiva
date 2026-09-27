@@ -14,12 +14,12 @@ export default function SportCardComponent({
   index,
   safeText,
 }: SportCardComponentProps) {
-  const titleText = safeText(item?.name || item?.title, "ព័ត៌មានកីឡា");
+  const titleText = safeText(item?.name || item?.title, "Sports News");
   const descText = safeText(
     item?.description || item?.synopsis,
-    "ព័ត៌មាន និងបច្ចុប្បន្នភាពកីឡាថ្មីៗ"
+    "Latest sports news and updates"
   );
-  const categoryText = safeText(item?.categoryName || item?.category, "កីឡា");
+  const categoryText = safeText(item?.categoryName || item?.category, "sport");
 
   const imageUrl =
     Array.isArray(item?.imageUrls) && item.imageUrls.length > 0
@@ -30,7 +30,7 @@ export default function SportCardComponent({
 
   return (
     <Link href={`/sports/${sportId}`}>
-      {/* 1. Main Card Container (Light: White bg + subtle border | Dark: #121c2d bg + dark border) */}
+      {/* 1. Main Card Container */}
       <article className="group bg-white/90 border border-slate-200/80 shadow-sm hover:shadow-xl hover:border-blue-500/30 dark:bg-[#121c2d] dark:border-slate-800 dark:hover:border-slate-700 rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-1 flex flex-col h-full backdrop-blur-sm">
         
         {/* 2. Image Area Container */}
@@ -47,7 +47,7 @@ export default function SportCardComponent({
           ) : (
             <div className="flex flex-col items-center justify-center text-slate-400 dark:text-slate-600">
               <ImageIcon className="w-8 h-8 opacity-40 mb-1" />
-              <span className="text-[10px] text-slate-400 dark:text-slate-500">គ្មានរូបភាព</span>
+              <span className="text-[10px] text-slate-400 dark:text-slate-500">No image</span>
             </div>
           )}
 
@@ -77,7 +77,7 @@ export default function SportCardComponent({
               <span>2026</span>
             </div>
             <span className="text-blue-600 dark:text-blue-400 font-medium inline-flex items-center gap-0.5 group-hover:translate-x-0.5 transition-transform">
-              មើលបន្ថែម <ChevronRight className="w-3 h-3" />
+              View more <ChevronRight className="w-3 h-3" />
             </span>
           </div>
         </div>

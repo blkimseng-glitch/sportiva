@@ -112,7 +112,7 @@ export default function SportListComponent() {
         <div className="flex md:hidden relative w-full">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
           <Input
-            placeholder="ស្វែងរកព័ត៌មាន..."
+            placeholder="Search for information..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="bg-white/80 border-slate-300/80 text-slate-800 placeholder:text-slate-400 focus-visible:ring-1 focus-visible:ring-blue-500 dark:bg-[#162235] dark:border-slate-700/60 dark:text-slate-200 dark:placeholder:text-slate-400 text-xs pl-8 h-10 rounded-xl backdrop-blur-md shadow-sm"
@@ -127,7 +127,7 @@ export default function SportListComponent() {
           >
             <span className="flex items-center gap-2">
               <Trophy className="w-3.5 h-3.5 text-blue-500" />
-              {category === "All" ? "ព័ត៌មានកីឡាទាំងអស់" : category} ({getCategoryCount(category)})
+              {category === "All" ? "All sports news" : category} ({getCategoryCount(category)})
             </span>
             <ChevronDown className={`w-4 h-4 text-slate-500 transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`} />
           </button>
@@ -151,7 +151,7 @@ export default function SportListComponent() {
                         : "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
                     }`}
                   >
-                    <span>{item === "All" ? "ព័ត៌មានកីឡាទាំងអស់" : item}</span>
+                    <span>{item === "All" ? "All sports news" : item}</span>
                     <span className={`text-[10px] px-2 py-0.5 rounded-full ${active ? "bg-white/20 text-white" : "bg-slate-100 dark:bg-slate-800 text-slate-500"}`}>
                       {count}
                     </span>
@@ -171,7 +171,7 @@ export default function SportListComponent() {
             <div className="relative w-full">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
               <Input
-                placeholder="ស្វែងរកព័ត៌មាន..."
+                placeholder="Search for information..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="bg-white/80 border-slate-300/80 text-slate-800 placeholder:text-slate-400 focus-visible:ring-1 focus-visible:ring-blue-500 dark:bg-[#162235] dark:border-slate-700/60 dark:text-slate-200 dark:placeholder:text-slate-400 text-xs pl-8 h-10 rounded-xl backdrop-blur-md shadow-sm"
@@ -181,7 +181,7 @@ export default function SportListComponent() {
             {/* Category Navigation Menu */}
             <div className="bg-white/80 border border-slate-200/80 dark:bg-[#121c2d] dark:border-slate-800/80 rounded-2xl p-3 shadow-sm backdrop-blur-md">
               <div className="text-xs font-bold text-slate-400 px-3 py-2 uppercase tracking-wider flex items-center gap-1.5">
-                <Trophy className="w-3.5 h-3.5 text-blue-500" /> ប្រភេទកីឡា
+                <Trophy className="w-3.5 h-3.5 text-blue-500" /> sport
               </div>
               
               <nav className="flex flex-col gap-1 mt-1">
@@ -215,21 +215,21 @@ export default function SportListComponent() {
             {/* Header / Active Category Title */}
             <div className="flex items-center justify-between border-b border-slate-200/80 dark:border-slate-800/80 pb-4">
               <h2 className="text-base font-bold text-slate-900 dark:text-white">
-                {category === "All" ? "ព័ត៌មានកីឡាទាំងអស់" : category}
+                {category === "All" ? "All sports news" : category}
               </h2>
               <span className="text-xs text-slate-500 dark:text-slate-400">
-                បង្ហាញ {filteredSports.length} លទ្ធផល
+               Show {filteredSports.length} the result
               </span>
             </div>
 
             {/* Display Cards Grid */}
             {loading ? (
               <div className="text-center py-20 text-slate-500 dark:text-slate-400 text-xs">
-                កំពុងទាញយកព័ត៌មាន...
+               Downloading information...
               </div>
             ) : filteredSports.length === 0 ? (
               <div className="text-center py-16 text-slate-500 bg-white/70 dark:bg-[#121c2d] dark:text-slate-400 rounded-2xl border border-slate-200 dark:border-slate-800 text-xs shadow-sm">
-                មិនមានព័ត៌មានបង្ហាញទេ
+               There is no information to show.
               </div>
             ) : (
               <>

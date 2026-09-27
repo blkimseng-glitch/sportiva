@@ -26,7 +26,7 @@ export default function FooterComponent() {
 
             {/* Column 2: Quick Links */}
             <div className="flex flex-col items-start">
-              <h4 className="text-lg sm:text-xl text-slate-900 dark:text-white font-bold mb-4 sm:mb-6">Quick Links</h4>
+              <h4 className="text-lg sm:text-xl text-indigo-900 dark:text-white font-bold mb-4 sm:mb-6">Quick Links</h4>
               <ul className="text-sm sm:text-base space-y-3">
                 <li>
                   <Link href="/" className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">
@@ -53,7 +53,7 @@ export default function FooterComponent() {
 
             {/* Column 3: Support Center */}
             <div className="flex flex-col items-start">
-              <h4 className="text-lg sm:text-xl text-slate-900 dark:text-white font-bold mb-4 sm:mb-6">Support Center</h4>
+              <h4 className="text-lg sm:text-xl text-indigo-900 dark:text-white font-bold mb-4 sm:mb-6">Support Center</h4>
               <ul className="text-sm sm:text-base space-y-3">
                 <li>
                   <Link href="/about" className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">
@@ -62,7 +62,7 @@ export default function FooterComponent() {
                 </li>
                 <li>
                   <Link href="/contact" className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">
-                    Advertise with Us
+                   Contact Us
                   </Link>
                 </li>
                 <li>
@@ -70,20 +70,25 @@ export default function FooterComponent() {
                     FAQ
                   </Link>
                 </li>
-                <li>
-                  <Link href="/sitemap" className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">
-                    Sitemap
-                  </Link>
-                </li>
+              
               </ul>
             </div>
 
-            {/* Column 4: About Sportiva */}
+            {/* Column 4: Spo*/}
             <div className="flex flex-col items-start">
-              <h4 className="text-lg sm:text-xl text-slate-900 dark:text-white font-bold mb-4 sm:mb-6">About Sportiva</h4>
-              <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
-                The ultimate platform for all sports news, highlights, and updates in Cambodia.
-              </p>
+              <h4 className="text-lg sm:text-xl text-indigo-900 dark:text-white font-bold mb-4 sm:mb-6">Sponsored and Organized</h4>
+                 <div className="flex flex-col items-start">
+              <Link href="#" className="inline-block">
+                <Image
+                  src="/image/New Logo iSTAD Full-12.png" 
+                  alt="Sports News Logo"
+                  width={140}
+                  height={40}
+                  // className="object-contain transition-all dark:brightness-200 dark:contrast-200 dark:drop-shadow-[0_0_2px_rgba(255,255,255,0.9)]"
+                  // priority
+                />
+              </Link>
+            </div>
             </div>
 
           </div>
