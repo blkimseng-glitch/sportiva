@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     siteName: "Sportiva",
     images: [
       {
-        url: "public/image/sportiva-thurbmail.jpg",
+        url: "/sportiva-thurbmail.jpg",
         width: 800,
         height: 600,
         alt: "Sportiva Logo",
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     title: "Sportiva - Sports News & Latest Events",
     description:
       "The ultimate platform for sports news, live events, and highlights in Cambodia.",
-    images: ["/images/logo.png"],
+    images: ["/sportiva-thurbmail.jpg"],
   },
   robots: {
     index: true,
