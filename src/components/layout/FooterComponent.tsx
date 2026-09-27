@@ -14,7 +14,7 @@ export default function FooterComponent() {
             <div className="flex flex-col items-start">
               <Link href="/" className="inline-block">
                 <Image
-                  src="/logo-sportiva.png" 
+                  src="/image/logo-sportiva.png" 
                   alt="Sports News Logo"
                   width={140}
                   height={40}
@@ -84,8 +84,6 @@ export default function FooterComponent() {
                   alt="Sports News Logo"
                   width={140}
                   height={40}
-                  // className="object-contain transition-all dark:brightness-200 dark:contrast-200 dark:drop-shadow-[0_0_2px_rgba(255,255,255,0.9)]"
-                  // priority
                 />
               </Link>
             </div>
