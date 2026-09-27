@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import NavbarComponent from "@/components/layout/NavbarComponent";
 import FooterComponent from "@/components/layout/FooterComponent";
 import NetworkStatusProvider from "@/components/network/NetworkStatusProvider";
-import useNetwork from "../hooks/useNetwork"; 
+import useNetwork from "../hooks/useNetwork";
 
 export default function ClientLayout({
   children,
@@ -16,7 +16,6 @@ export default function ClientLayout({
   const [mounted, setMounted] = useState(false);
   const [isNotFoundPage, setIsNotFoundPage] = useState(false);
   
-
   const isOnline = useNetwork();
 
   useEffect(() => {
@@ -38,18 +37,16 @@ export default function ClientLayout({
     };
 
     checkIs404();
-    const timer = setTimeout(checkIs404, 100);
+    const timer = setTimeout(checkIs404, 50);
     return () => clearTimeout(timer);
   }, [pathname]);
 
   const isAdminRoute = pathname?.startsWith("/admin");
   const isAuthRoute =
     pathname?.startsWith("/auth") || pathname?.startsWith("/login");
-  const hideLayout = isAdminRoute || isAuthRoute || isNotFoundPage || !isOnline;
 
-  if (!mounted) {
-    return <div className="min-h-screen">{children}</div>;
-  }
+  // រង់ចាំឱ្យ mounted រួចសិន ទើបសម្រេចចិត្តលាក់ Layout តាមកាលៈទេសៈ
+  const hideLayout = mounted && (isAdminRoute || isAuthRoute || isNotFoundPage || !isOnline);
 
   return (
     <div className="flex flex-col min-h-screen">
