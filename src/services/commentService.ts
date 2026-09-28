@@ -1,13 +1,13 @@
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "/backend-api";
 
-// Helper Function ដើម្បីទាញយក Token ឱ្យបានច្បាស់លាស់ពី LocalStorage
+// Helper Function to extract Token precisely from LocalStorage
 const getAuthHeaders = (): Record<string, string> => {
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
   };
 
   if (typeof window !== "undefined") {
-    // ឆែកមើលគ្រប់ Key ដែលអាចរក្សាទុក Token
+    
     const token =
       localStorage.getItem("token") ||
       localStorage.getItem("accessToken") ||
@@ -15,7 +15,7 @@ const getAuthHeaders = (): Record<string, string> => {
       localStorage.getItem("bearer_token");
 
     if (token) {
-      // ត្រូវប្រាកដថា Token មិនមានពាក្យ Bearer ជាន់គ្នា
+      // Make sure the token does not have the word bearer overlapping.
       const cleanToken = token.replace(/^Bearer\s+/i, "");
       headers["Authorization"] = `Bearer ${cleanToken}`;
     }

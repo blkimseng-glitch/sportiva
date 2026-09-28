@@ -51,7 +51,7 @@ export default function AdminSidebarComponent({ open, onClose }: Props) {
         <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4 shrink-0">
           <Link href="/admin" onClick={onClose} className="flex items-center">
             <Image
-              src="/logo-sportiva.png" 
+              src="/image/logo-sportiva.png" 
               alt="Sportiva Logo"
               width={180}
               height={60}
