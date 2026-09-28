@@ -198,7 +198,7 @@ export default function SportListComponent() {
                           : "text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800/80"
                       }`}
                     >
-                      <span>{item === "All" ? "ទាំងអស់" : item}</span>
+                      <span>{item === "All" ? "All" : item}</span>
                       <span className={`text-[10px] px-2 py-0.5 rounded-full ${active ? "bg-white/20 text-white" : "bg-slate-100 dark:bg-slate-800 text-slate-500"}`}>
                         {count}
                       </span>

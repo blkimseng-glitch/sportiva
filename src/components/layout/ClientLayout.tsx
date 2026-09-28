@@ -25,7 +25,7 @@ export default function ClientLayout({
 
   const isHomePage = pathname === "/";
   const isAboutPage = pathname?.startsWith("/about");
-  const isNewsPage = pathname?.startsWith("/news");
+  const isNewsPage = pathname?.startsWith("/sports");
   const isEventPage = pathname?.startsWith("/event");
   const isContactPage = pathname === "/contact";
 
