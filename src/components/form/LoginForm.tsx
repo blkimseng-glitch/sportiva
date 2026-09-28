@@ -66,9 +66,9 @@ export default function SportivaLoginPage() {
 
       setTimeout(() => {
         if (isAdmin) {
-          router.push('/admin'); 
+          router.push('/auth/login'); 
         } else {
-          router.push('/');
+          router.push('/auth/login');
         }
       }, 2000);
 
