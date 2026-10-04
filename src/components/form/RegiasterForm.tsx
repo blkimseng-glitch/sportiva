@@ -171,9 +171,9 @@ export default function SportivaRegisterPage() {
 
       setTimeout(() => {
         if (data.role === "admin") {
-          router.push("/admin");
+          router.push("/auth/login");
         } else {
-          router.push("/");
+          router.push("/auth/login");
         }
       }, 2000);
     } catch (error: any) {
