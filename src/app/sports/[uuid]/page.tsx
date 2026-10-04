@@ -1,5 +1,4 @@
 import SportsDetailComponent from "@/components/sports/SportsDertailComponent";
-import { getSportByUuid } from "@/services/sportService"; 
 import type { Metadata } from "next";
 
 interface PageProps {
@@ -8,38 +7,55 @@ interface PageProps {
   }>;
 }
 
-// ទាញយកទិន្នន័យ Detail របស់ Sport
-async function fetchSportData(uuid: string) {
+// ទាញយក URL ចេញពី env
+const BACKEND_API_URL = process.env.BACKEND_API_URL;
+const MEDIA_DOMAIN = BACKEND_API_URL ? BACKEND_API_URL.replace(/\/api\/v1\/?$/, "") : "";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://sportiva-rho.vercel.app";
+
+// Direct Public Fetch សម្រាប់ Server-side SEO / OpenGraph
+async function fetchDirectSport(uuid: string) {
+  if (!BACKEND_API_URL) {
+    console.error("Missing BACKEND_API_URL environment variable!");
+    return null;
+  }
+
   try {
-    const sport = await getSportByUuid(uuid);
-    return sport;
-  } catch (error) {
-    console.error("Failed to fetch sport details:", error);
+    const res = await fetch(`${BACKEND_API_URL}/sports/${uuid}`, {
+      next: { revalidate: 60 },
+    });
+
+    if (!res.ok) return null;
+    const json = await res.json();
+    return json?.data || json;
+  } catch (err) {
+    console.error("OG Metadata fetch error:", err);
     return null;
   }
 }
 
-// 1. Generate Dynamic Metadata សម្រាប់ SEO និង Social Share Preview
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { uuid } = await params;
-  const sport = await fetchSportData(uuid);
+  const sport = await fetchDirectSport(uuid);
 
-  // រៀបចំ Title & Description
-  const title = sport?.name ? `${sport.name} | Sportiva` : "Sport Details | Sportiva";
-  const description =
-    sport?.description ||
-    `Explore detailed information, training guides, and equipment for ${sport?.name || "sports"} at Sportiva.`;
+  // ប្រសិនបើទាញបាន ចាប់យក title និង description ពិតប្រាកដ
+  const title = sport?.name 
+    ? `${sport.name} | Sportiva` 
+    : "Sport Details | Sportiva";
 
-  // កំណត់ Fallback Image URL
-  const defaultImage = "https://sportiva-rho.vercel.app/image/sportiva-thurbmail.jpg";
-  const rawImage = sport?.image || sport?.imageUrls?.[0] || defaultImage;
+  const description = sport?.description 
+    ? sport.description.slice(0, 160) 
+    : `Explore detailed information and guides for ${sport?.name || "sports"} at Sportiva.`;
 
-  // ធានាថា Image URL គឺជា Absolute URL (មាន https://)
-  const imageUrl = rawImage.startsWith("http")
-    ? rawImage
-    : `https://sportiva-rho.vercel.app${rawImage.startsWith("/") ? "" : "/"}${rawImage}`;
+  // ចាប់យករូបភាព Dynamic ផ្ទាល់
+  const rawImage = sport?.image || sport?.coverImage || sport?.imageUrls?.[0];
+  let imageUrl = `${SITE_URL}/image/sportiva-thurbmail.jpg`; // Fallback image ប្រសិនបើគ្មានរូបភាព
+  if (rawImage) {
+    imageUrl = rawImage.startsWith("http")
+      ? rawImage
+      : `${MEDIA_DOMAIN}${rawImage.startsWith("/") ? "" : "/"}${rawImage}`;
+  }
 
   return {
     title,
@@ -47,18 +63,18 @@ export async function generateMetadata({
     openGraph: {
       title,
       description,
-      url: `https://sportiva-rho.vercel.app/sports/${uuid}`,
+      url: `${SITE_URL}/sports/${uuid}`,
       siteName: "Sportiva",
       images: [
         {
           url: imageUrl,
           width: 1200,
           height: 630,
-          alt: sport?.name || "Sport Detail Cover",
+          alt: title,
         },
       ],
       locale: "en_US",
-      type: "article", // ប្រើ article ដើម្បីឱ្យ Telegram បង្ហាញ Card និងរូបភាពធំ
+      type: "article",
     },
     twitter: {
       card: "summary_large_image",
@@ -69,7 +85,6 @@ export async function generateMetadata({
   };
 }
 
-// 2. Main Page Component
 export default async function SportsDetailPage({ params }: PageProps) {
   const { uuid } = await params;
 

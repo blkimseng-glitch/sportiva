@@ -8,47 +8,52 @@ interface PageProps {
   }>;
 }
 
-// មុខងារសម្រាប់ Fetch ទិន្នន័យ Event ពី Public Backend API
-async function fetchPublicEventData(uuid: string) {
+// ទាញយក URL ចេញពី env
+const BACKEND_API_URL = process.env.BACKEND_API_URL;
+const MEDIA_DOMAIN = BACKEND_API_URL ? BACKEND_API_URL.replace(/\/api\/v1\/?$/, "") : "";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://sportiva-rho.vercel.app";
+
+async function fetchDirectEvent(uuid: string) {
+  if (!BACKEND_API_URL) {
+    console.error("Missing BACKEND_API_URL environment variable!");
+    return null;
+  }
+
   try {
-    // សូមប្តូរ URL នេះទៅជា Direct Public API Endpoint របស់ Backend របស់អ្នក
-    const res = await fetch(
-      `https://YOUR_ACTUAL_BACKEND_DOMAIN.com/api/events/${uuid}`,
-      {
-        next: { revalidate: 60 }, // Cache 60 វិនាទី
-      }
-    );
+    const res = await fetch(`${BACKEND_API_URL}/events/${uuid}`, {
+      next: { revalidate: 60 },
+    });
 
     if (!res.ok) return null;
-    const data = await res.json();
-    return data?.data || data;
-  } catch (error) {
-    console.error("Failed to fetch public event metadata:", error);
+    const json = await res.json();
+    return json?.data || json;
+  } catch (err) {
+    console.error("OG Event fetch error:", err);
     return null;
   }
 }
 
-// SEO & Social Share Metadata
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { uuid } = await params;
-  const event = await fetchPublicEventData(uuid);
+  const event = await fetchDirectEvent(uuid);
 
-  // រៀបចំ Title, Description និង Image Dynamic
-  const title = event?.title || event?.name ? `${event.title || event.name} | Sportiva` : `Event Details | Sportiva`;
-  const description =
-    event?.description ||
-    `Explore detailed information, updates, and community comments for event ID: ${uuid} at Sportiva.`;
+  const title = event?.title || event?.name 
+    ? `${event.title || event.name} | Sportiva` 
+    : "Event Details | Sportiva";
 
-  // ទាញយករូបភាព Dynamic ប្រសិនបើគ្មាន ប្រើប្រាស់ Default Thumbnail
-  let imageUrl = "https://sportiva-rho.vercel.app/image/sportiva-thurbmail.jpg";
-  const apiImage = event?.image || event?.coverImage || event?.thumbnail || event?.imageUrls?.[0];
+  const description = event?.description 
+    ? event.description.slice(0, 160) 
+    : "Explore detailed information, updates, and community comments at Sportiva.";
 
-  if (apiImage) {
-    imageUrl = apiImage.startsWith("http")
-      ? apiImage
-      : `https://YOUR_ACTUAL_BACKEND_DOMAIN.com${apiImage}`;
+  const rawImage = event?.image || event?.thumbnail || event?.coverImage || event?.imageUrls?.[0];
+
+  let imageUrl = `${SITE_URL}/image/sportiva-thurbmail.jpg`;
+  if (rawImage) {
+    imageUrl = rawImage.startsWith("http")
+      ? rawImage
+      : `${MEDIA_DOMAIN}${rawImage.startsWith("/") ? "" : "/"}${rawImage}`;
   }
 
   return {
@@ -57,14 +62,14 @@ export async function generateMetadata({
     openGraph: {
       title,
       description,
-      url: `https://sportiva-rho.vercel.app/events/${uuid}`,
+      url: `${SITE_URL}/events/${uuid}`,
       siteName: "Sportiva",
       images: [
         {
           url: imageUrl,
           width: 1200,
           height: 630,
-          alt: event?.title || event?.name || "Event Detail Cover",
+          alt: title,
         },
       ],
       locale: "en_US",
@@ -79,7 +84,6 @@ export async function generateMetadata({
   };
 }
 
-// Loading Skeleton UI
 function EventDetailSkeleton() {
   return (
     <div className="max-w-5xl mx-auto py-8 px-4 space-y-6 animate-pulse">
