@@ -3,25 +3,42 @@ import HeroBanner from "@/components/layout/HeroBanner";
 import HomeGrid from "@/components/layout/HomeGrid";
 import { getSports } from "@/services/api";
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://sportiva-rho.vercel.app";
+
 export const metadata: Metadata = {
-  title: 'Home | Sportiva',
-  description: 'Welcome to Sportiva - Your ultimate platform for sports news, gear, training guides, and community events.',
-  keywords: ['Sportiva', 'Sports Platform', 'Sports News', 'Gym & Training', 'Sports Equipment'],
+  title: "Home | Sportiva",
+  description:
+    "Welcome to Sportiva - Your ultimate platform for sports news, gear, training guides, and community events.",
+  keywords: [
+    "Sportiva",
+    "Sports Platform",
+    "Sports News",
+    "Gym & Training",
+    "Sports Equipment",
+  ],
   openGraph: {
-    title: 'Home | Sportiva',
-    description: 'Welcome to Sportiva - Your ultimate platform for sports news, gear, training guides, and community events.',
-    url: 'https://yourdomain.com',
-    siteName: 'Sportiva',
+    title: "Home | Sportiva",
+    description:
+      "Welcome to Sportiva - Your ultimate platform for sports news, gear, training guides, and community events.",
+    url: SITE_URL,
+    siteName: "Sportiva",
     images: [
       {
-        url: 'https://yourdomain.com/images/home-cover.jpg',
+        url: `${SITE_URL}/image/sportiva-thurbmail.jpg`,
         width: 1200,
         height: 630,
-        alt: 'Sportiva Home Cover',
+        alt: "Sportiva Home Cover",
       },
     ],
-    locale: 'en_US',
-    type: 'website',
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Home | Sportiva",
+    description:
+      "Welcome to Sportiva - Your ultimate platform for sports news, gear, training guides, and community events.",
+    images: [`${SITE_URL}/image/sportiva-thurbmail.jpg`],
   },
 };
 
@@ -33,7 +50,6 @@ export default async function HomePage() {
       {/* 1. Hero Banner */}
       <HeroBanner />
 
-
       <div className="w-full px-4 py-8 sm:px-6 lg:px-12">
         {posts && posts.length > 0 ? (
           <HomeGrid items={posts} />
@@ -44,15 +60,19 @@ export default async function HomePage() {
         )}
       </div>
 
-      {/* 3. Bottom CTA Section - កែពី max-w-[1400px] មកជា w-full */}
-      <section id="gear" className="w-full border-t border-gray-200 dark:border-slate-800 bg-gray-50 dark:bg-[#1b2735] py-16 transition-colors duration-300">
+      {/* 3. Bottom CTA Section */}
+      <section
+        id="gear"
+        className="w-full border-t border-gray-200 dark:border-slate-800 bg-gray-50 dark:bg-[#1b2735] py-16 transition-colors duration-300"
+      >
         <div className="w-full px-6 lg:px-12">
           <div className="max-w-xl">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white sm:text-3xl">
               Have something worth covering?
             </h2>
             <p className="mt-2 text-sm leading-relaxed text-gray-600 dark:text-gray-300 sm:text-base">
-              Submit a news item or a piece of gear for editorial review — it takes less than a minute.
+              Submit a news item or a piece of gear for editorial review — it
+              takes less than a minute.
             </p>
             <a
               href="/admin/create"
