@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Clock, MessageSquare, Image as ImageIcon } from "lucide-react";
-import { Event } from "../../../lib/types";
+import { Event } from "../../lib/types";
 
 interface EventCardProps {
   item: Event | any;
