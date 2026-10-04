@@ -6,7 +6,7 @@ import {
   unwrapEntity,
   unwrapList,
 } from "@/services/adminApi";
-import type { AdminEvent, EventFormValues } from "@/lib/adminTypes";
+import type { AdminEvent, EventFormValues } from "../lib/adminTypes";
 
 export interface GetEventsParams {
   page?: number;
@@ -26,7 +26,10 @@ export interface PaginatedEventsResponse {
 }
 
 function normalizeEvent(input: unknown): AdminEvent {
-  const data = (input && typeof input === "object" ? input : {}) as Record<string, unknown>;
+  const data = (input && typeof input === "object" ? input : {}) as Record<
+    string,
+    unknown
+  >;
   return {
     uuid: firstString(data.uuid, data.id),
     name: firstString(data.name, data.title),
@@ -35,12 +38,17 @@ function normalizeEvent(input: unknown): AdminEvent {
     locationName: firstString(data.locationName, data.location),
     latitude: firstNumber(data.latitude, data.lat),
     longitude: firstNumber(data.longitude, data.lng, data.lon),
-    imageUrls: toImageUrls(data.imageUrls ?? data.images ?? data.imageUrl ?? data.image),
-    createdAt: firstString(data.createdAt, data.created_at, data.updatedAt) || null,
+    imageUrls: toImageUrls(
+      data.imageUrls ?? data.images ?? data.imageUrl ?? data.image,
+    ),
+    createdAt:
+      firstString(data.createdAt, data.created_at, data.updatedAt) || null,
   };
 }
 
-export async function getAdminEvents(params?: GetEventsParams): Promise<AdminEvent[] | PaginatedEventsResponse> {
+export async function getAdminEvents(
+  params?: GetEventsParams,
+): Promise<AdminEvent[] | PaginatedEventsResponse> {
   const query = new URLSearchParams();
 
   if (params?.page) query.append("page", params.page.toString());
@@ -56,20 +64,30 @@ export async function getAdminEvents(params?: GetEventsParams): Promise<AdminEve
   const payload = await adminRequest<unknown>(endpoint);
 
   // If the backend returns a paginated wrapper like { data: [...], total: 100 }
-  if (payload && typeof payload === "object" && "data" in payload && Array.isArray((payload as Record<string, unknown>).data)) {
+  if (
+    payload &&
+    typeof payload === "object" &&
+    "data" in payload &&
+    Array.isArray((payload as Record<string, unknown>).data)
+  ) {
     const rawObj = payload as Record<string, unknown>;
     const rawList = rawObj.data as unknown[];
     return {
-      data: rawList.map(normalizeEvent).filter((item) => item.uuid || item.name),
+      data: rawList
+        .map(normalizeEvent)
+        .filter((item) => item.uuid || item.name),
       total: typeof rawObj.total === "number" ? rawObj.total : undefined,
       page: typeof rawObj.page === "number" ? rawObj.page : params?.page,
       limit: typeof rawObj.limit === "number" ? rawObj.limit : params?.limit,
-      totalPages: typeof rawObj.totalPages === "number" ? rawObj.totalPages : undefined,
+      totalPages:
+        typeof rawObj.totalPages === "number" ? rawObj.totalPages : undefined,
     };
   }
 
   // Fallback for direct array responses
-  return unwrapList<unknown>(payload).map(normalizeEvent).filter((item) => item.uuid || item.name);
+  return unwrapList<unknown>(payload)
+    .map(normalizeEvent)
+    .filter((item) => item.uuid || item.name);
 }
 
 export async function createAdminEvent(values: EventFormValues) {
@@ -99,10 +117,13 @@ export async function updateAdminEvent(uuid: string, values: EventFormValues) {
     longitude: Number(values.longitude),
     categoryName: values.categoryName,
   };
-  const payload = await adminRequest<unknown>(`/events/${encodeURIComponent(uuid)}`, {
-    method: "PATCH",
-    body: JSON.stringify(body),
-  });
+  const payload = await adminRequest<unknown>(
+    `/events/${encodeURIComponent(uuid)}`,
+    {
+      method: "PATCH",
+      body: JSON.stringify(body),
+    },
+  );
   return normalizeEvent(unwrapEntity<unknown>(payload));
 }
 

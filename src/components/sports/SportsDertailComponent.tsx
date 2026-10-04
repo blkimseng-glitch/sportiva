@@ -53,23 +53,51 @@ export default function SportsDetailComponent({
     return fallback;
   };
 
+  // --- SKELETON LOADER FOR FULL SCREEN ---
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50/80 text-slate-500 dark:bg-[#0b1322] dark:text-slate-400 flex items-center justify-center text-xs transition-colors duration-300">
-        Wait a moment, brother. We are downloading the details...
+      <div className="relative w-full min-h-screen bg-slate-50/80 text-slate-800 dark:bg-[#0b1322] dark:text-slate-200 py-8 px-4 sm:px-6 lg:px-12 transition-colors duration-300">
+        {/* Background Ambient Glow */}
+        <div className="pointer-events-none absolute left-1/4 top-10 -z-10 h-72 w-72 rounded-full bg-blue-500/10 blur-3xl dark:bg-blue-600/15" />
+        <div className="pointer-events-none absolute right-1/4 top-96 -z-10 h-96 w-96 rounded-full bg-indigo-500/10 blur-3xl dark:bg-indigo-600/15" />
+
+        <div className="w-full max-w-6xl mx-auto space-y-6 animate-pulse">
+          {/* Back Button Skeleton */}
+          <div className="h-9 w-32 bg-slate-200 dark:bg-slate-800 rounded-lg" />
+
+          {/* Detail Card Skeleton Container */}
+          <div className="bg-white/90 border border-slate-200/80 dark:bg-[#121c2d] dark:border-slate-800 rounded-2xl overflow-hidden shadow-xl backdrop-blur-md p-6 sm:p-8 space-y-6">
+            {/* Image Skeleton */}
+            <div className="w-full aspect-[16/9] bg-slate-200 dark:bg-slate-800 rounded-xl" />
+            
+            {/* Title & Info Skeleton */}
+            <div className="space-y-3">
+              <div className="h-7 bg-slate-200 dark:bg-slate-800 rounded w-3/4" />
+              <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded w-1/4" />
+            </div>
+
+            {/* Description Skeleton */}
+            <div className="space-y-2 pt-4 border-t border-slate-200/80 dark:border-slate-800">
+              <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded w-1/3" />
+              <div className="h-3 bg-slate-200 dark:bg-slate-800 rounded w-full" />
+              <div className="h-3 bg-slate-200 dark:bg-slate-800 rounded w-5/6" />
+              <div className="h-3 bg-slate-200 dark:bg-slate-800 rounded w-4/6" />
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
 
   if (!sports) {
     return (
-      <div className="min-h-screen bg-slate-50/80 text-slate-600 dark:bg-[#0b1322] dark:text-slate-400 flex flex-col items-center justify-center text-xs gap-4 transition-colors duration-300">
+      <div className="relative w-full min-h-screen bg-slate-50/80 text-slate-600 dark:bg-[#0b1322] dark:text-slate-400 flex flex-col items-center justify-center text-xs gap-4 transition-colors duration-300 px-4">
         <p>No information found for this sport, brother. Don't try anymore.</p>
         <button
           onClick={() => router.back()}
           className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition-all text-xs shadow-md"
         >
-         Back
+          Back
         </button>
       </div>
     );
@@ -94,14 +122,16 @@ export default function SportsDetailComponent({
       : sports?.image || sports?.imageUrl || sports?.image_url;
 
   return (
-    // 1. Background Wrapper គាំទ្រ Light / Dark Mode
-    <div className="relative min-h-screen bg-slate-50/80 text-slate-800 dark:bg-[#0b1322] dark:text-slate-200 py-8 px-4 sm:px-6 lg:px-8 transition-colors duration-300">
+    // 1. Full Screen Layout គាំទ្រ Light / Dark Mode ពេញអេក្រង់
+    <div className="relative w-full min-h-screen bg-slate-50/80 text-slate-800 dark:bg-[#0b1322] dark:text-slate-200 py-8 px-4 sm:px-6 lg:px-12 transition-colors duration-300">
       
       {/* Background Ambient Glow Effects */}
       <div className="pointer-events-none absolute left-1/4 top-10 -z-10 h-72 w-72 rounded-full bg-blue-500/10 blur-3xl dark:bg-blue-600/15" />
       <div className="pointer-events-none absolute right-1/4 top-96 -z-10 h-96 w-96 rounded-full bg-indigo-500/10 blur-3xl dark:bg-indigo-600/15" />
 
-      <div className="max-w-4xl mx-auto space-y-6">
+      {/* ប្រើ max-w-6xl ឬ w-full ដើម្បីឱ្យវាទាញរីកពេញអេក្រង់ទូលាយស្អាត */}
+      <div className="w-full max-w-6xl mx-auto space-y-6">
+        
         {/* Back Button */}
         <button
           onClick={() => router.back()}
@@ -137,9 +167,9 @@ export default function SportsDetailComponent({
           </div>
 
           {/* Details Content Section */}
-          <div className="p-6 sm:p-8 space-y-6">
+          <div className="p-6 sm:p-8 lg:p-10 space-y-6">
             <div className="space-y-2">
-              <h1 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white leading-tight">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-900 dark:text-white leading-tight">
                 {title}
               </h1>
               <div className="flex items-center gap-4 text-xs text-slate-500 dark:text-slate-400 pt-1">

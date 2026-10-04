@@ -2,14 +2,17 @@
 
 import Link from "next/link";
 import { Clock, MessageSquare, Image as ImageIcon } from "lucide-react";
-import { Event } from "@/lib/types";
+import { Event } from "../../../lib/types";
 
 interface EventCardProps {
   item: Event | any;
   index?: number;
 }
 
-export default function EventCardComponent({ item, index = 0 }: EventCardProps) {
+export default function EventCardComponent({
+  item,
+  index = 0,
+}: EventCardProps) {
   // Helper for text safety
   const safeText = (value: any, fallback: string = ""): string => {
     if (!value) return fallback;
@@ -36,7 +39,10 @@ export default function EventCardComponent({ item, index = 0 }: EventCardProps) 
   };
 
   const titleText = safeText(item.name || item.title, "Sports Event");
-  const descText = safeText(item.description, "No details available for this event...");
+  const descText = safeText(
+    item.description,
+    "No details available for this event...",
+  );
   const categoryText = safeText(item.categoryName || item.category, "Sports");
 
   const imageUrl =
@@ -45,13 +51,16 @@ export default function EventCardComponent({ item, index = 0 }: EventCardProps) 
       : item.image || item.imageUrl;
 
   const itemUuid = item.uuid || item.id || index;
-  const formattedDate = formatDate(item.date || item.createdAt || item.startDate);
-  const commentsCount = item.commentsCount || (Array.isArray(item.comments) ? item.comments.length : 0);
+  const formattedDate = formatDate(
+    item.date || item.createdAt || item.startDate,
+  );
+  const commentsCount =
+    item.commentsCount ||
+    (Array.isArray(item.comments) ? item.comments.length : 0);
 
   return (
     <Link href={`/events/${itemUuid}`} className="block h-full">
       <article className="group relative bg-white/90 hover:bg-white dark:bg-[#131d31] dark:hover:bg-[#18253d] border border-slate-200/80 hover:border-indigo-500/50 dark:border-slate-800/80 dark:hover:border-indigo-500/50 rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1 shadow-sm hover:shadow-xl dark:hover:shadow-2xl dark:hover:shadow-indigo-500/10 flex flex-col h-full backdrop-blur-md">
-        
         {/* Image Container */}
         <div className="relative aspect-[16/10] w-full bg-slate-100 dark:bg-[#0d1527] overflow-hidden">
           {imageUrl ? (
@@ -66,7 +75,9 @@ export default function EventCardComponent({ item, index = 0 }: EventCardProps) 
           ) : (
             <div className="w-full h-full flex flex-col items-center justify-center text-slate-400 dark:text-slate-600">
               <ImageIcon className="w-8 h-8 opacity-40 mb-1" />
-              <span className="text-xs text-slate-400 dark:text-slate-500">No Image</span>
+              <span className="text-xs text-slate-400 dark:text-slate-500">
+                No Image
+              </span>
             </div>
           )}
 
@@ -101,7 +112,9 @@ export default function EventCardComponent({ item, index = 0 }: EventCardProps) 
 
             <div className="flex items-center gap-1">
               <MessageSquare className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" />
-              <span>{commentsCount} {commentsCount === 1 ? "comment" : "comments"}</span>
+              <span>
+                {commentsCount} {commentsCount === 1 ? "comment" : "comments"}
+              </span>
             </div>
           </div>
         </div>

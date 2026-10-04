@@ -1,21 +1,52 @@
 "use client";
 
 import Image from "next/image";
-import { ChevronLeft, ChevronRight, Pencil, Plus, Search, Trash2, Trophy } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Pencil,
+  Plus,
+  Search,
+  Trash2,
+  Trophy,
+} from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import type { AdminCategory, AdminSport, SportFormValues } from "@/lib/adminTypes";
+import type {
+  AdminCategory,
+  AdminSport,
+  SportFormValues,
+} from "../../../lib/adminTypes";
 import { getAdminCategories } from "@/services/adminCategoryService";
-import { createAdminSport, deleteAdminSport, getAdminSports, updateAdminSport } from "@/services/adminSportService";
+import {
+  createAdminSport,
+  deleteAdminSport,
+  getAdminSports,
+  updateAdminSport,
+} from "@/services/adminSportService";
 import AdminPageHeader from "@/components/admin/AdminHeader";
 import AdminModal from "@/components/admin/AdminModal";
 import AdminConfirmDialog from "@/components/admin/Admindialog";
 import AdminImageUpload from "@/components/admin/AdminImageUpload";
-import { AdminField, AdminInput, AdminSelect, AdminTextarea } from "@/components/admin/Adminform";
+import {
+  AdminField,
+  AdminInput,
+  AdminSelect,
+  AdminTextarea,
+} from "@/components/admin/Adminform";
 import AdminIconButton from "@/components/admin/AdminIcon";
-import { AdminErrorState, AdminTableEmpty, AdminTableLoading } from "@/components/admin/AdminTableStat";
+import {
+  AdminErrorState,
+  AdminTableEmpty,
+  AdminTableLoading,
+} from "@/components/admin/AdminTableStat";
 
-const emptyForm: SportFormValues = { name: "", description: "", categoryName: "", imageUrls: [] };
+const emptyForm: SportFormValues = {
+  name: "",
+  description: "",
+  categoryName: "",
+  imageUrls: [],
+};
 
 export default function AdminSportsPage() {
   const [sports, setSports] = useState<AdminSport[]>([]);
@@ -39,20 +70,32 @@ export default function AdminSportsPage() {
     setLoading(true);
     setError("");
     try {
-      const [sportsData, categoryData] = await Promise.all([getAdminSports(), getAdminCategories()]);
-      
-      const normalizedSports: AdminSport[] = (sportsData || []).map((item: any) => ({
-        uuid: item.uuid || item.id || "",
-        name: item.name || "",
-        description: item.description || "",
-        categoryName: item.categoryName || item.category_name || item.category?.name || item.category || "",
-        imageUrls: item.imageUrls || item.images || [],
-      }));
+      const [sportsData, categoryData] = await Promise.all([
+        getAdminSports(),
+        getAdminCategories(),
+      ]);
+
+      const normalizedSports: AdminSport[] = (sportsData || []).map(
+        (item: any) => ({
+          uuid: item.uuid || item.id || "",
+          name: item.name || "",
+          description: item.description || "",
+          categoryName:
+            item.categoryName ||
+            item.category_name ||
+            item.category?.name ||
+            item.category ||
+            "",
+          imageUrls: item.imageUrls || item.images || [],
+        }),
+      );
 
       setSports(normalizedSports);
       setCategories(categoryData || []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to fetch sports data");
+      setError(
+        err instanceof Error ? err.message : "Failed to fetch sports data",
+      );
     } finally {
       setLoading(false);
     }
@@ -66,7 +109,9 @@ export default function AdminSportsPage() {
     return sports.filter((sport) => {
       const needle = search.trim().toLowerCase();
       const nameMatch = (sport.name || "").toLowerCase().includes(needle);
-      const descMatch = (sport.description || "").toLowerCase().includes(needle);
+      const descMatch = (sport.description || "")
+        .toLowerCase()
+        .includes(needle);
       const matchesSearch = !needle || nameMatch || descMatch;
 
       if (selectedCategory === "all") return matchesSearch;
@@ -120,12 +165,15 @@ export default function AdminSportsPage() {
 
   const save = async () => {
     if (!form.name.trim()) return toast.error("Please enter a sport name");
-    if (!form.categoryName.trim()) return toast.error("Please select a category");
+    if (!form.categoryName.trim())
+      return toast.error("Please select a category");
     setSaving(true);
     try {
       if (editing) await updateAdminSport(editing.uuid, form);
       else await createAdminSport(form);
-      toast.success(editing ? "Sport updated successfully" : "Sport added successfully");
+      toast.success(
+        editing ? "Sport updated successfully" : "Sport added successfully",
+      );
       setModalOpen(false);
       await load();
     } catch (err) {
@@ -144,7 +192,9 @@ export default function AdminSportsPage() {
       setDeleteTarget(null);
       await load();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to delete sport");
+      toast.error(
+        err instanceof Error ? err.message : "Failed to delete sport",
+      );
     } finally {
       setDeleting(false);
     }
@@ -169,7 +219,10 @@ export default function AdminSportsPage() {
       {/* Filter Section */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="relative flex-1">
-          <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+          <Search
+            size={18}
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+          />
           <input
             type="text"
             value={search}
@@ -212,7 +265,11 @@ export default function AdminSportsPage() {
           />
         ) : filtered.length === 0 ? (
           <AdminTableEmpty
-            label={search || selectedCategory !== "all" ? "No sports found matching your query" : "No sports available"}
+            label={
+              search || selectedCategory !== "all"
+                ? "No sports found matching your query"
+                : "No sports available"
+            }
           />
         ) : (
           <>
@@ -246,11 +303,15 @@ export default function AdminSportsPage() {
                               </div>
                             )}
                           </div>
-                          <span className="font-semibold text-slate-800">{sport.name || "Unnamed"}</span>
+                          <span className="font-semibold text-slate-800">
+                            {sport.name || "Unnamed"}
+                          </span>
                         </div>
                       </td>
                       <td className="max-w-xs px-6 py-4">
-                        <p className="line-clamp-2 text-xs text-slate-500">{sport.description || "-"}</p>
+                        <p className="line-clamp-2 text-xs text-slate-500">
+                          {sport.description || "-"}
+                        </p>
                       </td>
                       <td className="px-6 py-4">
                         <span className="inline-flex rounded-md bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-600">
@@ -259,10 +320,17 @@ export default function AdminSportsPage() {
                       </td>
                       <td className="px-6 py-4 text-right">
                         <div className="flex justify-end gap-1">
-                          <AdminIconButton label="Edit" onClick={() => openEdit(sport)}>
+                          <AdminIconButton
+                            label="Edit"
+                            onClick={() => openEdit(sport)}
+                          >
                             <Pencil size={16} />
                           </AdminIconButton>
-                          <AdminIconButton label="Delete" tone="danger" onClick={() => setDeleteTarget(sport)}>
+                          <AdminIconButton
+                            label="Delete"
+                            tone="danger"
+                            onClick={() => setDeleteTarget(sport)}
+                          >
                             <Trash2 size={16} />
                           </AdminIconButton>
                         </div>
@@ -321,7 +389,9 @@ export default function AdminSportsPage() {
           <AdminField label="Description">
             <AdminTextarea
               value={form.description}
-              onChange={(e) => setForm((v) => ({ ...v, description: e.target.value }))}
+              onChange={(e) =>
+                setForm((v) => ({ ...v, description: e.target.value }))
+              }
               placeholder="Describe the sport..."
               className="bg-white border-slate-200 text-slate-800 placeholder-slate-400 focus:border-blue-500"
             />
@@ -329,7 +399,9 @@ export default function AdminSportsPage() {
           <AdminField label="Category" required>
             <AdminSelect
               value={form.categoryName}
-              onChange={(e) => setForm((v) => ({ ...v, categoryName: e.target.value }))}
+              onChange={(e) =>
+                setForm((v) => ({ ...v, categoryName: e.target.value }))
+              }
               className="bg-white border-slate-200 text-slate-800 focus:border-blue-500"
             >
               <option value="">Select Category</option>

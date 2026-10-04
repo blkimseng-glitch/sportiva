@@ -1,26 +1,26 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useForm } from 'react-hook-form';
-import { authService } from '@/services/authService';
-import { RegisterFormValues } from '@/lib/types';
-import { 
-  EMAIL_REGEX, 
-  getPasswordScore, 
-  STRENGTH_LABELS, 
-  STRENGTH_LABEL_COLORS, 
-  STRENGTH_BAR_COLORS, 
-  CONFETTI_EMOJIS, 
-  CONFETTI_COLORS 
-} from '@/lib/utils';
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { authService } from "@/services/authService";
+import { RegisterFormValues } from "../../lib/types";
+import {
+  EMAIL_REGEX,
+  getPasswordScore,
+  STRENGTH_LABELS,
+  STRENGTH_LABEL_COLORS,
+  STRENGTH_BAR_COLORS,
+  CONFETTI_EMOJIS,
+  CONFETTI_COLORS,
+} from "../../lib/utils";
 
 export default function SportivaRegisterPage() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [shake, setShake] = useState(false);
-  const [status, setStatus] = useState('idle');
+  const [status, setStatus] = useState("idle");
   const [confetti, setConfetti] = useState<any[]>([]);
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -34,22 +34,22 @@ export default function SportivaRegisterPage() {
     formState: { errors },
   } = useForm<RegisterFormValues>({
     defaultValues: {
-      fullName: '',
-      email: '',
-      password: '',
+      fullName: "",
+      email: "",
+      password: "",
       terms: false,
-      role: 'user',
+      role: "user",
     },
   });
 
   useEffect(() => {
-    const savedData = localStorage.getItem('register_form_draft');
+    const savedData = localStorage.getItem("register_form_draft");
     if (savedData) {
       try {
         const parsed = JSON.parse(savedData);
-        if (parsed.fullName) setValue('fullName', parsed.fullName);
-        if (parsed.email) setValue('email', parsed.email);
-        if (parsed.role) setValue('role', parsed.role);
+        if (parsed.fullName) setValue("fullName", parsed.fullName);
+        if (parsed.email) setValue("email", parsed.email);
+        if (parsed.role) setValue("role", parsed.role);
         if (parsed.previewUrl) setPreviewUrl(parsed.previewUrl);
       } catch (e) {
         console.error(e);
@@ -70,14 +70,19 @@ export default function SportivaRegisterPage() {
         setPreviewUrl(base64String);
 
         try {
-          localStorage.setItem('register_form_draft', JSON.stringify({
-            fullName: formValues.fullName,
-            email: formValues.email,
-            role: formValues.role,
-            previewUrl: base64String,
-          }));
+          localStorage.setItem(
+            "register_form_draft",
+            JSON.stringify({
+              fullName: formValues.fullName,
+              email: formValues.email,
+              role: formValues.role,
+              previewUrl: base64String,
+            }),
+          );
         } catch (err) {
-          console.warn("Draft storage quota exceeded, skipping local draft save.");
+          console.warn(
+            "Draft storage quota exceeded, skipping local draft save.",
+          );
         }
       };
       reader.readAsDataURL(file);
@@ -86,19 +91,24 @@ export default function SportivaRegisterPage() {
 
   useEffect(() => {
     try {
-      const existingData = JSON.parse(localStorage.getItem('register_form_draft') || '{}');
-      localStorage.setItem('register_form_draft', JSON.stringify({
-        ...existingData,
-        fullName: formValues.fullName,
-        email: formValues.email,
-        role: formValues.role,
-      }));
+      const existingData = JSON.parse(
+        localStorage.getItem("register_form_draft") || "{}",
+      );
+      localStorage.setItem(
+        "register_form_draft",
+        JSON.stringify({
+          ...existingData,
+          fullName: formValues.fullName,
+          email: formValues.email,
+          role: formValues.role,
+        }),
+      );
     } catch (e) {
       // ignore storage error on draft
     }
   }, [formValues.fullName, formValues.email, formValues.role]);
 
-  const passwordValue = watch('password', '');
+  const passwordValue = watch("password", "");
   const passwordScore = getPasswordScore(passwordValue);
 
   const triggerShake = () => {
@@ -107,11 +117,11 @@ export default function SportivaRegisterPage() {
   };
 
   const onSubmit = async (data: RegisterFormValues) => {
-    setStatus('loading');
+    setStatus("loading");
     try {
-      let imageUrl = previewUrl || ""; 
+      let imageUrl = previewUrl || "";
       let result: any = null;
-      
+
       try {
         if (selectedFile && authService.uploadImage) {
           try {
@@ -131,41 +141,45 @@ export default function SportivaRegisterPage() {
 
         result = await authService.register(payload);
       } catch (apiError) {
-        console.warn("Backend API not available, using local mock registration.");
+        console.warn(
+          "Backend API not available, using local mock registration.",
+        );
         result = {
           user: {
             name: data.fullName,
             email: data.email,
             role: data.role || "user",
-          }
+          },
         };
       }
 
-      setStatus('success');
+      setStatus("success");
       spawnConfetti();
 
-      localStorage.removeItem('register_form_draft');
-      
-      localStorage.setItem("user", JSON.stringify({
-        name: data.fullName,
-        email: data.email,
-        role: data.role || "user",
-        avatar: result?.user?.avatar || "",
-      }));
+      localStorage.removeItem("register_form_draft");
+
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          name: data.fullName,
+          email: data.email,
+          role: data.role || "user",
+          avatar: result?.user?.avatar || "",
+        }),
+      );
       localStorage.setItem("user_role", data.role || "user");
 
       setTimeout(() => {
-        if (data.role === 'admin') {
-          router.push('/admin'); 
+        if (data.role === "admin") {
+          router.push("/admin");
         } else {
-          router.push('/');
+          router.push("/");
         }
       }, 2000);
-
     } catch (error: any) {
       console.error(error);
       alert("Something went wrong during registration!");
-      setStatus('idle');
+      setStatus("idle");
       triggerShake();
     }
   };
@@ -180,11 +194,14 @@ export default function SportivaRegisterPage() {
       return {
         id: `${Date.now()}-${i}`,
         isEmoji,
-        emoji: isEmoji ? CONFETTI_EMOJIS[Math.floor(Math.random() * CONFETTI_EMOJIS.length)] : null,
+        emoji: isEmoji
+          ? CONFETTI_EMOJIS[Math.floor(Math.random() * CONFETTI_EMOJIS.length)]
+          : null,
         fontSize: Math.random() * 14 + 12,
         size: Math.random() * 8 + 4,
         rounded: Math.random() > 0.5,
-        color: CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)],
+        color:
+          CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)],
         left: Math.random() * 100,
         top: Math.random() * 40 + 30,
         duration: Math.random() * 1.5 + 1,
@@ -197,7 +214,6 @@ export default function SportivaRegisterPage() {
 
   return (
     <div className="w-screen h-screen select-none relative flex items-center justify-center overflow-hidden bg-slate-950 m-0 p-0">
-      
       <video
         autoPlay
         loop
@@ -206,18 +222,14 @@ export default function SportivaRegisterPage() {
         className="absolute inset-0 w-full h-full object-cover filter brightness-90 pointer-events-none z-0"
       >
         <source src="/video/intro-seaGame.mp4" type="video/mp4" />
-    
       </video>
 
       <div className="absolute inset-0 bg-slate-950/40 backdrop-blur-[1px] z-0" />
 
-
       <div className="w-full max-w-5xl bg-white/95 backdrop-blur-md rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col lg:flex-row relative z-10 mx-4 max-h-[88vh]">
-        
         <LeftHeroImagePanel />
 
         <div className="w-full lg:w-1/2 flex flex-col relative bg-white/95 overflow-y-auto">
-          
           <div className="max-w-md w-full mx-auto p-6 sm:p-8 lg:py-8 lg:px-6">
             <div className="mb-4">
               <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
@@ -231,26 +243,32 @@ export default function SportivaRegisterPage() {
             <div className="mb-4 flex flex-col items-center">
               <div className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-cyan-500 bg-slate-100 flex items-center justify-center shadow-md">
                 {previewUrl ? (
-                  <img src={previewUrl} alt="Profile Preview" className="w-full h-full object-cover" />
+                  <img
+                    src={previewUrl}
+                    alt="Profile Preview"
+                    className="w-full h-full object-cover"
+                  />
                 ) : (
-                  <span className="text-xs text-slate-400 font-medium">Profile</span>
+                  <span className="text-xs text-slate-400 font-medium">
+                    Profile
+                  </span>
                 )}
               </div>
-              
+
               <label className="mt-2 inline-block py-1.5 px-3 bg-cyan-50 text-cyan-700 hover:bg-cyan-100 text-xs font-semibold rounded-full cursor-pointer transition-all shadow-sm">
                 Choose Profile Image
                 <input
                   type="file"
                   accept="image/*"
                   onChange={handleFileChange}
-                  className="hidden" 
+                  className="hidden"
                 />
               </label>
             </div>
 
             <form
               onSubmit={handleSubmit(onSubmit, onError)}
-              className={`space-y-3 ${shake ? 'animate-shake' : ''}`}
+              className={`space-y-3 ${shake ? "animate-shake" : ""}`}
               noValidate
             >
               <div>
@@ -259,23 +277,37 @@ export default function SportivaRegisterPage() {
                 </label>
                 <div className="relative rounded-xl">
                   <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.654 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="1.5"
+                        d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.654 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
                     </svg>
                   </span>
                   <input
                     type="text"
                     placeholder="Enter your full name"
-                    {...register('fullName', {
-                      required: 'Full name is required',
+                    {...register("fullName", {
+                      required: "Full name is required",
                     })}
                     className={`w-full pl-12 pr-4 py-2.5 bg-slate-50 rounded-2xl border text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 transition-all shadow-sm ${
-                      errors.fullName ? 'border-rose-500 focus:ring-rose-500/20' : 'border-slate-200 focus:border-cyan-500 focus:ring-cyan-500/20'
+                      errors.fullName
+                        ? "border-rose-500 focus:ring-rose-500/20"
+                        : "border-slate-200 focus:border-cyan-500 focus:ring-cyan-500/20"
                     }`}
                   />
                 </div>
                 {errors.fullName && (
-                  <p className="text-xs text-rose-500 mt-1 ml-1">{errors.fullName.message}</p>
+                  <p className="text-xs text-rose-500 mt-1 ml-1">
+                    {errors.fullName.message}
+                  </p>
                 )}
               </div>
 
@@ -285,27 +317,41 @@ export default function SportivaRegisterPage() {
                 </label>
                 <div className="relative rounded-xl">
                   <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="1.5"
+                        d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                      />
                     </svg>
                   </span>
                   <input
                     type="email"
                     placeholder="Enter your email"
-                    {...register('email', {
-                      required: 'Email is required',
+                    {...register("email", {
+                      required: "Email is required",
                       pattern: {
                         value: EMAIL_REGEX,
-                        message: 'Please enter a valid email address',
+                        message: "Please enter a valid email address",
                       },
                     })}
                     className={`w-full pl-12 pr-4 py-2.5 bg-slate-50 rounded-2xl border text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 transition-all shadow-sm ${
-                      errors.email ? 'border-rose-500 focus:ring-rose-500/20' : 'border-slate-200 focus:border-cyan-500 focus:ring-cyan-500/20'
+                      errors.email
+                        ? "border-rose-500 focus:ring-rose-500/20"
+                        : "border-slate-200 focus:border-cyan-500 focus:ring-cyan-500/20"
                     }`}
                   />
                 </div>
                 {errors.email && (
-                  <p className="text-xs text-rose-500 mt-1 ml-1">{errors.email.message}</p>
+                  <p className="text-xs text-rose-500 mt-1 ml-1">
+                    {errors.email.message}
+                  </p>
                 )}
               </div>
 
@@ -314,7 +360,7 @@ export default function SportivaRegisterPage() {
                   Account Role
                 </label>
                 <select
-                  {...register('role')}
+                  {...register("role")}
                   className="w-full px-4 py-2.5 bg-slate-50 rounded-2xl border border-slate-200 text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20 transition-all shadow-sm"
                 >
                   <option value="user">User</option>
@@ -328,22 +374,34 @@ export default function SportivaRegisterPage() {
                 </label>
                 <div className="relative rounded-xl">
                   <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="1.5"
+                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                      />
                     </svg>
                   </span>
                   <input
-                    type={showPassword ? 'text' : 'password'}
+                    type={showPassword ? "text" : "password"}
                     placeholder="Create a password"
-                    {...register('password', {
-                      required: 'Password is required',
+                    {...register("password", {
+                      required: "Password is required",
                       minLength: {
                         value: 6,
-                        message: 'Password must be at least 6 characters',
+                        message: "Password must be at least 6 characters",
                       },
                     })}
                     className={`w-full pl-12 pr-12 py-2.5 bg-slate-50 rounded-2xl border text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 transition-all shadow-sm ${
-                      errors.password ? 'border-rose-500 focus:ring-rose-500/20' : 'border-slate-200 focus:border-cyan-500 focus:ring-cyan-500/20'
+                      errors.password
+                        ? "border-rose-500 focus:ring-rose-500/20"
+                        : "border-slate-200 focus:border-cyan-500 focus:ring-cyan-500/20"
                     }`}
                   />
                   <button
@@ -351,27 +409,38 @@ export default function SportivaRegisterPage() {
                     onClick={() => setShowPassword((v) => !v)}
                     className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors text-xs font-medium"
                   >
-                    {showPassword ? 'Hide' : 'Show'}
+                    {showPassword ? "Hide" : "Show"}
                   </button>
                 </div>
                 {errors.password && (
-                  <p className="text-xs text-rose-500 mt-1 ml-1">{errors.password.message}</p>
+                  <p className="text-xs text-rose-500 mt-1 ml-1">
+                    {errors.password.message}
+                  </p>
                 )}
 
                 <div className="flex gap-1.5 mt-1.5">
                   {[0, 1, 2, 3].map((i) => (
-                    <div key={i} className="h-1 rounded-full flex-1 bg-slate-200 overflow-hidden">
+                    <div
+                      key={i}
+                      className="h-1 rounded-full flex-1 bg-slate-200 overflow-hidden"
+                    >
                       <div
                         className={`h-full rounded-full ${
-                          i < passwordScore ? STRENGTH_BAR_COLORS[passwordScore - 1] : ''
+                          i < passwordScore
+                            ? STRENGTH_BAR_COLORS[passwordScore - 1]
+                            : ""
                         }`}
-                        style={{ width: i < passwordScore ? '100%' : '0' }}
+                        style={{ width: i < passwordScore ? "100%" : "0" }}
                       />
                     </div>
                   ))}
                 </div>
-                <p className={`text-xs mt-0.5 ml-0.5 ${passwordValue ? STRENGTH_LABEL_COLORS[passwordScore] || 'text-slate-500' : 'text-slate-500'}`}>
-                  {passwordValue ? STRENGTH_LABELS[passwordScore] || '\u00A0' : '\u00A0'}
+                <p
+                  className={`text-xs mt-0.5 ml-0.5 ${passwordValue ? STRENGTH_LABEL_COLORS[passwordScore] || "text-slate-500" : "text-slate-500"}`}
+                >
+                  {passwordValue
+                    ? STRENGTH_LABELS[passwordScore] || "\u00A0"
+                    : "\u00A0"}
                 </p>
               </div>
 
@@ -379,44 +448,64 @@ export default function SportivaRegisterPage() {
                 <label className="flex items-start gap-2.5 cursor-pointer">
                   <input
                     type="checkbox"
-                    {...register('terms', {
-                      required: 'You must accept the terms',
+                    {...register("terms", {
+                      required: "You must accept the terms",
                     })}
                     className="mt-0.5 w-4 h-4 rounded bg-slate-50 border-slate-300 text-cyan-600 focus:ring-cyan-500"
                   />
                   <span className="text-xs text-slate-600">
-                    I agree to the <Link href="/terms" className="text-cyan-600 hover:underline">Terms of Service</Link> and <Link href="/privacy" className="text-cyan-600 hover:underline">Privacy Policy</Link>
+                    I agree to the{" "}
+                    <Link
+                      href="/terms"
+                      className="text-cyan-600 hover:underline"
+                    >
+                      Terms of Service
+                    </Link>{" "}
+                    and{" "}
+                    <Link
+                      href="/privacy"
+                      className="text-cyan-600 hover:underline"
+                    >
+                      Privacy Policy
+                    </Link>
                   </span>
                 </label>
                 {errors.terms && (
-                  <p className="text-xs text-rose-500 mt-1 ml-1">{errors.terms.message}</p>
+                  <p className="text-xs text-rose-500 mt-1 ml-1">
+                    {errors.terms.message}
+                  </p>
                 )}
               </div>
 
               <div className="pt-1">
                 <button
                   type="submit"
-                  disabled={status === 'loading'}
+                  disabled={status === "loading"}
                   className="w-full py-3 px-4 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-medium text-sm rounded-2xl shadow-lg shadow-cyan-500/25 transition-all duration-200 flex items-center justify-center cursor-pointer"
                 >
-                  {status === 'idle' && 'Sign up'}
-                  {status === 'loading' && 'Creating account...'}
-                  {status === 'success' && 'Account created! ⚡'}
+                  {status === "idle" && "Sign up"}
+                  {status === "loading" && "Creating account..."}
+                  {status === "success" && "Account created! ⚡"}
                 </button>
               </div>
             </form>
 
             <div className="relative flex py-3 items-center">
               <div className="flex-grow border-t border-slate-200"></div>
-              <span className="flex-shrink mx-4 text-xs text-slate-400 uppercase tracking-widest font-light">or</span>
+              <span className="flex-shrink mx-4 text-xs text-slate-400 uppercase tracking-widest font-light">
+                or
+              </span>
               <div className="flex-grow border-t border-slate-200"></div>
             </div>
 
             <SocialLogins />
 
             <p className="text-center text-sm text-slate-600 mt-4">
-              Already have an account?{' '}
-              <Link href="/auth/login" className="font-medium text-cyan-600 hover:underline">
+              Already have an account?{" "}
+              <Link
+                href="/auth/login"
+                className="font-medium text-cyan-600 hover:underline"
+              >
                 Log in
               </Link>
             </p>
@@ -438,7 +527,7 @@ function LeftHeroImagePanel() {
         className="absolute inset-0 w-full h-full object-cover opacity-60"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-transparent" />
-      
+
       <div className="relative z-10 flex items-center">
         <img
           src="/image/logo-sportiva.png"
@@ -466,10 +555,22 @@ function SocialLogins() {
       className="w-full py-3 px-4 bg-white hover:bg-slate-50 border border-slate-200 rounded-2xl text-slate-700 font-medium text-sm shadow-sm transition-all flex items-center justify-center gap-3 cursor-pointer"
     >
       <svg className="w-5 h-5" viewBox="0 0 24 24">
-        <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/>
-        <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.13 0-5.78-2.11-6.73-4.96H1.18v3.14C3.17 21.36 7.23 24 12 24z"/>
-        <path fill="#FBBC05" d="M5.27 14.24c-.25-.72-.38-1.49-.38-2.24s.13-1.52.38-2.24V6.62H1.18C.43 8.13 0 9.81 0 12s.43 3.87 1.18 5.38l4.09-3.14z"/>
-        <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.23 0 3.17 2.64 1.18 6.62l4.09 3.14c.95-2.85 3.6-4.96 6.73-4.96z"/>
+        <path
+          fill="#4285F4"
+          d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"
+        />
+        <path
+          fill="#34A853"
+          d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.13 0-5.78-2.11-6.73-4.96H1.18v3.14C3.17 21.36 7.23 24 12 24z"
+        />
+        <path
+          fill="#FBBC05"
+          d="M5.27 14.24c-.25-.72-.38-1.49-.38-2.24s.13-1.52.38-2.24V6.62H1.18C.43 8.13 0 9.81 0 12s.43 3.87 1.18 5.38l4.09-3.14z"
+        />
+        <path
+          fill="#EA4335"
+          d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.23 0 3.17 2.64 1.18 6.62l4.09 3.14c.95-2.85 3.6-4.96 6.73-4.96z"
+        />
       </svg>
       Sign up with Google
     </button>
@@ -481,12 +582,33 @@ function ConfettiOverlay({ confetti }: { confetti: any[] }) {
     <div className="absolute inset-0 pointer-events-none overflow-hidden">
       {confetti.map((c) =>
         c.isEmoji ? (
-          <div key={c.id} style={{ position: 'absolute', left: `${c.left}%`, top: `${c.top}%`, fontSize: c.fontSize, animation: `confetti-fall ${c.duration}s ease-out ${c.delay}s forwards` }}>
+          <div
+            key={c.id}
+            style={{
+              position: "absolute",
+              left: `${c.left}%`,
+              top: `${c.top}%`,
+              fontSize: c.fontSize,
+              animation: `confetti-fall ${c.duration}s ease-out ${c.delay}s forwards`,
+            }}
+          >
             {c.emoji}
           </div>
         ) : (
-          <div key={c.id} style={{ position: 'absolute', left: `${c.left}%`, top: `${c.top}%`, width: c.size, height: c.size, borderRadius: c.rounded ? '50%' : '2px', background: c.color, animation: `confetti-fall ${c.duration}s ease-out ${c.delay}s forwards` }} />
-        )
+          <div
+            key={c.id}
+            style={{
+              position: "absolute",
+              left: `${c.left}%`,
+              top: `${c.top}%`,
+              width: c.size,
+              height: c.size,
+              borderRadius: c.rounded ? "50%" : "2px",
+              background: c.color,
+              animation: `confetti-fall ${c.duration}s ease-out ${c.delay}s forwards`,
+            }}
+          />
+        ),
       )}
     </div>
   );

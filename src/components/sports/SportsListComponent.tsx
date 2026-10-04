@@ -14,12 +14,10 @@ export default function SportListComponent() {
   const [category, setCategory] = useState("All");
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 8;
+  const itemsPerPage = 9; 
 
-  
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -91,7 +89,6 @@ export default function SportListComponent() {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentSports = filteredSports.slice(indexOfFirstItem, indexOfLastItem);
 
-
   const getCategoryCount = (cat: string) => {
     if (cat === "All") return sports.length;
     return sports.filter((sport) => {
@@ -105,8 +102,7 @@ export default function SportListComponent() {
       {/* Background Ambient Glow */}
       <div className="pointer-events-none absolute left-1/4 top-10 -z-10 h-72 w-72 rounded-full bg-blue-500/10 blur-3xl dark:bg-blue-600/15" />
       <div className="pointer-events-none absolute right-1/4 top-96 -z-10 h-96 w-96 rounded-full bg-indigo-500/10 blur-3xl dark:bg-indigo-600/15" />
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+      <div className="w-full px-4 sm:px-6 lg:px-12 space-y-6">
         
         {/* Search Bar for Mobile (Top Header Search) */}
         <div className="flex md:hidden relative w-full">
@@ -132,7 +128,6 @@ export default function SportListComponent() {
             <ChevronDown className={`w-4 h-4 text-slate-500 transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`} />
           </button>
 
-          {/* Dropdown Menu List with Scroll */}
           {isDropdownOpen && (
             <div className="absolute left-0 right-0 top-full mt-2 max-h-60 overflow-y-auto bg-white dark:bg-[#162235] border border-slate-200 dark:border-slate-700 rounded-xl shadow-2xl z-50 p-1.5 space-y-1">
               {categories.map((item) => {
@@ -209,7 +204,7 @@ export default function SportListComponent() {
             </div>
           </aside>
 
-          {/* --- CONTENT AREA --- */}
+          {/* --- CONTENT AREA (Full Width) --- */}
           <main className="flex-1 w-full space-y-6">
             
             {/* Header / Active Category Title */}
@@ -218,22 +213,41 @@ export default function SportListComponent() {
                 {category === "All" ? "All sports news" : category}
               </h2>
               <span className="text-xs text-slate-500 dark:text-slate-400">
-               Show {filteredSports.length} the result
+                Show {filteredSports.length} results
               </span>
             </div>
 
-            {/* Display Cards Grid */}
+            {/* Display Cards Grid or Skeleton Loader */}
             {loading ? (
-              <div className="text-center py-20 text-slate-500 dark:text-slate-400 text-xs">
-               Downloading information...
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {Array.from({ length: 8 }).map((_, index) => (
+                  <div
+                    key={index}
+                    className="bg-white dark:bg-[#162235] border border-slate-200 dark:border-slate-800 rounded-2xl p-4 space-y-4 animate-pulse shadow-sm"
+                  >
+                    {/* Skeleton Image */}
+                    <div className="w-full h-48 bg-slate-200 dark:bg-slate-700 rounded-xl" />
+                    {/* Skeleton Title & Text */}
+                    <div className="space-y-2">
+                      <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-3/4" />
+                      <div className="h-3 bg-slate-200 dark:bg-slate-700 rounded w-1/2" />
+                    </div>
+                    {/* Skeleton Footer */}
+                    <div className="flex justify-between items-center pt-2">
+                      <div className="h-3 bg-slate-200 dark:bg-slate-700 rounded w-1/4" />
+                      <div className="h-8 bg-slate-200 dark:bg-slate-700 rounded w-1/3" />
+                    </div>
+                  </div>
+                ))}
               </div>
             ) : filteredSports.length === 0 ? (
               <div className="text-center py-16 text-slate-500 bg-white/70 dark:bg-[#121c2d] dark:text-slate-400 rounded-2xl border border-slate-200 dark:border-slate-800 text-xs shadow-sm">
-               There is no information to show.
+                There is no information to show.
               </div>
             ) : (
               <>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                   {currentSports.map((item, index) => (
                     <SportCardComponent
                       key={item?.uuid || item?.id || index}

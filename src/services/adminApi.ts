@@ -29,15 +29,41 @@ export async function adminRequest<T>(
 ): Promise<T> {
   const headers = new Headers(init.headers);
 
+  // ពិនិត្យមើល និងទាញយក Token ពី localStorage ដោយស្វ័យប្រវត្តិ
+  if (typeof window !== "undefined") {
+    let token = 
+      localStorage.getItem("token") || 
+      localStorage.getItem("admin_token") || 
+      localStorage.getItem("access_token");
+
+    if (!token) {
+      try {
+        const userStr = localStorage.getItem("user");
+        if (userStr) {
+          const userData = JSON.parse(userStr);
+          token = userData.token || userData.accessToken || userData.jwt;
+        }
+      } catch (e) {
+        console.error("Failed to parse user from localStorage", e);
+      }
+    }
+
+    if (token) {
+      headers.set("Authorization", `Bearer ${token}`);
+    }
+  }
+
   if (init.body && !(init.body instanceof FormData)) {
     headers.set("Content-Type", "application/json");
   }
 
+  console.log(" Sending Headers:", Object.fromEntries(headers.entries()));
   const response = await fetch(`${API_BASE_URL}${path}`, {
     ...init,
     headers,
     cache: "no-store",
-  });
+    credentials: "include",
+  } as RequestInit);
 
   const payload = await parseResponse(response);
 

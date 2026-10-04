@@ -3,13 +3,20 @@
 import { MessageSquare, Trash2 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import type { AdminComment } from "@/lib/adminTypes";
-import { deleteAdminComment, getAdminComments } from "@/services/adminCommentService";
+import type { AdminComment } from "../../../lib/adminTypes";
+import {
+  deleteAdminComment,
+  getAdminComments,
+} from "@/services/adminCommentService";
 import AdminPageHeader from "@/components/admin/AdminHeader";
 import AdminToolbar from "@/components/admin/AdminToolbars";
 import AdminConfirmDialog from "@/components/admin/Admindialog";
 import AdminIconButton from "@/components/admin/AdminIcon";
-import { AdminErrorState, AdminTableEmpty, AdminTableLoading } from "@/components/admin/AdminTableStat";
+import {
+  AdminErrorState,
+  AdminTableEmpty,
+  AdminTableLoading,
+} from "@/components/admin/AdminTableStat";
 
 export default function AdminCommentsPage() {
   const [comments, setComments] = useState<AdminComment[]>([]);
@@ -40,9 +47,9 @@ export default function AdminCommentsPage() {
       comments.filter((item) =>
         `${item.comment} ${item.userName} ${item.eventUuid}`
           .toLowerCase()
-          .includes(search.trim().toLowerCase())
+          .includes(search.trim().toLowerCase()),
       ),
-    [comments, search]
+    [comments, search],
   );
 
   const remove = async () => {
@@ -54,7 +61,9 @@ export default function AdminCommentsPage() {
       setDeleteTarget(null);
       await load();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to delete comment");
+      toast.error(
+        err instanceof Error ? err.message : "Failed to delete comment",
+      );
     } finally {
       setDeleting(false);
     }
@@ -105,7 +114,10 @@ export default function AdminCommentsPage() {
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {filtered.map((item) => (
-                  <tr key={item.uuid} className="hover:bg-slate-50/50 transition-colors">
+                  <tr
+                    key={item.uuid}
+                    className="hover:bg-slate-50/50 transition-colors"
+                  >
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-3">
                         <div className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-50 text-blue-600 shrink-0">

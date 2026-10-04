@@ -3,7 +3,7 @@
 import React from "react";
 import { SportsCardGrid } from "@/components/contact/SportsCardGrid";
 import { ContactFormSection } from "@/components/contact/ContactFormSection";
-import { SPORTS_IMAGE_CARDS } from "@/lib/utils";
+import { SPORTS_IMAGE_CARDS } from "../../lib/utils";
 
 export const ContactUs: React.FC = () => {
   return (

@@ -83,15 +83,16 @@ export default function EventListComponent() {
   };
 
   return (
-    <div className="relative w-full min-h-screen py-8 bg-slate-50/80 text-slate-800 dark:bg-[#0b1322] dark:text-slate-200 transition-colors duration-300">
+    <div className="relative w-screen min-h-screen left-1/2 -translate-x-1/2 py-8 bg-[#f8fafc] text-slate-800 dark:bg-[#090f1a] dark:text-slate-200 transition-colors duration-300">
       {/* Background Ambient Glow */}
-      <div className="pointer-events-none absolute left-1/4 top-10 -z-10 h-72 w-72 rounded-full bg-blue-500/10 blur-3xl dark:bg-blue-600/15" />
-      <div className="pointer-events-none absolute right-1/4 top-96 -z-10 h-96 w-96 rounded-full bg-indigo-500/10 blur-3xl dark:bg-indigo-600/15" />
+      <div className="pointer-events-none absolute left-1/4 top-10 -z-10 h-72 w-72 rounded-full bg-blue-500/5 blur-3xl dark:bg-blue-600/10" />
+      <div className="pointer-events-none absolute right-1/4 top-96 -z-10 h-96 w-96 rounded-full bg-indigo-500/5 blur-3xl dark:bg-indigo-600/10" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+      {/* Main Full-Width Container */}
+      <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-12 space-y-6">
         
         {/* Header Bar */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200/80 dark:border-slate-800/80 pb-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200/80 dark:border-slate-800 pb-4">
           <div>
             <h1 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
               Sports Events
@@ -107,7 +108,7 @@ export default function EventListComponent() {
               placeholder="Search events..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="bg-white/80 border-slate-300/80 text-slate-800 placeholder:text-slate-400 focus-visible:ring-1 focus-visible:ring-blue-500 dark:bg-[#162235] dark:border-slate-700/60 dark:text-slate-200 dark:placeholder:text-slate-400 text-xs pl-8 h-10 rounded-xl backdrop-blur-md shadow-sm"
+              className="bg-white/90 border-slate-200/80 text-slate-800 placeholder:text-slate-400 focus-visible:ring-1 focus-visible:ring-blue-500 dark:bg-[#131b2c] dark:border-slate-800 dark:text-slate-200 dark:placeholder:text-slate-400 text-xs pl-8 h-10 rounded-xl backdrop-blur-md shadow-sm"
             />
           </div>
         </div>
@@ -116,7 +117,7 @@ export default function EventListComponent() {
         <div className="space-y-6">
           
           {/* --- CATEGORIES SECTION --- */}
-          <div className="bg-white/80 border border-slate-200/80 dark:bg-[#121c2d] dark:border-slate-800 rounded-xl p-4 shadow-sm backdrop-blur-md transition-colors duration-300 relative overflow-visible z-40">
+          <div className="bg-white/90 border border-slate-200/80 dark:bg-[#111827] dark:border-slate-800 rounded-2xl p-4 shadow-sm backdrop-blur-md transition-colors duration-300 relative overflow-visible z-40">
             <div className="flex items-center gap-2 pb-3 mb-3 border-b border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-300 font-semibold text-xs">
               <Layers className="w-4 h-4 text-blue-500" />
               <span>Categories</span>
@@ -126,7 +127,7 @@ export default function EventListComponent() {
             <div className="block lg:hidden w-full relative" ref={dropdownRef}>
               <button
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className="w-full flex items-center justify-between bg-white border border-slate-300/85 dark:bg-[#162235] dark:border-slate-700/70 text-slate-800 dark:text-slate-200 text-xs rounded-xl px-3.5 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm capitalize font-medium"
+                className="w-full flex items-center justify-between bg-white border border-slate-200/80 dark:bg-[#131b2c] dark:border-slate-800 text-slate-800 dark:text-slate-200 text-xs rounded-xl px-3.5 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm capitalize font-medium"
               >
                 <span>
                   {selectedCategory === "ALL" ? `All Events` : selectedCategory} ({getSelectedCategoryCount(selectedCategory)})
@@ -136,7 +137,7 @@ export default function EventListComponent() {
 
               {/* Dropdown Menu List with Scroll */}
               {isDropdownOpen && (
-                <div className="absolute left-0 right-0 top-full mt-2 max-h-60 overflow-y-auto bg-white dark:bg-[#162235] border border-slate-200 dark:border-slate-700 rounded-xl shadow-2xl z-50 p-1.5 space-y-1">
+                <div className="absolute left-0 right-0 top-full mt-2 max-h-60 overflow-y-auto bg-white dark:bg-[#131b2c] border border-slate-200 dark:border-slate-800 rounded-xl shadow-xl z-50 p-1.5 space-y-1">
                   <button
                     onClick={() => {
                       setSelectedCategory("ALL");
@@ -145,7 +146,7 @@ export default function EventListComponent() {
                     className={`w-full text-left px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
                       selectedCategory === "ALL"
                         ? "bg-blue-600 text-white font-semibold"
-                        : "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+                        : "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#1b263b]"
                     }`}
                   >
                     All Events ({events.length})
@@ -165,7 +166,7 @@ export default function EventListComponent() {
                         className={`w-full text-left px-3 py-2 rounded-lg text-xs font-medium capitalize transition-colors ${
                           isActive
                             ? "bg-blue-600 text-white font-semibold"
-                            : "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+                            : "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#1b263b]"
                         }`}
                       >
                         {cat} ({count})
@@ -180,10 +181,10 @@ export default function EventListComponent() {
             <div className="hidden lg:flex items-center gap-2 flex-wrap w-full">
               <button
                 onClick={() => setSelectedCategory("ALL")}
-                className={`px-4 py-2 rounded-lg text-xs font-medium transition-all duration-200 flex items-center gap-2 ${
+                className={`px-4 py-2 rounded-xl text-xs font-medium transition-all duration-200 flex items-center gap-2 ${
                   selectedCategory === "ALL"
-                    ? "bg-blue-600 text-white font-semibold shadow-md shadow-blue-500/20"
-                    : "bg-white/80 border border-slate-200/80 dark:bg-[#162235] dark:border-slate-700/60 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
+                    ? "bg-blue-600 text-white font-semibold shadow-sm"
+                    : "bg-white/80 border border-slate-200/80 dark:bg-[#131b2c] dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#1b263b]"
                 }`}
               >
                 <span>All Events</span>
@@ -204,10 +205,10 @@ export default function EventListComponent() {
                   <button
                     key={idx}
                     onClick={() => setSelectedCategory(cat)}
-                    className={`px-4 py-2 rounded-lg text-xs font-medium transition-all duration-200 flex items-center gap-2 capitalize ${
+                    className={`px-4 py-2 rounded-xl text-xs font-medium transition-all duration-200 flex items-center gap-2 capitalize ${
                       isActive
-                        ? "bg-blue-600 text-white font-semibold shadow-md shadow-blue-500/20"
-                        : "bg-white/80 border border-slate-200/80 dark:bg-[#162235] dark:border-slate-700/60 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
+                        ? "bg-blue-600 text-white font-semibold shadow-sm"
+                        : "bg-white/80 border border-slate-200/80 dark:bg-[#131b2c] dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#1b263b]"
                     }`}
                   >
                     <span>{cat}</span>
@@ -227,16 +228,31 @@ export default function EventListComponent() {
           {/* --- CONTENT SECTION --- */}
           <main className="w-full space-y-6">
             {loading ? (
-              <div className="text-center py-20 text-slate-500 dark:text-slate-400 text-xs">
-                Loading events...
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {Array.from({ length: 8 }).map((_, index) => (
+                  <div
+                    key={index}
+                    className="bg-white/90 dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 space-y-4 animate-pulse shadow-sm"
+                  >
+                    <div className="w-full h-48 bg-slate-200/80 dark:bg-slate-800 rounded-xl" />
+                    <div className="space-y-2">
+                      <div className="h-4 bg-slate-200/80 dark:bg-slate-800 rounded w-3/4" />
+                      <div className="h-3 bg-slate-200/80 dark:bg-slate-800 rounded w-1/2" />
+                    </div>
+                    <div className="flex justify-between items-center pt-2">
+                      <div className="h-3 bg-slate-200/80 dark:bg-slate-800 rounded w-1/4" />
+                      <div className="h-8 bg-slate-200/80 dark:bg-slate-800 rounded w-1/3" />
+                    </div>
+                  </div>
+                ))}
               </div>
             ) : filteredEvents.length === 0 ? (
-              <div className="text-center py-16 text-slate-500 dark:text-slate-400 bg-white/80 dark:bg-[#121c2d] rounded-xl border border-slate-200/80 dark:border-slate-800 text-xs shadow-sm">
+              <div className="text-center py-16 text-slate-500 dark:text-slate-400 bg-white/90 dark:bg-[#111827] rounded-2xl border border-slate-200/80 dark:border-slate-800 text-xs shadow-sm">
                 No events found.
               </div>
             ) : (
               <>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                   {currentEvents.map((item, index) => (
                     <EventCardComponent key={item.uuid || item.id || index} item={item} index={index} />
                   ))}
@@ -244,11 +260,11 @@ export default function EventListComponent() {
 
                 {/* Pagination */}
                 {totalPages > 1 && (
-                  <div className="flex items-center justify-center gap-2 pt-6 border-t border-slate-200/80 dark:border-slate-800/80">
+                  <div className="flex items-center justify-center gap-2 pt-6 border-t border-slate-200/80 dark:border-slate-800">
                     <button
                       onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
                       disabled={currentPage === 1}
-                      className="p-2 rounded-lg bg-white border border-slate-300/80 text-slate-700 hover:bg-slate-100 dark:bg-[#162235] dark:border-slate-700/60 dark:text-slate-300 dark:hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-sm"
+                      className="p-2 rounded-xl bg-white/90 border border-slate-200/80 text-slate-700 hover:bg-slate-100 dark:bg-[#131b2c] dark:border-slate-800 dark:text-slate-300 dark:hover:bg-[#1b263b] disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-sm"
                     >
                       <ChevronLeft className="w-4 h-4" />
                     </button>
@@ -256,10 +272,10 @@ export default function EventListComponent() {
                       <button
                         key={page}
                         onClick={() => setCurrentPage(page)}
-                        className={`w-8 h-8 rounded-lg text-xs font-medium transition-all ${
+                        className={`w-8 h-8 rounded-xl text-xs font-medium transition-all shadow-sm ${
                           currentPage === page
-                            ? "bg-blue-600 text-white shadow-sm"
-                            : "bg-white border border-slate-300/80 text-slate-700 hover:bg-slate-100 dark:bg-[#162235] dark:border-slate-700/60 dark:text-slate-300 dark:hover:bg-slate-800 shadow-sm"
+                            ? "bg-blue-600 text-white"
+                            : "bg-white/90 border border-slate-200/80 text-slate-700 hover:bg-slate-100 dark:bg-[#131b2c] dark:border-slate-800 dark:text-slate-300 dark:hover:bg-[#1b263b]"
                         }`}
                       >
                         {page}
@@ -268,7 +284,7 @@ export default function EventListComponent() {
                     <button
                       onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
                       disabled={currentPage === totalPages}
-                      className="p-2 rounded-lg bg-white border border-slate-300/80 text-slate-700 hover:bg-slate-100 dark:bg-[#162235] dark:border-slate-700/60 dark:text-slate-300 dark:hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-sm"
+                      className="p-2 rounded-xl bg-white/90 border border-slate-200/80 text-slate-700 hover:bg-slate-100 dark:bg-[#131b2c] dark:border-slate-800 dark:text-slate-300 dark:hover:bg-[#1b263b] disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-sm"
                     >
                       <ChevronRight className="w-4 h-4" />
                     </button>

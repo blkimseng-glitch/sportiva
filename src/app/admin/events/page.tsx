@@ -1,16 +1,39 @@
 "use client";
 
 import { useCallback, useEffect, useState, useMemo } from "react";
-import { ChevronLeft, ChevronRight, Plus, Search, Pencil, Trash2, Calendar, MapPin } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Plus,
+  Search,
+  Pencil,
+  Trash2,
+  Calendar,
+  MapPin,
+} from "lucide-react";
 import { toast } from "sonner";
-import { getAdminEvents, deleteAdminEvent, createAdminEvent, updateAdminEvent } from "@/services/adminEventService";
+import {
+  getAdminEvents,
+  deleteAdminEvent,
+  createAdminEvent,
+  updateAdminEvent,
+} from "@/services/adminEventService";
 import { getAdminCategories } from "@/services/adminCategoryService";
-import type { AdminEvent, AdminCategory, EventFormValues } from "@/lib/adminTypes";
+import type {
+  AdminEvent,
+  AdminCategory,
+  EventFormValues,
+} from "../../../lib/adminTypes";
 import AdminPageHeader from "@/components/admin/AdminHeader";
 import AdminModal from "@/components/admin/AdminModal";
 import AdminConfirmDialog from "@/components/admin/Admindialog";
 import AdminImageUpload from "@/components/admin/AdminImageUpload";
-import { AdminField, AdminInput, AdminSelect, AdminTextarea } from "@/components/admin/Adminform";
+import {
+  AdminField,
+  AdminInput,
+  AdminSelect,
+  AdminTextarea,
+} from "@/components/admin/Adminform";
 import AdminIconButton from "@/components/admin/AdminIcon";
 import { AdminTableLoading } from "@/components/admin/AdminTableStat";
 
@@ -57,15 +80,25 @@ export default function AdminEventsPage() {
     setError("");
     try {
       const res = await getAdminEvents();
-      const rawEvents = Array.isArray(res) ? res : res && Array.isArray(res.data) ? res.data : [];
+      const rawEvents = Array.isArray(res)
+        ? res
+        : res && Array.isArray(res.data)
+          ? res.data
+          : [];
 
       // Normalize data to avoid missing category properties
       const normalizedEvents: AdminEvent[] = rawEvents.map((item: any) => ({
         uuid: item.uuid || item.id || "",
         name: item.name || "",
         description: item.description || "",
-        categoryName: item.categoryName || item.category_name || item.category?.name || item.category || "",
-        locationName: item.locationName || item.location_name || item.location || "",
+        categoryName:
+          item.categoryName ||
+          item.category_name ||
+          item.category?.name ||
+          item.category ||
+          "",
+        locationName:
+          item.locationName || item.location_name || item.location || "",
         latitude: item.latitude ?? null,
         longitude: item.longitude ?? null,
         imageUrls: item.imageUrls || item.images || [],
@@ -151,12 +184,15 @@ export default function AdminEventsPage() {
 
   const save = async () => {
     if (!form.name.trim()) return toast.error("Please enter event name");
-    if (!form.categoryName.trim()) return toast.error("Please select a category");
+    if (!form.categoryName.trim())
+      return toast.error("Please select a category");
     setSaving(true);
     try {
       if (editing) await updateAdminEvent(editing.uuid, form);
       else await createAdminEvent(form);
-      toast.success(editing ? "Event updated successfully" : "Event added successfully");
+      toast.success(
+        editing ? "Event updated successfully" : "Event added successfully",
+      );
       setModalOpen(false);
       await loadEvents();
     } catch (err) {
@@ -175,7 +211,9 @@ export default function AdminEventsPage() {
       setDeleteTarget(null);
       await loadEvents();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to delete event");
+      toast.error(
+        err instanceof Error ? err.message : "Failed to delete event",
+      );
     } finally {
       setDeleting(false);
     }
@@ -200,7 +238,10 @@ export default function AdminEventsPage() {
       {/* Filter and Search Controls */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="relative flex-1">
-          <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+          <Search
+            size={18}
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+          />
           <input
             type="text"
             value={search}
@@ -264,8 +305,12 @@ export default function AdminEventsPage() {
                             </div>
                           )}
                           <div>
-                            <div className="font-semibold text-slate-800">{item.name}</div>
-                            <div className="text-xs text-slate-400 line-clamp-1">{item.description}</div>
+                            <div className="font-semibold text-slate-800">
+                              {item.name}
+                            </div>
+                            <div className="text-xs text-slate-400 line-clamp-1">
+                              {item.description}
+                            </div>
                           </div>
                         </div>
                       </td>
@@ -276,19 +321,31 @@ export default function AdminEventsPage() {
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-1.5 text-xs text-slate-600">
-                          <MapPin size={14} className="text-slate-400 shrink-0" />
+                          <MapPin
+                            size={14}
+                            className="text-slate-400 shrink-0"
+                          />
                           <span>{item.locationName || "-"}</span>
                         </div>
                       </td>
                       <td className="px-6 py-4 text-xs text-slate-500">
-                        {item.createdAt ? new Date(item.createdAt).toLocaleDateString() : "-"}
+                        {item.createdAt
+                          ? new Date(item.createdAt).toLocaleDateString()
+                          : "-"}
                       </td>
                       <td className="px-6 py-4 text-right">
                         <div className="flex justify-end gap-1">
-                          <AdminIconButton label="Edit" onClick={() => openEdit(item)}>
+                          <AdminIconButton
+                            label="Edit"
+                            onClick={() => openEdit(item)}
+                          >
                             <Pencil size={16} />
                           </AdminIconButton>
-                          <AdminIconButton label="Delete" tone="danger" onClick={() => setDeleteTarget(item)}>
+                          <AdminIconButton
+                            label="Delete"
+                            tone="danger"
+                            onClick={() => setDeleteTarget(item)}
+                          >
                             <Trash2 size={16} />
                           </AdminIconButton>
                         </div>
@@ -297,7 +354,10 @@ export default function AdminEventsPage() {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={5} className="py-12 text-center text-slate-400">
+                    <td
+                      colSpan={5}
+                      className="py-12 text-center text-slate-400"
+                    >
                       No events found.
                     </td>
                   </tr>
@@ -353,7 +413,9 @@ export default function AdminEventsPage() {
           <AdminField label="Description">
             <AdminTextarea
               value={form.description}
-              onChange={(e) => setForm((v) => ({ ...v, description: e.target.value }))}
+              onChange={(e) =>
+                setForm((v) => ({ ...v, description: e.target.value }))
+              }
               placeholder="Describe the event details..."
             />
           </AdminField>
@@ -361,7 +423,9 @@ export default function AdminEventsPage() {
           <AdminField label="Category" required>
             <AdminSelect
               value={form.categoryName}
-              onChange={(e) => setForm((v) => ({ ...v, categoryName: e.target.value }))}
+              onChange={(e) =>
+                setForm((v) => ({ ...v, categoryName: e.target.value }))
+              }
             >
               <option value="">Select Category</option>
               {categories.map((cat) => (
@@ -375,7 +439,9 @@ export default function AdminEventsPage() {
           <AdminField label="Location Name">
             <AdminInput
               value={form.locationName}
-              onChange={(e) => setForm((v) => ({ ...v, locationName: e.target.value }))}
+              onChange={(e) =>
+                setForm((v) => ({ ...v, locationName: e.target.value }))
+              }
               placeholder="e.g. Olympic Stadium, Phnom Penh"
             />
           </AdminField>
@@ -384,7 +450,9 @@ export default function AdminEventsPage() {
             <AdminField label="Latitude">
               <AdminInput
                 value={form.latitude}
-                onChange={(e) => setForm((v) => ({ ...v, latitude: e.target.value }))}
+                onChange={(e) =>
+                  setForm((v) => ({ ...v, latitude: e.target.value }))
+                }
                 placeholder="e.g. 11.5564"
               />
             </AdminField>
@@ -392,7 +460,9 @@ export default function AdminEventsPage() {
             <AdminField label="Longitude">
               <AdminInput
                 value={form.longitude}
-                onChange={(e) => setForm((v) => ({ ...v, longitude: e.target.value }))}
+                onChange={(e) =>
+                  setForm((v) => ({ ...v, longitude: e.target.value }))
+                }
                 placeholder="e.g. 104.9282"
               />
             </AdminField>

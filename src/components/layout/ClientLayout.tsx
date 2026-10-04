@@ -1,11 +1,13 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useState, useEffect } from "react";
-import NavbarComponent from "@/components/layout/NavbarComponent";
+import { useState, useEffect, Suspense } from "react"; // 1. Import Suspense
+import NavbarComponent from "./NavbarComponent";
 import FooterComponent from "@/components/layout/FooterComponent";
 import NetworkStatusProvider from "@/components/network/NetworkStatusProvider";
 import useNetwork from "../hooks/useNetwork";
+import LoadingSkeleton from "@/app/londing";
+
 
 export default function ClientLayout({
   children,
@@ -32,11 +34,16 @@ export default function ClientLayout({
   const isAllowedMainRoute = isHomePage || isAboutPage || isNewsPage || isEventPage || isContactPage;
   const hideLayout = isAdminRoute || isAuthRoute || !isAllowedMainRoute || (mounted && !isOnline);
 
-  // ប្រសិនបើស្ថិតក្នុងទំព័រ Login, Admin ឬ 404 គឺបង្ហាញពេញអេក្រង់ដោយគ្មាន Navbar និង Footer
+  // ប្រសិនបើស្ថិតក្នុងទំព័រ Login, Admin ឬ 404
   if (hideLayout) {
     return (
       <div className="relative w-screen h-screen overflow-hidden m-0 p-0">
-        <NetworkStatusProvider>{children}</NetworkStatusProvider>
+        <NetworkStatusProvider>
+          {/* ថែម Suspense នៅត្រង់នេះដែរ បើចង់ឱ្យមាន Skeleton ពេល load ទំព័រ Admin/Auth */}
+          <Suspense fallback={<LoadingSkeleton />}>
+            {children}
+          </Suspense>
+        </NetworkStatusProvider>
       </div>
     );
   }
@@ -47,7 +54,12 @@ export default function ClientLayout({
       <NavbarComponent />
 
       <main className="flex-grow w-full">
-        <NetworkStatusProvider>{children}</NetworkStatusProvider>
+        <NetworkStatusProvider>
+          {/* 3. ថែម Suspense រុំ children នៅត្រង់នេះ */}
+          <Suspense fallback={<LoadingSkeleton />}>
+            {children}
+          </Suspense>
+        </NetworkStatusProvider>
       </main>
 
       <FooterComponent />

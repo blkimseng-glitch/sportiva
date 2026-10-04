@@ -77,7 +77,7 @@ export default function NavbarComponent() {
 
   return (
     <header className="w-full sticky top-0 z-50 bg-white dark:bg-[#1b2735] text-slate-800 dark:text-white transition-colors duration-300 shadow-sm">
-      {/* Container ខាងក្នុងកំណត់ max-w-7xl แต่ header ខាងក្រៅគឺពេញអេក្រង់ w-full */}
+      
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 border-b border-slate-200 dark:border-slate-700/20">
         
         {/* Left: Mobile Menu Button & Logo */}
@@ -104,14 +104,7 @@ export default function NavbarComponent() {
         </div>
 
         {/* Search Input (Desktop) */}
-        <div className="relative hidden md:block w-full max-w-md mx-6">
-          <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-          <Input
-            type="search"
-            placeholder="Search..."
-            className="w-full pl-10 border-none rounded-full focus-visible:ring-1 focus-visible:ring-blue-500 bg-slate-100 text-slate-900 placeholder:text-slate-500 dark:bg-[#2a384b] dark:text-slate-100 dark:placeholder:text-slate-400"
-          />
-        </div>
+        
 
         {/* Right Action Controls */}
         <div className="flex items-center gap-2 sm:gap-4">
@@ -198,17 +191,6 @@ export default function NavbarComponent() {
         </div>
       </div>
 
-      {/* Search Input for Mobile View */}
-      <div className="block md:hidden px-4 py-2 border-b border-slate-200 dark:border-slate-700/10">
-        <div className="relative w-full">
-          <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-          <Input
-            type="search"
-            placeholder="Search..."
-            className="w-full pl-10 border-none rounded-full focus-visible:ring-1 focus-visible:ring-blue-500 text-xs h-9 bg-slate-100 text-slate-900 placeholder:text-slate-500 dark:bg-[#2a384b] dark:text-slate-100 dark:placeholder:text-slate-400"
-          />
-        </div>
-      </div>
 
       {/* Desktop Navigation Links */}
       <nav className="hidden md:flex mx-auto max-w-7xl items-center justify-center gap-3 px-4 py-2 text-sm font-medium">

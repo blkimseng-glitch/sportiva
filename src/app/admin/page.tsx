@@ -1,13 +1,26 @@
 "use client";
 
 import Link from "next/link";
-import { Activity, CalendarDays, MessageSquare, Tags, Trophy, ArrowUpRight, Plus } from "lucide-react";
+import {
+  Activity,
+  CalendarDays,
+  MessageSquare,
+  Tags,
+  Trophy,
+  ArrowUpRight,
+  Plus,
+} from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { getAdminSports } from "@/services/adminSportService";
 import { getAdminEvents } from "@/services/adminEventService";
 import { getAdminCategories } from "@/services/adminCategoryService";
 import { getAdminComments } from "@/services/adminCommentService";
-import type { AdminCategory, AdminComment, AdminEvent, AdminSport } from "@/lib/adminTypes";
+import type {
+  AdminCategory,
+  AdminComment,
+  AdminEvent,
+  AdminSport,
+} from "../../lib/adminTypes";
 import AdminStatCard from "@/components/admin/AdminStatCard";
 import { AdminTableLoading } from "@/components/admin/AdminTableStat";
 import AdminPageHeader from "@/components/admin/AdminHeader";
@@ -31,7 +44,10 @@ export default function AdminDashboardPage() {
     ]);
 
     const failed = results.some((result) => result.status === "rejected");
-    if (failed) setError("Failed to load dashboard data. Please check the API and try again.");
+    if (failed)
+      setError(
+        "Failed to load dashboard data. Please check the API and try again.",
+      );
 
     if (results[0].status === "fulfilled") setSports(results[0].value);
 
@@ -53,7 +69,10 @@ export default function AdminDashboardPage() {
   const categorySummary = useMemo(() => {
     const counts = new Map<string, number>();
     sports.forEach((sport) =>
-      counts.set(sport.categoryName || "Unassigned", (counts.get(sport.categoryName || "Unassigned") ?? 0) + 1)
+      counts.set(
+        sport.categoryName || "Unassigned",
+        (counts.get(sport.categoryName || "Unassigned") ?? 0) + 1,
+      ),
     );
     return [...counts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 6);
   }, [sports]);
@@ -93,10 +112,30 @@ export default function AdminDashboardPage() {
         <>
           {/* Stat Cards Grid */}
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            <AdminStatCard label="Sports" value={sports.length} helper="Total Sports Items" icon={Trophy} />
-            <AdminStatCard label="Events" value={events.length} helper="Total Events" icon={CalendarDays} />
-            <AdminStatCard label="Categories" value={categories.length} helper="Total Sport Categories" icon={Tags} />
-            <AdminStatCard label="Comments" value={comments.length} helper="Total API Comments" icon={MessageSquare} />
+            <AdminStatCard
+              label="Sports"
+              value={sports.length}
+              helper="Total Sports Items"
+              icon={Trophy}
+            />
+            <AdminStatCard
+              label="Events"
+              value={events.length}
+              helper="Total Events"
+              icon={CalendarDays}
+            />
+            <AdminStatCard
+              label="Categories"
+              value={categories.length}
+              helper="Total Sport Categories"
+              icon={Tags}
+            />
+            <AdminStatCard
+              label="Comments"
+              value={comments.length}
+              helper="Total API Comments"
+              icon={MessageSquare}
+            />
           </div>
 
           {/* Main Sections Grid */}
@@ -105,8 +144,12 @@ export default function AdminDashboardPage() {
             <section className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm">
               <div className="mb-5 flex items-center justify-between gap-4">
                 <div>
-                  <h3 className="text-base font-bold text-slate-900">Sports Distribution by Category</h3>
-                  <p className="mt-0.5 text-xs text-slate-500">Calculated from fetched sports data</p>
+                  <h3 className="text-base font-bold text-slate-900">
+                    Sports Distribution by Category
+                  </h3>
+                  <p className="mt-0.5 text-xs text-slate-500">
+                    Calculated from fetched sports data
+                  </p>
                 </div>
                 <div className="rounded-xl bg-blue-50 p-2.5 text-blue-600">
                   <Activity size={18} />
@@ -126,14 +169,18 @@ export default function AdminDashboardPage() {
                         <div className="h-2.5 overflow-hidden rounded-full bg-slate-100">
                           <div
                             className="h-full rounded-full bg-blue-600 transition-all duration-500"
-                            style={{ width: `${Math.max(8, Math.round((count / max) * 100))}%` }}
+                            style={{
+                              width: `${Math.max(8, Math.round((count / max) * 100))}%`,
+                            }}
                           />
                         </div>
                       </div>
                     );
                   })
                 ) : (
-                  <p className="py-12 text-center text-sm text-slate-400">No sports category data available</p>
+                  <p className="py-12 text-center text-sm text-slate-400">
+                    No sports category data available
+                  </p>
                 )}
               </div>
             </section>
@@ -142,8 +189,12 @@ export default function AdminDashboardPage() {
             <section className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm">
               <div className="mb-5 flex items-center justify-between">
                 <div>
-                  <h3 className="text-base font-bold text-slate-900">Recent Events</h3>
-                  <p className="mt-0.5 text-xs text-slate-500">Latest entries with timestamp</p>
+                  <h3 className="text-base font-bold text-slate-900">
+                    Recent Events
+                  </h3>
+                  <p className="mt-0.5 text-xs text-slate-500">
+                    Latest entries with timestamp
+                  </p>
                 </div>
                 <Link
                   href="/admin/events"
@@ -156,7 +207,11 @@ export default function AdminDashboardPage() {
               <div className="space-y-3">
                 {[...events]
                   .filter((event) => event.createdAt)
-                  .sort((a, b) => Date.parse(b.createdAt ?? "") - Date.parse(a.createdAt ?? ""))
+                  .sort(
+                    (a, b) =>
+                      Date.parse(b.createdAt ?? "") -
+                      Date.parse(a.createdAt ?? ""),
+                  )
                   .slice(0, 5)
                   .map((event) => (
                     <div
@@ -167,9 +222,12 @@ export default function AdminDashboardPage() {
                         <CalendarDays size={18} />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-semibold text-slate-800">{event.name || "Untitled"}</p>
+                        <p className="truncate text-sm font-semibold text-slate-800">
+                          {event.name || "Untitled"}
+                        </p>
                         <p className="mt-0.5 truncate text-xs text-slate-500">
-                          {event.categoryName || "Unassigned"} · {event.locationName || "No location"}
+                          {event.categoryName || "Unassigned"} ·{" "}
+                          {event.locationName || "No location"}
                         </p>
                       </div>
                     </div>
@@ -194,10 +252,17 @@ export default function AdminDashboardPage() {
                 <div className="rounded-xl bg-blue-50 p-2.5 text-blue-600">
                   <Trophy size={20} />
                 </div>
-                <ArrowUpRight size={18} className="text-slate-400 transition-colors group-hover:text-blue-600" />
+                <ArrowUpRight
+                  size={18}
+                  className="text-slate-400 transition-colors group-hover:text-blue-600"
+                />
               </div>
-              <h3 className="mt-4 text-base font-bold text-slate-900">Manage Sports</h3>
-              <p className="mt-0.5 text-xs text-slate-500">Add, edit, search, and manage sports entries</p>
+              <h3 className="mt-4 text-base font-bold text-slate-900">
+                Manage Sports
+              </h3>
+              <p className="mt-0.5 text-xs text-slate-500">
+                Add, edit, search, and manage sports entries
+              </p>
             </Link>
 
             <Link
@@ -208,10 +273,17 @@ export default function AdminDashboardPage() {
                 <div className="rounded-xl bg-blue-50 p-2.5 text-blue-600">
                   <MessageSquare size={20} />
                 </div>
-                <ArrowUpRight size={18} className="text-slate-400 transition-colors group-hover:text-blue-600" />
+                <ArrowUpRight
+                  size={18}
+                  className="text-slate-400 transition-colors group-hover:text-blue-600"
+                />
               </div>
-              <h3 className="mt-4 text-base font-bold text-slate-900">Moderate Comments</h3>
-              <p className="mt-0.5 text-xs text-slate-500">Review and delete inappropriate user comments</p>
+              <h3 className="mt-4 text-base font-bold text-slate-900">
+                Moderate Comments
+              </h3>
+              <p className="mt-0.5 text-xs text-slate-500">
+                Review and delete inappropriate user comments
+              </p>
             </Link>
           </div>
         </>

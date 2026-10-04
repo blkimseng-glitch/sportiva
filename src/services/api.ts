@@ -3,7 +3,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "/backend-api";
 export async function getSports() {
   try {
     
-    const isServer = typeof window === "undefined";
+    const isServer = "undefined";
     const url = isServer
       ? `https://sport-api.eunglyzhia.com/api/v1/sports` 
       : `${BASE_URL}/sports`; 

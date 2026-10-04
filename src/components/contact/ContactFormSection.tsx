@@ -1,7 +1,73 @@
-import React from 'react';
-import { Headphones, MessageCircle, Mail, ChevronDown } from 'lucide-react';
+"use client";
+
+import React, { useState } from "react";
+import { Headphones, MessageCircle, Mail, ChevronDown } from "lucide-react";
+import { sendContactMessage } from "@/services/contact";
 
 export const ContactFormSection: React.FC = () => {
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    countryCode: "+855",
+    phone: "",
+    message: "",
+  });
+
+  const [loading, setLoading] = useState(false);
+  const [statusMessage, setStatusMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    const { id, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [id || e.target.name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setStatusMessage(null);
+
+    try {
+      await sendContactMessage({
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        phone: `${formData.countryCode} ${formData.phone}`,
+        message: formData.message,
+      });
+
+      setStatusMessage({
+        type: "success",
+        text: "សាររបស់អ្នកត្រូវបានផ្ញើទៅកាន់ Telegram រួចរាល់ហើយ!",
+      });
+
+      // Reset Form ក្រោយផ្ញើរួច
+      setFormData({
+        firstName: "",
+        lastName: "",
+        email: "",
+        countryCode: "+855",
+        phone: "",
+        message: "",
+      });
+    } catch (error: any) {
+      setStatusMessage({
+        type: "error",
+        text: error.message || "មានបញ្ហាក្នុងការផ្ញើសារ សូមព្យាយាមម្តងទៀត!",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="relative mx-auto max-w-[1040px]">
       <div className="grid grid-cols-1 items-center lg:grid-cols-12">
@@ -16,7 +82,7 @@ export const ContactFormSection: React.FC = () => {
               product from Sportiva. Feel free to contact us
             </p>
 
-            <form onSubmit={(e) => e.preventDefault()} className="mt-7 space-y-5">
+            <form onSubmit={handleSubmit} className="mt-7 space-y-5">
               {/* First Name & Last Name */}
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                 <div>
@@ -26,6 +92,9 @@ export const ContactFormSection: React.FC = () => {
                   <input
                     id="firstName"
                     type="text"
+                    required
+                    value={formData.firstName}
+                    onChange={handleChange}
                     placeholder="Enter your first name"
                     className="w-full rounded-full border border-slate-200 bg-white px-5 py-3 text-xs text-slate-800 placeholder:text-slate-400 transition focus:border-[#09274C] focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:border-blue-500"
                   />
@@ -37,7 +106,10 @@ export const ContactFormSection: React.FC = () => {
                   <input
                     id="lastName"
                     type="text"
-                    placeholder="Enter your Last name"
+                    required
+                    value={formData.lastName}
+                    onChange={handleChange}
+                    placeholder="Enter your last name"
                     className="w-full rounded-full border border-slate-200 bg-white px-5 py-3 text-xs text-slate-800 placeholder:text-slate-400 transition focus:border-[#09274C] focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:border-blue-500"
                   />
                 </div>
@@ -52,6 +124,9 @@ export const ContactFormSection: React.FC = () => {
                   <input
                     id="email"
                     type="email"
+                    required
+                    value={formData.email}
+                    onChange={handleChange}
                     placeholder="Enter your email"
                     className="w-full rounded-full border border-slate-200 bg-white px-5 py-3 text-xs text-slate-800 placeholder:text-slate-400 transition focus:border-[#09274C] focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:border-blue-500"
                   />
@@ -63,8 +138,11 @@ export const ContactFormSection: React.FC = () => {
                   <div className="flex items-center rounded-full border border-slate-200 bg-white px-3.5 py-1.5 transition focus-within:border-[#09274C] dark:border-slate-700 dark:bg-slate-800 dark:focus-within:border-blue-500">
                     <div className="relative flex items-center">
                       <select
+                        id="countryCode"
+                        name="countryCode"
                         aria-label="Country code"
-                        defaultValue="+855"
+                        value={formData.countryCode}
+                        onChange={handleChange}
                         className="appearance-none bg-transparent pr-4 pl-1 text-xs font-bold text-[#09274C] focus:outline-none cursor-pointer dark:text-slate-200"
                       >
                         <option value="+855" className="dark:bg-slate-800">+855</option>
@@ -78,6 +156,9 @@ export const ContactFormSection: React.FC = () => {
                     <input
                       id="phone"
                       type="tel"
+                      required
+                      value={formData.phone}
+                      onChange={handleChange}
                       placeholder="Enter your contact number"
                       className="w-full bg-transparent py-1.5 text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none dark:text-slate-100 dark:placeholder:text-slate-500"
                     />
@@ -93,25 +174,42 @@ export const ContactFormSection: React.FC = () => {
                 <textarea
                   id="message"
                   rows={4}
+                  required
+                  value={formData.message}
+                  onChange={handleChange}
                   placeholder="Enter your message"
                   className="w-full resize-none rounded-[20px] border border-slate-200 bg-white p-4 text-xs text-slate-800 placeholder:text-slate-400 transition focus:border-[#09274C] focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:border-blue-500"
                 />
               </div>
 
+              {/* Display Status Alert */}
+              {statusMessage && (
+                <div
+                  className={`rounded-lg p-3 text-xs ${
+                    statusMessage.type === "success"
+                      ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                      : "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
+                  }`}
+                >
+                  {statusMessage.text}
+                </div>
+              )}
+
               {/* Submit Button */}
               <div className="flex justify-end pt-2">
                 <button
                   type="submit"
-                  className="rounded-full bg-[#09274C] px-8 py-3.5 text-xs font-semibold text-white shadow-md transition-all hover:bg-[#E1131B] cursor-pointer dark:bg-blue-600 dark:hover:bg-blue-700"
+                  disabled={loading}
+                  className="rounded-full bg-[#09274C] px-8 py-3.5 text-xs font-semibold text-white shadow-md transition-all hover:bg-[#E1131B] cursor-pointer disabled:opacity-50 dark:bg-blue-600 dark:hover:bg-blue-700"
                 >
-                  Send a Message
+                  {loading ? "Sending..." : "Send a Message"}
                 </button>
               </div>
             </form>
           </div>
         </div>
 
-        {/* Contact Info Card (Overlay right side) */}
+        {/* Contact Info Card Side Box */}
         <div className="mt-6 lg:absolute lg:top-1/2 lg:right-0 lg:mt-0 lg:w-[330px] lg:-translate-y-1/2">
           <div className="relative overflow-hidden rounded-[26px] bg-[#09274C] p-7 text-white shadow-[0_20px_50px_rgba(9,39,76,0.28)] dark:bg-slate-800 dark:border dark:border-slate-700">
             <div className="absolute inset-x-0 top-0 h-1 bg-[#E1131B]" />
@@ -123,7 +221,6 @@ export const ContactFormSection: React.FC = () => {
             </h3>
 
             <div className="mt-6 space-y-3.5">
-              {/* Hotline */}
               <div className="flex items-center gap-3.5 rounded-2xl bg-white/12 px-4 py-3.5 dark:bg-slate-700/50">
                 <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/10 text-white dark:bg-slate-700">
                   <Headphones className="h-5 w-5" />
@@ -134,7 +231,6 @@ export const ContactFormSection: React.FC = () => {
                 </div>
               </div>
 
-              {/* WhatsApp */}
               <div className="flex items-center gap-3.5 rounded-2xl bg-white/12 px-4 py-3.5 dark:bg-slate-700/50">
                 <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/10 text-white dark:bg-slate-700">
                   <MessageCircle className="h-5 w-5" />
@@ -145,7 +241,6 @@ export const ContactFormSection: React.FC = () => {
                 </div>
               </div>
 
-              {/* Email */}
               <div className="flex items-center gap-3.5 rounded-2xl bg-white/12 px-4 py-3.5 dark:bg-slate-700/50">
                 <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/10 text-white dark:bg-slate-700">
                   <Mail className="h-5 w-5" />
@@ -159,11 +254,9 @@ export const ContactFormSection: React.FC = () => {
 
             <div className="my-6 h-px w-full bg-white/15 dark:bg-slate-700" />
 
-            {/* Social Links */}
             <div>
               <span className="block text-xs font-bold text-white">Connect with us</span>
               <div className="mt-3.5 flex items-center justify-between pr-2 text-white">
-                {/* Social Icons */}
                 <span className="cursor-pointer transition hover:text-[#E1131B]">
                   <svg className="h-4 w-4 fill-current" viewBox="0 0 24 24"><path d="M14 13.5h2.5l1-4H14v-2c0-1.03 0-2 2-2h1.5V2.14c-.326-.043-1.557-.14-2.857-.14C11.928 2 10 3.657 10 6.7v2.8H7v4h3V22h4v-8.5Z" /></svg>
                 </span>

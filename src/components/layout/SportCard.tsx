@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { SportItem } from "@/lib/types";
+import { SportItem } from "../../lib/types";
 
 const BADGE_COLORS: Record<string, string> = {
   Football: "bg-red-600 text-white",
@@ -18,7 +18,6 @@ export default function SportCard({
   item: SportItem | any;
   featured?: boolean;
 }) {
-
   const itemUuid = item?.uuid || item?.id || item?._id;
 
   const categoryName = item?.categoryName || item?.category?.name || "Sports";
