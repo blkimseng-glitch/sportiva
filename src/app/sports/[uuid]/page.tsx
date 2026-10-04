@@ -1,5 +1,5 @@
 import SportsDetailComponent from "@/components/sports/SportsDertailComponent";
-import { getSportByUuid} from "@/services/sportService"; 
+import { getSportByUuid } from "@/services/sportService"; 
 import type { Metadata } from "next";
 
 interface PageProps {
@@ -8,10 +8,9 @@ interface PageProps {
   }>;
 }
 
-// pull data Detail form Sport
+// ទាញយកទិន្នន័យ Detail របស់ Sport
 async function fetchSportData(uuid: string) {
   try {
-    // fetch ឬ API call 
     const sport = await getSportByUuid(uuid);
     return sport;
   } catch (error) {
@@ -20,21 +19,27 @@ async function fetchSportData(uuid: string) {
   }
 }
 
-// 1. Generate Dynamic Metadata form API
+// 1. Generate Dynamic Metadata សម្រាប់ SEO និង Social Share Preview
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { uuid } = await params;
   const sport = await fetchSportData(uuid);
 
+  // រៀបចំ Title & Description
   const title = sport?.name ? `${sport.name} | Sportiva` : "Sport Details | Sportiva";
   const description =
     sport?.description ||
-    `Explore detailed information, training guides, and equipment for sport ID: ${uuid} at Sportiva.`;
-  const imageUrl =
-    sport?.image ||
-    sport?.imageUrls?.[0] ||
-    "https://sportiva-rho.vercel.app/image/sportiva-thurbmail.jpg";
+    `Explore detailed information, training guides, and equipment for ${sport?.name || "sports"} at Sportiva.`;
+
+  // កំណត់ Fallback Image URL
+  const defaultImage = "https://sportiva-rho.vercel.app/image/sportiva-thurbmail.jpg";
+  const rawImage = sport?.image || sport?.imageUrls?.[0] || defaultImage;
+
+  // ធានាថា Image URL គឺជា Absolute URL (មាន https://)
+  const imageUrl = rawImage.startsWith("http")
+    ? rawImage
+    : `https://sportiva-rho.vercel.app${rawImage.startsWith("/") ? "" : "/"}${rawImage}`;
 
   return {
     title,
@@ -53,7 +58,7 @@ export async function generateMetadata({
         },
       ],
       locale: "en_US",
-      type: "website",
+      type: "article", // ប្រើ article ដើម្បីឱ្យ Telegram បង្ហាញ Card និងរូបភាពធំ
     },
     twitter: {
       card: "summary_large_image",
@@ -64,7 +69,7 @@ export async function generateMetadata({
   };
 }
 
-
+// 2. Main Page Component
 export default async function SportsDetailPage({ params }: PageProps) {
   const { uuid } = await params;
 
