@@ -8,14 +8,13 @@ interface PageProps {
   }>;
 }
 
-// ទាញយក URL ចេញពី env
 const BACKEND_API_URL = process.env.BACKEND_API_URL;
 const MEDIA_DOMAIN = BACKEND_API_URL ? BACKEND_API_URL.replace(/\/api\/v1\/?$/, "") : "";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://sportiva-rho.vercel.app";
 
 async function fetchDirectEvent(uuid: string) {
   if (!BACKEND_API_URL) {
-    console.error("Missing BACKEND_API_URL environment variable!");
+    console.error("Missing BACKEND_API_URL in environment variables!");
     return null;
   }
 
@@ -39,15 +38,16 @@ export async function generateMetadata({
   const { uuid } = await params;
   const event = await fetchDirectEvent(uuid);
 
+  // ចាប់យក Title, Description និង Image ឱ្យគ្រប់ Field ដែល Backend អាចបោះមក
   const title = event?.title || event?.name 
     ? `${event.title || event.name} | Sportiva` 
     : "Event Details | Sportiva";
 
-  const description = event?.description 
-    ? event.description.slice(0, 160) 
+  const description = event?.description || event?.content || event?.summary
+    ? (event.description || event.content || event.summary).slice(0, 160) 
     : "Explore detailed information, updates, and community comments at Sportiva.";
 
-  const rawImage = event?.image || event?.thumbnail || event?.coverImage || event?.imageUrls?.[0];
+  const rawImage = event?.image || event?.thumbnail || event?.coverImage || event?.cover_image || event?.imageUrls?.[0];
 
   let imageUrl = `${SITE_URL}/image/sportiva-thurbmail.jpg`;
   if (rawImage) {

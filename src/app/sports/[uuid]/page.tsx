@@ -7,15 +7,13 @@ interface PageProps {
   }>;
 }
 
-// ទាញយក URL ចេញពី env
 const BACKEND_API_URL = process.env.BACKEND_API_URL;
 const MEDIA_DOMAIN = BACKEND_API_URL ? BACKEND_API_URL.replace(/\/api\/v1\/?$/, "") : "";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://sportiva-rho.vercel.app";
 
-// Direct Public Fetch សម្រាប់ Server-side SEO / OpenGraph
 async function fetchDirectSport(uuid: string) {
   if (!BACKEND_API_URL) {
-    console.error("Missing BACKEND_API_URL environment variable!");
+    console.error("Missing BACKEND_API_URL in environment variables!");
     return null;
   }
 
@@ -39,18 +37,17 @@ export async function generateMetadata({
   const { uuid } = await params;
   const sport = await fetchDirectSport(uuid);
 
-  // ប្រសិនបើទាញបាន ចាប់យក title និង description ពិតប្រាកដ
-  const title = sport?.name 
-    ? `${sport.name} | Sportiva` 
+  const title = sport?.name || sport?.title
+    ? `${sport.name || sport.title} | Sportiva` 
     : "Sport Details | Sportiva";
 
-  const description = sport?.description 
-    ? sport.description.slice(0, 160) 
+  const description = sport?.description || sport?.content
+    ? (sport.description || sport.content).slice(0, 160) 
     : `Explore detailed information and guides for ${sport?.name || "sports"} at Sportiva.`;
 
-  // ចាប់យករូបភាព Dynamic ផ្ទាល់
-  const rawImage = sport?.image || sport?.coverImage || sport?.imageUrls?.[0];
-  let imageUrl = `${SITE_URL}/image/sportiva-thurbmail.jpg`; // Fallback image ប្រសិនបើគ្មានរូបភាព
+  const rawImage = sport?.image || sport?.thumbnail || sport?.coverImage || sport?.cover_image || sport?.imageUrls?.[0];
+
+  let imageUrl = `${SITE_URL}/image/sportiva-thurbmail.jpg`;
   if (rawImage) {
     imageUrl = rawImage.startsWith("http")
       ? rawImage
